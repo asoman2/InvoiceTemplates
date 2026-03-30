@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Strategy: Intuit Enterprise Suite Invoice Designer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Enterprise Trust (Deep Blues, Slate, Emerald Accents, White/Off-White Backgrounds) -->
+    <!-- Application Structure Plan: A single-page interactive executive summary and concept prototype. Structured chronologically: 1. Core User Concerns (Why we are doing this), 2. Strategic Integrations (How it fits the ecosystem), 3. The 10 Must-Have Features (Interactive detailed list), 4. Business Impact (Chart), 5. Interactive Concept Wireframe (To demonstrate RBAC and basic layout). This flow moves from high-level strategy to concrete tactical implementation. -->
+    <!-- Visualization & Content Choices: 
+         - User Concerns: Interactive Cards (Goal: Inform -> Method: HTML Grid + Hover -> Justification: Digestible chunks). 
+         - Integrations: CSS-styled Pipeline (Goal: Process -> Method: Flexbox + CSS shapes -> Justification: Shows flow without SVG).
+         - Features: Split-pane interactive list (Goal: Organize/Detail -> Method: JS State -> Justification: Prevents overwhelming user with text).
+         - Business Impact: Radar Chart (Goal: Compare -> Method: Chart.js -> Justification: Shows multi-dimensional improvement).
+         - Concept Wireframe: Interactive DOM manipulation (Goal: Demonstrate -> Method: JS event listeners -> Justification: Tangible feel of RBAC and layout). 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        
+        /* Strict Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+
+        /* Custom Scrollbar for inner elements */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Utility for Concept UI */
+        .concept-border { border: 1px dashed #94a3b8; }
+        .active-feature { background-color: #eff6ff; border-left: 4px solid #2563eb; color: #1e40af; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl font-bold tracking-tight text-white-300">Intuit</span>
+                    <span class="text-xl font-light text-slate-300">Enterprise Suite</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#concerns" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">Concerns</a>
+                        <a href="#integration" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">Integration</a>
+                        <a href="#features" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">10 Features</a>
+						<a href="#Sov" class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition">Schedule of values (SOV)</a>
+                        <a href="Proto/Library.html" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition">View Prototype</a>
+						<a href="Proto/Data.html" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition">AIA Billing Lifecycle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-white border-b border-slate-200 py-12 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+                Advanced Invoice Template Designer
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-500">
+                UX Strategy &amp; Architectural Blueprint for empowering enterprise financial teams with control, compliance, and automation.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- SECTION: User Concerns -->
+        <section id="concerns" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-900 border-b-2 border-emerald-500 pb-2 inline-block">Critical User Concerns</h2>
+                <p class="mt-4 text-slate-600 max-w-3xl">Enterprise users operate in high-stakes environments. The designer must balance creative freedom with strict operational guardrails. Below are the primary anxieties identified during user research.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <div class="text-3xl mb-4 group-hover:scale-110 transition duration-300">⚖️</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Compliance &amp; Legal</h3>
+                    <p class="text-sm text-slate-600">Fear of sending non-compliant invoices. Need enforced, un-editable legal blocks (e.g., Tax IDs, terms) based on region.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <div class="text-3xl mb-4 group-hover:scale-110 transition duration-300">🎨</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Brand Consistency</h3>
+                    <p class="text-sm text-slate-600">Anxiety over disparate invoice designs across departments. Need central branding controls and locked layout structures.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <div class="text-3xl mb-4 group-hover:scale-110 transition duration-300">🧩</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Data Binding Complexity</h3>
+                    <p class="text-sm text-slate-600">Worry that connecting custom fields to the template requires coding. Need intuitive "drag-and-drop" data tokens.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <div class="text-3xl mb-4 group-hover:scale-110 transition duration-300">🔒</div>
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Rogue Edits (RBAC)</h3>
+                    <p class="text-sm text-slate-600">Fear that billing clerks will alter the master layout. Need strict Role-Based Access Control differentiating 'Designers' from 'Users'.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Strategic Integrations -->
+        <section id="integration" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-900 border-b-2 border-blue-500 pb-2 inline-block">Strategic Ecosystem Integration</h2>
+                <p class="mt-4 text-slate-600 max-w-3xl">Templates cannot exist in a vacuum. To maximize value, the template architecture must permeate the entire project lifecycle, ensuring data continuity from the first estimate to the final project closure.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-xl font-semibold mb-6">The "Estimate-to-Closure" Continuity Model</h3>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-center">
+                    <!-- Step 1 -->
+                    <div class="flex-1 w-full md:w-auto p-4 bg-slate-50 rounded-lg border border-slate-200 relative">
+                        <div class="text-2xl mb-2">📝</div>
+                        <h4 class="font-semibold text-sm">1. Project Estimate</h4>
+                        <p class="text-xs text-slate-500 mt-1">Select Industry Template. Brand and terms are established here.</p>
+                    </div>
+                    
+                    <div class="text-slate-400 text-2xl rotate-90 md:rotate-0">➔</div>
+
+                    <!-- Step 2 -->
+                    <div class="flex-1 w-full md:w-auto p-4 bg-blue-50 rounded-lg border border-blue-200 relative">
+                        <div class="text-2xl mb-2">🏗️</div>
+                        <h4 class="font-semibold text-sm">2. Project Execution</h4>
+                        <p class="text-xs text-blue-700 mt-1">Timesheets &amp; expenses logged. Mapped to template categories.</p>
+                    </div>
+
+                    <div class="text-slate-400 text-2xl rotate-90 md:rotate-0">➔</div>
+
+                    <!-- Step 3 -->
+                    <div class="flex-1 w-full md:w-auto p-4 bg-emerald-50 rounded-lg border border-emerald-200 relative">
+                        <div class="text-2xl mb-2">💰</div>
+                        <h4 class="font-semibold text-sm">3. Progressive Billing</h4>
+                        <p class="text-xs text-emerald-700 mt-1">Template automatically formats milestone invoices based on rules.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-slate-800 flex items-center gap-2"><span class="text-lg">🏢</span> Industry-Specific Strategies</h4>
+                        <p class="text-sm text-slate-600 mt-2">Providing blank canvases is inefficient. The system must offer pre-built, industry-compliant starting points:</p>
+                        <ul class="list-disc pl-5 mt-2 text-sm text-slate-600 space-y-1">
+                            <li><strong>Construction:</strong> AIA-style progress billing templates, retainage fields.</li>
+                            <li><strong>Professional Services:</strong> Time &amp; Materials tracking, detailed expense itemization.</li>
+                            <li><strong>Wholesale/Retail:</strong> SKU-heavy layouts, bulk discount calculations, shipping terms.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="chart-container">
+                            <canvas id="impactChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: 10 Must-Have Features -->
+        <section id="features" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-900 border-b-2 border-indigo-500 pb-2 inline-block">10 Must-Have Features</h2>
+                <p class="mt-4 text-slate-600 max-w-3xl">Explore the core functional requirements needed to build a best-in-class enterprise template management system.</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm h-[500px]">
+                <!-- Interactive List -->
+                <div class="w-full md:w-1/3 bg-slate-50 border-r border-slate-200 overflow-y-auto custom-scroll" id="feature-list">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <!-- Detail View -->
+                <div class="w-full md:w-2/3 p-8 flex flex-col justify-center" id="feature-detail">
+                    <div class="text-center text-slate-400">
+                        <div class="text-5xl mb-4">👈</div>
+                        <p>Select a feature from the list to view specifications.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Interactive Concept Prototype (RBAC & UI) -->
+        <section id="prototype" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-900 border-b-2 border-slate-800 pb-2 inline-block">Interactive Concept Wireframe</h2>
+                <p class="mt-4 text-slate-600 max-w-3xl">This structural wireframe demonstrates the layout logic and Role-Based Access Control (RBAC). Change the role below to see how the UI adapts to protect template integrity.</p>
+            </div>
+
+            <!-- Dashboard Mockup -->
+            <div class="border border-slate-300 rounded-xl shadow-lg bg-slate-100 overflow-hidden flex flex-col h-[600px]">
+                
+                <!-- Mock Top Bar -->
+                <div class="bg-slate-800 text-white p-3 flex justify-between items-center text-sm">
+                    <div class="flex items-center gap-4">
+                        <span class="font-bold">IES Template Studio</span>
+                        <span class="px-2 py-1 bg-slate-700 rounded text-xs" id="mock-status">Status: Draft</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label for="role-simulator" class="text-slate-300">Simulate Role:</label>
+                        <select id="role-simulator" class="bg-slate-700 border-none text-white text-sm rounded px-2 py-1 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                            <option value="admin">Admin / Designer</option>
+                            <option value="user">Billing Clerk</option>
+                        </select>
+                        <button id="btn-publish" class="bg-emerald-600 hover:bg-emerald-700 px-3 py-1 rounded transition">Publish</button>
+                    </div>
+                </div>
+
+                <!-- Mock Workspace -->
+                <div class="flex flex-1 overflow-hidden">
+                    
+                    <!-- Left Toolbar (Elements) -->
+                    <div id="panel-tools" class="w-48 bg-white border-r border-slate-200 p-4 overflow-y-auto custom-scroll transition-opacity duration-300">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Elements</h4>
+                        <div class="space-y-2">
+                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>🔤</span> Text Block</div>
+                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>🖼️</span> Image/Logo</div>
+                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>📊</span> Data Table</div>
+                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>🧩</span> Custom Field</div>
+                        </div>
+                        
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-6 mb-3">Snippets (Locked)</h4>
+                        <div class="space-y-2 opacity-70">
+                            <div class="p-2 border border-slate-200 bg-slate-50 rounded text-sm cursor-not-allowed flex items-center gap-2" title="Company locked"><span>🔒</span> Legal Terms</div>
+                            <div class="p-2 border border-slate-200 bg-slate-50 rounded text-sm cursor-not-allowed flex items-center gap-2" title="Company locked"><span>🔒</span> Tax ID Block</div>
+                        </div>
+                    </div>
+
+                    <!-- Center Canvas (The Invoice) -->
+                    <div class="flex-1 bg-slate-200 p-8 overflow-y-auto flex justify-center">
+                        <div class="bg-white w-full max-w-2xl shadow-md h-full min-h-[500px] p-8 flex flex-col cursor-crosshair">
+                            <!-- Invoice Mock Content -->
+                            <div class="flex justify-between border-b-2 border-slate-200 pb-4 mb-4 element-selectable transition-colors" data-type="header">
+                                <div class="concept-border p-2 min-w-[150px] text-slate-400 text-center flex flex-col items-center justify-center bg-slate-50">
+                                    <span class="text-2xl mb-1">🏢</span>
+                                    <span class="text-xs">[Logo Block]</span>
+                                </div>
+                                <div class="text-right concept-border p-2">
+                                    <h2 class="text-2xl font-bold text-slate-800">INVOICE</h2>
+                                    <p class="text-sm text-slate-500">{Invoice.Number}</p>
+                                    <p class="text-sm text-slate-500">Date: {System.Today}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between mb-8">
+                                <div class="concept-border p-2 w-1/2 element-selectable transition-colors" data-type="billing">
+                                    <p class="text-xs font-bold text-slate-500 uppercase mb-1">Bill To:</p>
+                                    <p class="text-sm">{Customer.Name}</p>
+                                    <p class="text-sm">{Customer.Address}</p>
+                                </div>
+                                <div class="concept-border p-2 w-1/3 bg-yellow-50 element-selectable transition-colors" data-type="project">
+                                    <p class="text-xs font-bold text-yellow-700 uppercase mb-1">Project Link</p>
+                                    <p class="text-sm">{Project.Name}</p>
+                                    <p class="text-sm">Phase: {Project.Phase}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 concept-border p-2 mb-4 element-selectable transition-colors flex items-center justify-center bg-blue-50/50" data-type="table">
+                                <span class="text-slate-400 text-sm font-medium">Click to configure dynamic line-item table</span>
+                            </div>
+
+                            <div class="mt-auto border-t border-slate-200 pt-4 flex justify-between">
+                                <div class="concept-border p-2 w-2/3 bg-slate-100 opacity-60 flex items-center gap-2" title="Locked by Admin">
+                                    <span>🔒</span>
+                                    <p class="text-xs text-slate-600">Standard Legal Terms and Conditions apply. Net 30.</p>
+                                </div>
+                                <div class="text-right concept-border p-2 w-1/4 element-selectable" data-type="total">
+                                    <p class="text-lg font-bold">Total: {Invoice.Total}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Toolbar (Properties) -->
+                    <div id="panel-props" class="w-64 bg-white border-l border-slate-200 p-4 overflow-y-auto custom-scroll transition-opacity duration-300">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b pb-2">Properties</h4>
+                        
+                        <div id="prop-empty" class="text-sm text-slate-400 text-center mt-10">
+                            Select an element on the canvas to edit its properties.
+                        </div>
+
+                        <div id="prop-content" class="hidden space-y-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Element Type</label>
+                                <input type="text" id="prop-type" disabled class="w-full bg-slate-100 border border-slate-300 rounded px-2 py-1 text-sm text-slate-500">
+                            </div>
+                            
+                            <div class="admin-only-setting">
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Data Binding</label>
+                                <select class="w-full bg-white border border-slate-300 rounded px-2 py-1 text-sm">
+                                    <option>Select Variable...</option>
+                                    <option>Customer.Name</option>
+                                    <option>Project.Total</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Visibility Rules</label>
+                                <div class="flex items-center gap-2 text-sm mt-1">
+                                    <input type="checkbox" id="cond-logic" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                    <label for="cond-logic" class="cursor-pointer">Hide if value is empty</label>
+                                </div>
+                            </div>
+
+                            <div class="admin-only-setting mt-4 pt-4 border-t border-slate-200">
+                                <label class="block text-xs font-medium text-red-600 mb-1">Locking</label>
+                                <div class="flex items-center gap-2 text-sm mt-1">
+                                    <input type="checkbox" id="lock-elem" class="rounded border-slate-300 text-red-600 focus:ring-red-500 cursor-pointer">
+                                    <label for="lock-elem" class="cursor-pointer">Lock from Billing Clerks</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mock Bottom Bar -->
+                <div class="bg-slate-200 border-t border-slate-300 p-2 text-xs text-slate-500 flex justify-between">
+                    <span>Template ID: TPL-8842</span>
+                    <span id="role-indicator">Current Role: Admin / Designer</span>
+                </div>
+            </div>
+        </section>
+		    <div class="max-w-7xl mx-auto space-y-12">
+        
+        <header id="Sov" class="text-center space-y-4 pt-8">
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Living SOV &amp; AIA Billing Ecosystem</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">A comprehensive blueprint mapping the project-to-invoice lifecycle, stakeholder needs, and enterprise governance strategies.</p>
+        </header>
+
+        <section>
+            <h2 class="text-2xl font-bold text-slate-800 border-b-2 border-blue-500 pb-2 mb-6 inline-block">1. Stakeholder Persona Matrix</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <h3 class="text-xl font-bold text-blue-700 mb-2">👷‍♂️ Project Manager (GC)</h3>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> Consolidate and verify subcontractor pay applications against contracts to accurately bill the project owner.</p>
+                    <div class="mb-3 text-sm">
+                        <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
+                        <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                            <li>Approved Schedule of Values (SOV).</li>
+                            <li>Field Progress Reports and Stored Materials logs.</li>
+                            <li>Executed Change Orders (AIA G701).</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Reviews subcontractor submissions, flags unapproved changes, and routes the consolidated draft to Finance.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <h3 class="text-xl font-bold text-blue-700 mb-2">🔨 Subcontractor / Superintendent</h3>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> A fast, error-free way to fill out the G703 Continuation Sheet to submit progress bills on time and avoid payment delays.[1]</p>
+                    <div class="mb-3 text-sm">
+                        <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
+                        <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                            <li>Subcontractor Agreement and assigned SOV line items.</li>
+                            <li>Values for "Work Completed This Period" and "Materials Stored".[1]</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Submits line-item progress to the GC and responds to any requests for clarification.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <h3 class="text-xl font-bold text-blue-700 mb-2">💻 Billing Clerk / Controller</h3>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> Generate mathematically flawless AIA applications with automatically calculated retainage percentages.</p>
+                    <div class="mb-3 text-sm">
+                        <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
+                        <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                            <li>Contract Payment Terms and precise Retainage Rules (typically 5-10%).</li>
+                            <li>Conditional and Unconditional Lien Waivers.</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Performs final financial review, verifies compliance documents, and submits the finalized G702/G703 to the Architect/Owner.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
+                    <h3 class="text-xl font-bold text-blue-700 mb-2">🏢 Architect / Project Owner</h3>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> A transparent, detailed breakdown of claimed work to confidently certify the payment application.</p>
+                    <div class="mb-3 text-sm">
+                        <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
+                        <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                            <li>Master Contract and AIA G702 summary document.</li>
+                            <li>On-site inspections to verify physical progress.</li>
+                        </ul>
+                    </div>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Reviews the application and signs the Architect's Certificate for Payment if accurate, or returns it with notes for revision.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold text-slate-800 border-b-2 border-emerald-500 pb-2 mb-6 inline-block">2. Schedule of Values (SOV) to Invoice Data Flow</h2>
+            <div class="bg-white border border-slate-200 rounded-xl overflow-x-auto shadow-sm">
+                <table class="w-full text-left text-sm text-slate-600 min-w-[800px]">
+                    <thead class="bg-slate-50 text-slate-800 border-b border-slate-200">
+                        <tr>
+                            <th class="p-4 font-semibold">Project Phase (SOV Item)</th>
+                            <th class="p-4 font-semibold">Scheduled Value</th>
+                            <th class="p-4 font-semibold">Previous Billing</th>
+                            <th class="p-4 font-semibold text-emerald-600">Work This Period</th>
+                            <th class="p-4 font-semibold">Materials Stored</th>
+                            <th class="p-4 font-semibold text-amber-600">Retainage (10%)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 font-medium text-slate-900">1. Site Preparation</td>
+                            <td class="p-4 font-mono">$50,000</td>
+                            <td class="p-4 font-mono">$50,000</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">$0</td>
+                            <td class="p-4 font-mono">$0</td>
+                            <td class="p-4 font-mono text-amber-600">$5,000</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 font-medium text-slate-900">2. Foundation</td>
+                            <td class="p-4 font-mono">$120,000</td>
+                            <td class="p-4 font-mono">$60,000</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">$40,000</td>
+                            <td class="p-4 font-mono">$0</td>
+                            <td class="p-4 font-mono text-amber-600">$10,000</td>
+                        </tr>
+                        <tr class="bg-blue-50/30 hover:bg-blue-50 transition">
+                            <td class="p-4 font-medium text-blue-900">CO-1: Extra Drainage</td>
+                            <td class="p-4 font-mono">$15,000</td>
+                            <td class="p-4 font-mono">$0</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">$15,000</td>
+                            <td class="p-4 font-mono">$0</td>
+                            <td class="p-4 font-mono text-amber-600">$1,500</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="bg-slate-800 text-white p-4 text-xs leading-relaxed">
+                    <p><strong>Data Continuity Rule:</strong> The G703 Continuation Sheet is inextricably linked to the Work Breakdown Structure (WBS) and approved estimates. Approved change orders (like CO-1) automatically append to the active SOV to ensure the mathematical logic of the billing cycle remains unbroken.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold text-slate-800 border-b-2 border-indigo-500 pb-2 mb-6 inline-block">3. Vision: Enterprise Template &amp; Consumption Modules</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <div class="bg-indigo-50 border border-indigo-100 p-6 md:p-8 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-indigo-900 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">🏛️</span> Template Management Module
+                    </h3>
+                    <ul class="list-disc pl-5 space-y-3 text-sm text-indigo-800">
+                        <li><strong>Multi-Entity Branding Inheritance:</strong> Master templates utilize dynamic tokens (e.g., <code>{subsidiary.logo@Url}</code>) so the correct branding and tax IDs are injected based on the transacting entity, eliminating the need to maintain duplicate templates.</li>
+                        <li><strong>RBAC &amp; Governance:</strong> Role-Based Access Control enforces the principle of least privilege. Frontline billing clerks are prevented from modifying locked structural components or global legal snippets.</li>
+                        <li><strong>AI Migration Engine:</strong> Multimodal Vision Language Models (VLMs) can ingest legacy PDFs, recognize table boundaries, and map historical fields directly to the new structured JSON schema.[2]</li>
+                    </ul>
+                </div>
+
+                <div class="bg-emerald-50 border border-emerald-100 p-6 md:p-8 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-bold text-emerald-900 mb-4 flex items-center gap-2">
+                        <span class="text-2xl">⚡</span> Invoice Consumption &amp; Approvals
+                    </h3>
+                    <ul class="list-disc pl-5 space-y-3 text-sm text-emerald-800">
+                        <li><strong>Agentic AI Exception Handling:</strong> Autonomous AI agents cross-match incoming subcontractor invoices against the SOV, flagging mathematical anomalies or incorrect retainage percentages before human review.</li>
+                        <li><strong>Visual Diffing:</strong> During approval routing, a visual comparison highlights exact changes (like newly completed work or newly appended change orders) against the previous billing cycle, making it easier for architects to certify payments.</li>
+                        <li><strong>Audit Trails &amp; SLAs:</strong> Automated systems maintain comprehensive logs of all approvals, status changes, and SLA timelines, ensuring full regulatory compliance and eliminating "approval limbo".</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center border-t border-slate-800">
+        <p class="text-sm">&copy; 2026 UX Strategy Document - Intuit Enterprise Suite</p>
+    </footer>
+
+    <!-- Interactive Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Features Data & Interaction ---
+            const featuresData = [
+                {
+                    title: "Drag-and-Drop Canvas",
+                    icon: "🖱️",
+                    desc: "WYSIWYG editor allowing non-technical users to build professional layouts by dragging pre-configured data blocks onto a grid canvas.",
+                    details: "Crucial for usability. It lowers the barrier to entry compared to HTML-based template engines. Must support snap-to-grid and absolute positioning for pixel-perfect brand alignment."
+                },
+                {
+                    title: "Role-Based Access Control (RBAC)",
+                    icon: "🛡️",
+                    desc: "Strict separation between 'Template Designers' (Admins) who create the layout and 'Billing Clerks' (Users) who can only populate data.",
+                    details: "Prevents accidental changes to legal terminology or brand elements. Admins can 'lock' specific blocks (like headers or tax tables) making them un-editable by standard users."
+                },
+                {
+                    title: "Version Control & Publishing",
+                    icon: "🔄",
+                    desc: "Draft, Review, and Published states with full revision history. Ensure teams always use the correct, approved template.",
+                    details: "Enterprise compliance requires an audit trail. If a legal requirement changes, an admin edits a 'Draft', gets approval, and 'Publishes', instantly updating all future invoices."
+                },
+                {
+                    title: "Dynamic Data Binding (Variables)",
+                    icon: "🔗",
+                    desc: "Deep integration with Intuit data objects (Customer, Project, Timesheet) via simple drop-down menus, no coding required.",
+                    details: "Instead of typing '{Customer.FirstName}', users select fields from a visual tree. This ensures data continuity from the initial project setup straight to the invoice."
+                },
+                {
+                    title: "Industry-Specific Starter Kits",
+                    icon: "🏗️",
+                    desc: "Library of pre-configured, compliant templates tailored for Construction (AIA), Professional Services, and Retail.",
+                    details: "Accelerates time-to-value. A construction firm doesn't start from a blank page; they start with a template that already handles retainage calculations and progress phases."
+                },
+                {
+                    title: "Project Lifecycle Integration",
+                    icon: "🛤️",
+                    desc: "Templates are assigned at the Project/Estimate phase, guaranteeing the final invoice matches the agreed-upon format.",
+                    details: "Reduces friction at billing time. If a client agreed to an estimate showing grouped milestones, the invoice automatically uses the template that groups billing by milestones."
+                },
+                {
+                    title: "Conditional Logic blocks",
+                    icon: "🔀",
+                    desc: "Rules engine to show/hide sections based on data. E.g., 'Show VAT block ONLY IF Customer Region = EU'.",
+                    details: "Reduces template bloat. Instead of 10 different templates for 10 regions, build 1 master template that dynamically adapts its legal and tax sections based on the customer profile."
+                },
+                {
+                    title: "Global Snippet Library",
+                    icon: "📚",
+                    desc: "Central repository for logos, headers, and Terms & Conditions. Update a snippet once, updates across all templates.",
+                    details: "Massive time saver for large organizations. If the company changes its legal address, update the 'Address Snippet' and every invoice template is automatically corrected."
+                },
+                {
+                    title: "Multi-Format Export & Preview",
+                    icon: "📱",
+                    desc: "Real-time preview of how the invoice looks on Mobile, as a PDF, or within the Customer Portal.",
+                    details: "Ensures visual fidelity regardless of how the end-client receives the document. Crucial for modern B2B interactions where invoices are viewed on phones."
+                },
+                {
+                    title: "Advanced CSS/Scripting (Pro Mode)",
+                    icon: "🧑‍💻",
+                    desc: "An 'under-the-hood' toggle for developer teams to write custom CSS or complex calculation scripts for edge cases.",
+                    details: "While the drag-and-drop handles 90% of use cases, enterprise clients will always have that 10% edge case requiring code. This prevents the tool from being a limiting factor."
+                }
+            ];
+
+            const listContainer = document.getElementById('feature-list');
+            const detailContainer = document.getElementById('feature-detail');
+
+            function renderFeatures() {
+                listContainer.innerHTML = '';
+                featuresData.forEach((feature, index) => {
+                    const item = document.createElement('div');
+                    item.className = `p-4 border-b border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors flex items-center gap-3 feature-item ${index === 0 ? 'active-feature' : ''}`;
+                    item.innerHTML = `
+                        <div class="text-2xl">${feature.icon}</div>
+                        <div>
+                            <h4 class="font-semibold text-sm text-slate-800">${index + 1}. ${feature.title}</h4>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        document.querySelectorAll('.feature-item').forEach(el => el.classList.remove('active-feature'));
+                        item.classList.add('active-feature');
+                        updateDetail(feature);
+                    });
+                    listContainer.appendChild(item);
+                });
+                // Initialize first item
+                if(featuresData.length > 0) updateDetail(featuresData[0]);
+            }
+
+            function updateDetail(feature) {
+                detailContainer.innerHTML = `
+                    <div class="animate-[fadeIn_0.3s_ease-out]">
+                        <div class="text-5xl mb-4">${feature.icon}</div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">${feature.title}</h3>
+                        <p class="text-lg text-slate-700 font-medium mb-4">${feature.desc}</p>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <h5 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Strategic Value</h5>
+                            <p class="text-sm text-slate-600 leading-relaxed">${feature.details}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- 2. Concept Prototype (RBAC Logic) ---
+            const roleSelect = document.getElementById('role-simulator');
+            const toolsPanel = document.getElementById('panel-tools');
+            const btnPublish = document.getElementById('btn-publish');
+            const roleIndicator = document.getElementById('role-indicator');
+            const adminOnlySettings = document.querySelectorAll('.admin-only-setting');
+            
+            // Canvas elements interaction
+            const selectableElements = document.querySelectorAll('.element-selectable');
+            const propEmpty = document.getElementById('prop-empty');
+            const propContent = document.getElementById('prop-content');
+            const propTypeInput = document.getElementById('prop-type');
+
+            function updateRole(role) {
+                // Reset selection on role change to prevent confusion
+                selectableElements.forEach(el => {
+                    el.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+                });
+                propEmpty.classList.remove('hidden');
+                propContent.classList.add('hidden');
+
+                if (role === 'admin') {
+                    toolsPanel.classList.remove('opacity-40', 'pointer-events-none');
+                    btnPublish.classList.remove('hidden');
+                    roleIndicator.innerText = "Current Role: Admin / Designer";
+                    adminOnlySettings.forEach(el => el.classList.remove('hidden'));
+                } else {
+                    // Billing Clerk view
+                    toolsPanel.classList.add('opacity-40', 'pointer-events-none');
+                    btnPublish.classList.add('hidden');
+                    roleIndicator.innerText = "Current Role: Billing Clerk (Locked mode)";
+                    adminOnlySettings.forEach(el => el.classList.add('hidden'));
+                }
+            }
+
+            roleSelect.addEventListener('change', (e) => updateRole(e.target.value));
+
+            selectableElements.forEach(el => {
+                el.addEventListener('click', function(e) {
+                    // Stop propagation so clicking inner elements doesn't trigger parent clicks if nested
+                    e.stopPropagation(); 
+                    
+                    // Clear previous
+                    selectableElements.forEach(s => s.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50'));
+                    
+                    // Highlight selected
+                    this.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+                    
+                    // Show props
+                    propEmpty.classList.add('hidden');
+                    propContent.classList.remove('hidden');
+                    
+                    // Populate props
+                    propTypeInput.value = this.getAttribute('data-type').toUpperCase() + " BLOCK";
+                });
+            });
+
+            // --- 3. Chart.js Implementation ---
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Customization', 'Compliance', 'Creation Speed', 'Data Accuracy', 'Brand Consistency'],
+                    datasets: [
+                        {
+                            label: 'Legacy System',
+                            data: [30, 40, 50, 60, 40],
+                            fill: true,
+                            backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                            borderColor: 'rgb(148, 163, 184)',
+                            pointBackgroundColor: 'rgb(148, 163, 184)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(148, 163, 184)'
+                        },
+                        {
+                            label: 'Proposed Designer Architecture',
+                            data: [90, 95, 85, 95, 90],
+                            fill: true,
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)', // Emerald tint
+                            borderColor: 'rgb(16, 185, 129)',
+                            pointBackgroundColor: 'rgb(16, 185, 129)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(16, 185, 129)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false } // cleaner look
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ' pts';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize App
+            renderFeatures();
+            updateRole('admin');
+
+        });
+    </script>
+</body>
+</html>
