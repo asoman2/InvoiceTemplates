@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IES Approval Workflows (Compliance)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; overflow: hidden; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Chart Container */
+        .chart-container { position: relative; width: 100%; height: 160px; max-height: 160px; }
+
+        /* Persona Banner Animation */
+        .persona-transition { transition: background-color 0.4s ease, color 0.4s ease; }
+
+        /* List Items */
+        .queue-item { transition: all 0.2s ease; border-left: 3px solid transparent; cursor: pointer; }
+        .queue-item.active { background-color: #ffffff; border-left-color: #2563eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .queue-item:not(.active):hover { background-color: #f1f5f9; border-left-color: #cbd5e1; }
+
+        /* =========================================
+           VISUAL DIFF ENGINE STYLES
+           ========================================= */
+        .diff-canvas { background: #ffffff; border: 1px solid #e2e8f0; padding: 24px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 12px; }
+        .diff-block { border: 1px solid #cbd5e1; padding: 12px; border-radius: 4px; font-size: 10px; color: #64748b; background: #f8fafc; display: flex; align-items: center; justify-content: center; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em; transition: all 0.3s ease; }
+        
+        /* Unchanged */
+        .diff-unchanged { opacity: 0.6; }
+        
+        /* Added / Modified */
+        .diff-added { 
+            border: 2px solid #10b981 !important; 
+            background-color: #ecfdf5 !important; 
+            color: #065f46 !important;
+            position: relative; 
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            animation: pulse-green 2s infinite;
+        }
+        .diff-added::before { 
+            content: '✨ ADDED / MODIFIED'; 
+            position: absolute; top: -10px; left: 8px; 
+            background: #10b981; color: white; font-size: 8px; 
+            padding: 2px 6px; border-radius: 4px; font-weight: 900; 
+        }
+        
+        /* Removed */
+        .diff-removed { 
+            border: 2px dashed #e11d48 !important; 
+            background-color: #fff1f2 !important; 
+            color: #9f1239 !important;
+            position: relative; 
+            opacity: 0.8;
+        }
+        .diff-removed::before { 
+            content: '🗑️ REMOVED'; 
+            position: absolute; top: -10px; left: 8px; 
+            background: #e11d48; color: white; font-size: 8px; 
+            padding: 2px 6px; border-radius: 4px; font-weight: 900; 
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        
+        @keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        .toast-enter { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body class="h-screen flex flex-col antialiased">
+
+<aside class="fixed inset-y-0 left-0 w-16 bg-slate-900 text-white flex flex-col z-50 shadow-2xl border-r border-slate-800 transition-all duration-300 hover:w-64 group overflow-hidden">
+    <div class="h-16 flex items-center justify-center group-hover:justify-start group-hover:px-6 border-b border-slate-800 bg-slate-950 shrink-0">
+        <span class="text-2xl font-black text-emerald-400">IES</span>
+        <span class="ml-3 font-bold tracking-wider text-xs uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Template Studio</span>
+    </div>
+    
+    <nav class="flex-1 py-6 space-y-2 w-64">
+        <div class="px-6 mb-3 hidden group-hover:block text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap transition-opacity">Ecosystem Modules</div>
+        
+        <a href="Library.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🗂️</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Library</span>
+        </a>
+        <a href="Brand.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🎨</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Governance</span>
+        </a>
+        <a href="BuilderStudio.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🛠️</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Active Builder</span>
+        </a>
+        <a href="Approval.html" class="w-full flex items-center px-4 py-3 bg-slate-800 text-white border-l-4 border-blue-500 transition">
+            <span class="text-xl">✅</span><span class="ml-4 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity flex justify-between w-full pr-8">Approvals <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm" id="queue-badge">1</span></span>
+        </a>
+    </nav>
+    
+    <div class="p-4 border-t border-slate-800 bg-slate-900 flex items-center justify-center group-hover:justify-start gap-3 w-64" id="sidebar-user-info">
+        </div>
+</aside>
+
+<div class="flex-1 flex flex-col pl-16 h-screen overflow-hidden relative">
+
+    <header id="persona-header" class="h-16 persona-transition bg-slate-900 text-white flex items-center justify-between px-6 shrink-0 z-40 shadow-xl border-b border-slate-800">
+        <div class="flex items-center gap-4">
+            <div>
+                <h1 class="text-sm font-extrabold tracking-tight">Compliance &amp; Governance</h1>
+                <p class="text-[10px] text-white/70 uppercase tracking-widest font-bold">Approval Workflows</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 bg-black/20 border border-white/10 rounded-xl px-4 py-2 shadow-inner">
+            <span class="text-xl" id="persona-icon">👨‍💻</span>
+            <div class="flex flex-col">
+                <span class="text-[9px] text-white/70 uppercase font-black tracking-widest leading-none mb-1">Simulate Persona</span>
+                <select id="persona-select" onchange="app.switchPersona(this.value)" class="bg-transparent border-none text-white text-sm font-bold outline-none cursor-pointer p-0">
+                    <option value="designer">Alex (Template Designer)</option>
+                    <option value="approver">Morgan (Compliance Approver)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col relative bg-slate-100 overflow-hidden">
+        
+        <section id="view-designer" class="absolute inset-0 flex flex-col p-10 overflow-y-auto custom-scroll z-30">
+            <div class="max-w-5xl mx-auto w-full space-y-8 animate-fade-in">
+                
+                <header class="flex justify-between items-end">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">My Submissions</h2>
+                        <p class="text-sm text-slate-500 mt-2">Track the approval status of your template drafts.</p>
+                    </div>
+                    <a href="BuilderStudio.html" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-2">
+                        <span>➕</span> Submit New Draft
+                    </a>
+                </header>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-xs font-black text-amber-500 uppercase tracking-widest">Pending Review</p>
+                            <span class="text-xl">⏳</span>
+                        </div>
+                        <h3 class="text-4xl font-black text-slate-800" id="designer-pending-count">1</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-xs font-black text-emerald-500 uppercase tracking-widest">Approved</p>
+                            <span class="text-xl">✅</span>
+                        </div>
+                        <h3 class="text-4xl font-black text-slate-800" id="designer-approved-count">12</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-xs font-black text-red-500 uppercase tracking-widest">Rejected</p>
+                            <span class="text-xl">❌</span>
+                        </div>
+                        <h3 class="text-4xl font-black text-slate-800">2</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-5 border-b border-slate-100 bg-slate-50/80">
+                        <h4 class="text-sm font-bold text-slate-800">Recent Activity</h4>
+                    </div>
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-4 font-bold">Req ID</th>
+                                <th class="px-6 py-4 font-bold">Template Name</th>
+                                <th class="px-6 py-4 font-bold">Date Submitted</th>
+                                <th class="px-6 py-4 font-bold">Status</th>
+                                <th class="px-6 py-4 font-bold text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100" id="designer-table-body">
+                            </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="view-approver" class="hidden absolute inset-0 flex overflow-hidden z-30">
+            
+            <div class="w-80 bg-white border-r border-slate-200 flex flex-col shrink-0 shadow-sm z-10">
+                <div class="p-6 border-b border-slate-100 bg-slate-50">
+                    <h2 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4">Review Queue</h2>
+                    <div class="chart-container">
+                        <canvas id="slaChart"></canvas>
+                    </div>
+                    <p class="text-[10px] text-center text-slate-500 mt-2 font-medium">SLA Health: <span class="text-emerald-600 font-bold">Excellent (1.2 days avg)</span></p>
+                </div>
+
+                <div class="px-4 py-3 border-b border-slate-100 flex gap-2 shrink-0 bg-white">
+                    <button class="flex-1 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold py-2 rounded-lg shadow-sm">Pending</button>
+                    <button class="flex-1 bg-white text-slate-500 border border-slate-200 hover:bg-slate-50 text-xs font-semibold py-2 rounded-lg transition">Resolved</button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto custom-scroll p-3 space-y-2 bg-slate-50/50" id="approver-queue">
+                    </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll bg-slate-100/50 relative flex flex-col">
+                
+                <div id="review-empty" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-50">
+                    <span class="text-6xl mb-4 opacity-50">📋</span>
+                    <h3 class="text-xl font-bold text-slate-700">Queue is Clear</h3>
+                    <p class="text-sm mt-2 font-medium">Select a pending request from the queue to begin your review.</p>
+                </div>
+
+                <div id="review-content" class="hidden flex-1 flex flex-col animate-fade-in">
+                    
+                    <div class="bg-white p-8 border-b border-slate-200 shrink-0 shadow-sm">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest">Review Requested</span>
+                                    <span class="text-xs font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded border border-slate-200" id="req-id">REQ-000</span>
+                                </div>
+                                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight" id="req-title">Template Name</h1>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="app.rejectRequest()" class="px-5 py-2.5 bg-white border-2 border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 rounded-xl text-sm font-bold transition shadow-sm">Reject Changes</button>
+                                <button onclick="app.approveRequest()" class="px-6 py-2.5 bg-emerald-600 border-2 border-emerald-700 text-white hover:bg-emerald-500 rounded-xl text-sm font-bold transition shadow-md flex items-center gap-2">
+                                    <span>✅</span> Approve &amp; Publish
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-8 text-sm border-t border-slate-100 pt-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 border border-blue-200 flex items-center justify-center font-bold text-xs">AD</div>
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">Submitted By</span>
+                                    <span class="font-bold text-slate-800" id="req-author">Alex (Designer)</span>
+                                </div>
+                            </div>
+                            <div class="w-px h-8 bg-slate-200"></div>
+                            <div class="flex flex-col justify-center">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase">Date Submitted</span>
+                                <span class="font-bold text-slate-700" id="req-date">Today</span>
+                            </div>
+                            <div class="w-px h-8 bg-slate-200"></div>
+                            <div class="flex flex-col justify-center">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase">Impact</span>
+                                <span class="font-bold text-slate-700">Modifies 1 Active Template</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 p-8 flex flex-col">
+                        
+                        <div class="mb-4 flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2"><span>🔍</span> Visual Diff Engine</h2>
+                                <p class="text-xs text-slate-500 font-medium mt-1">Reviewing structural and data-binding changes without reading code.</p>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 bg-emerald-100 border border-emerald-500 rounded-sm"></span> Added / Modified</span>
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 bg-rose-100 border border-rose-500 border-dashed rounded-sm"></span> Removed</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm flex-1 flex flex-col overflow-hidden">
+                            
+                            <div class="flex-1 flex p-8 gap-8 bg-slate-50/50 items-start justify-center">
+                                
+                                <div class="w-full max-w-sm flex flex-col">
+                                    <div class="flex items-center justify-between mb-3 px-1">
+                                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Currently Published (v1.0)</h3>
+                                    </div>
+                                    <div class="diff-canvas" id="diff-original">
+                                        </div>
+                                </div>
+
+                                <div class="flex items-center justify-center pt-32 shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-500 shadow-inner">➡️</div>
+                                </div>
+
+                                <div class="w-full max-w-sm flex flex-col">
+                                    <div class="flex items-center justify-between mb-3 px-1">
+                                        <h3 class="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-1.5"><span>✨</span> Proposed Draft (v1.1)</h3>
+                                    </div>
+                                    <div class="diff-canvas ring-4 ring-blue-50 border-blue-200 shadow-lg relative" id="diff-proposed">
+                                        <div class="absolute -top-3 -right-3 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg">New</div>
+                                        </div>
+                                </div>
+
+                            </div>
+
+                            <div class="p-6 border-t border-slate-200 bg-white shrink-0">
+                                <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-4">Designer's Change Summary</h4>
+                                <ul class="space-y-3 text-sm text-slate-600" id="change-log">
+                                    </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 hidden text-sm font-bold border border-slate-700">
+    <span id="toast-icon" class="text-xl">✅</span>
+    <span id="toast-msg">Action successful.</span>
+</div>
+
+<script>
+    let requestsDB = [
+        { 
+            id: 'REQ-084', 
+            title: 'AIA Construction Template', 
+            date: 'Just Now', 
+            status: 'pending',
+            changes: [
+                { type: 'added', text: 'Added dynamic Retainage Calculation block to comply with new state regulations.' },
+                { type: 'removed', text: 'Removed legacy signature line (replaced by digital cert).' }
+            ],
+            wireframeType: 'aia'
+        },
+        { 
+            id: 'REQ-012', 
+            title: 'Standard B2B Services', 
+            date: 'Oct 12, 2025', 
+            status: 'approved',
+            changes: [],
+            wireframeType: 'standard'
+        },
+        { 
+            id: 'REQ-008', 
+            title: 'Wholesale Invoice', 
+            date: 'Sep 28, 2025', 
+            status: 'rejected',
+            changes: [],
+            wireframeType: 'standard'
+        }
+    ];
+
+    const app = {
+        state: {
+            persona: 'designer', // 'designer' | 'approver'
+            activeReqId: null
+        },
+
+        init() {
+            this.switchPersona('designer');
+            this.initChart();
+        },
+
+        switchPersona(role) {
+            this.state.persona = role;
+            
+            const header = document.getElementById('persona-header');
+            const icon = document.getElementById('persona-icon');
+            const sidebarInfo = document.getElementById('sidebar-user-info');
+
+            document.getElementById('view-designer').classList.add('hidden');
+            document.getElementById('view-approver').classList.add('hidden');
+
+            if (role === 'designer') {
+                header.className = "h-16 persona-transition bg-slate-900 text-white flex items-center justify-between px-6 shrink-0 z-40 shadow-xl border-b border-slate-800";
+                icon.innerText = "👨‍💻";
+                document.getElementById('view-designer').classList.remove('hidden');
+                
+                // Keep classes synced with new expanding sidebar logic
+                sidebarInfo.innerHTML = `
+                    <div class="w-8 h-8 rounded bg-blue-600 flex shrink-0 items-center justify-center text-white font-black text-xs shadow-inner">AD</div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">
+                        <div class="text-slate-100 font-black">Alex (Designer)</div>
+                        <div class="text-slate-400 font-medium">Creator Role</div>
+                    </div>
+                `;
+                
+                this.renderDesignerDashboard();
+
+            } else {
+                header.className = "h-16 persona-transition bg-indigo-950 text-white flex items-center justify-between px-6 shrink-0 z-40 shadow-xl border-b border-indigo-900";
+                icon.innerText = "⚖️";
+                document.getElementById('view-approver').classList.remove('hidden');
+                
+                // Keep classes synced with new expanding sidebar logic
+                sidebarInfo.innerHTML = `
+                    <div class="w-8 h-8 rounded bg-emerald-600 flex shrink-0 items-center justify-center text-white font-black text-xs shadow-inner">MC</div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">
+                        <div class="text-slate-100 font-black">Morgan (Approver)</div>
+                        <div class="text-emerald-400 font-bold">Compliance Role</div>
+                    </div>
+                `;
+
+                this.renderApproverQueue();
+                
+                const pending = requestsDB.find(r => r.status === 'pending');
+                if(pending) {
+                    this.loadReviewDetail(pending.id);
+                } else {
+                    document.getElementById('review-content').classList.add('hidden');
+                    document.getElementById('review-empty').classList.remove('hidden');
+                }
+            }
+
+            const pendingCount = requestsDB.filter(r => r.status === 'pending').length;
+            const badge = document.getElementById('queue-badge');
+            if(badge) {
+                badge.innerText = pendingCount;
+                badge.style.display = pendingCount > 0 ? 'block' : 'none';
+            }
+        },
+
+        renderDesignerDashboard() {
+            const pendingCount = requestsDB.filter(r => r.status === 'pending').length;
+            document.getElementById('designer-pending-count').innerText = pendingCount;
+
+            const tbody = document.getElementById('designer-table-body');
+            tbody.innerHTML = '';
+
+            requestsDB.forEach(req => {
+                let statusBadge = '';
+                if(req.status === 'pending') statusBadge = '<span class="bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">Pending Review</span>';
+                else if(req.status === 'approved') statusBadge = '<span class="bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">Approved</span>';
+                else statusBadge = '<span class="bg-rose-100 text-rose-800 border border-rose-200 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">Rejected</span>';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 font-mono font-bold text-slate-500">${req.id}</td>
+                        <td class="px-6 py-4 font-bold text-slate-900">${req.title}</td>
+                        <td class="px-6 py-4 text-slate-600">${req.date}</td>
+                        <td class="px-6 py-4">${statusBadge}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="text-blue-600 font-bold hover:underline text-xs">View Details</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        },
+
+        renderApproverQueue() {
+            const queueContainer = document.getElementById('approver-queue');
+            queueContainer.innerHTML = '';
+            
+            const pendingReqs = requestsDB.filter(r => r.status === 'pending');
+
+            if(pendingReqs.length === 0) {
+                queueContainer.innerHTML = `<div class="p-6 text-center text-xs font-bold text-slate-400 uppercase tracking-widest mt-10">Queue Empty</div>`;
+                return;
+            }
+
+            pendingReqs.forEach(req => {
+                const isActive = req.id === this.state.activeReqId;
+                queueContainer.innerHTML += `
+                    <div onclick="app.loadReviewDetail('${req.id}')" class="queue-item p-4 rounded-xl ${isActive ? 'active' : 'border border-transparent'}">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-slate-900 text-sm truncate pr-2">${req.title}</h4>
+                            <span class="text-[9px] font-mono font-bold bg-slate-100 border border-slate-200 text-slate-500 px-1.5 py-0.5 rounded">${req.id}</span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-2">
+                            <div class="w-5 h-5 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[9px]">AD</div>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase">${req.date}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        },
+
+        loadReviewDetail(id) {
+            this.state.activeReqId = id;
+            this.renderApproverQueue();
+
+            const req = requestsDB.find(r => r.id === id);
+            if(!req) return;
+
+            document.getElementById('review-empty').classList.add('hidden');
+            document.getElementById('review-content').classList.remove('hidden');
+
+            document.getElementById('req-id').innerText = req.id;
+            document.getElementById('req-title').innerText = req.title;
+            
+            const logList = document.getElementById('change-log');
+            logList.innerHTML = req.changes.map(c => {
+                const icon = c.type === 'added' ? '<span class="text-emerald-500 text-lg">➕</span>' : '<span class="text-rose-500 text-lg">➖</span>';
+                return `<li class="flex items-start gap-3 bg-slate-50 border border-slate-100 p-3 rounded-lg"><span class="mt-0.5">${icon}</span> <span class="font-medium text-slate-700">${c.text}</span></li>`;
+            }).join('');
+
+            this.renderDiffEngine(req.wireframeType);
+        },
+
+        renderDiffEngine(type) {
+            const orig = document.getElementById('diff-original');
+            const prop = document.getElementById('diff-proposed');
+
+            const blkHeader = `<div class="diff-block diff-unchanged h-12 flex justify-between px-4"><div class="w-8 h-8 bg-slate-200 rounded"></div><div class="w-24 h-3 bg-slate-200 rounded"></div></div>`;
+            const blkClient = `<div class="diff-block diff-unchanged h-16 flex gap-4"><div class="flex-1 bg-slate-200/50 rounded"></div><div class="flex-1 bg-slate-200/50 rounded"></div></div>`;
+            const blkTable = `<div class="diff-block diff-unchanged h-24 bg-slate-100 flex flex-col justify-start pt-2 px-2 gap-2 border-t-4 border-slate-300"><div class="h-2 w-full bg-slate-300 rounded"></div><div class="h-2 w-full bg-slate-200 rounded"></div><div class="h-2 w-full bg-slate-200 rounded"></div></div>`;
+            const blkFooter = `<div class="diff-block diff-unchanged h-10 bg-slate-200/50 flex flex-col items-center justify-center gap-1.5"><div class="w-32 h-1.5 bg-slate-300 rounded"></div><div class="w-48 h-1.5 bg-slate-300 rounded"></div></div>`;
+
+            if (type === 'aia') {
+                const origSig = `<div class="diff-block diff-removed h-16 flex justify-between px-8"><div class="w-24 h-px bg-slate-400 self-end mb-2"></div><div class="w-24 h-px bg-slate-400 self-end mb-2"></div></div>`;
+                const origTotals = `<div class="diff-block diff-unchanged h-16 flex justify-end px-2"><div class="w-32 h-full bg-slate-100 border-t-2 border-slate-300"></div></div>`;
+                
+                orig.innerHTML = blkHeader + blkClient + blkTable + origTotals + origSig + blkFooter;
+
+                const propRetainage = `<div class="diff-block diff-added h-24 flex justify-end px-2"><div class="w-40 h-full bg-emerald-50/50 border-t-2 border-emerald-300 flex flex-col items-end justify-center p-2 gap-2"><div class="w-24 h-2 bg-slate-300 rounded"></div><div class="w-20 h-2 bg-emerald-400 rounded"></div><div class="w-24 h-3 bg-slate-800 rounded mt-2"></div></div></div>`;
+                
+                prop.innerHTML = blkHeader + blkClient + blkTable + propRetainage + blkFooter;
+            }
+        },
+
+        approveRequest() {
+            if(!this.state.activeReqId) return;
+            
+            const req = requestsDB.find(r => r.id === this.state.activeReqId);
+            req.status = 'approved';
+            
+            this.showToast(`Request ${req.id} Approved & Published globally.`, 'bg-emerald-600');
+            
+            this.state.activeReqId = null;
+            this.renderApproverQueue();
+            
+            document.getElementById('review-content').classList.add('hidden');
+            document.getElementById('review-empty').classList.remove('hidden');
+
+            const badge = document.getElementById('queue-badge');
+            const pendingCount = requestsDB.filter(r => r.status === 'pending').length;
+            if(badge) {
+                badge.innerText = pendingCount;
+                badge.style.display = pendingCount > 0 ? 'block' : 'none';
+            }
+        },
+
+        rejectRequest() {
+            if(!this.state.activeReqId) return;
+            
+            const req = requestsDB.find(r => r.id === this.state.activeReqId);
+            req.status = 'rejected';
+            
+            this.showToast(`Request ${req.id} Rejected. Returned to Designer.`, 'bg-rose-600');
+            
+            this.state.activeReqId = null;
+            this.renderApproverQueue();
+            
+            document.getElementById('review-content').classList.add('hidden');
+            document.getElementById('review-empty').classList.remove('hidden');
+
+            const badge = document.getElementById('queue-badge');
+            const pendingCount = requestsDB.filter(r => r.status === 'pending').length;
+            if(badge) {
+                badge.innerText = pendingCount;
+                badge.style.display = pendingCount > 0 ? 'block' : 'none';
+            }
+        },
+
+        initChart() {
+            const ctx = document.getElementById('slaChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Within SLA (<24h)', 'Approaching SLA', 'Breached SLA'],
+                    datasets: [{
+                        data: [8, 2, 0],
+                        backgroundColor: ['#10b981', '#f59e0b', '#e11d48'],
+                        borderWidth: 0,
+                        cutout: '75%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { 
+                            backgroundColor: '#0f172a',
+                            titleFont: { family: 'Inter', size: 11 },
+                            bodyFont: { family: 'Inter', size: 11 },
+                            padding: 8, cornerRadius: 6
+                        }
+                    }
+                },
+                plugins: [{
+                    id: 'textCenter',
+                    beforeDraw: function(chart) {
+                        var width = chart.width, height = chart.height, ctx = chart.ctx;
+                        ctx.restore();
+                        var fontSize = (height / 80).toFixed(2);
+                        ctx.font = "900 " + fontSize + "em Inter";
+                        ctx.textBaseline = "middle";
+                        ctx.fillStyle = "#0f172a";
+                        var text = "1.2d", textX = Math.round((width - ctx.measureText(text).width) / 2), textY = height / 2;
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        },
+
+        showToast(message, colorClass = 'bg-slate-900') {
+            const toast = document.getElementById('toast');
+            toast.className = `fixed bottom-10 left-1/2 transform -translate-x-1/2 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 text-sm font-bold border border-white/10 ${colorClass} toast-enter`;
+            document.getElementById('toast-msg').innerText = message;
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('toast-enter');
+            }, 3500);
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => app.init());
+</script>
+</body>
+</html>

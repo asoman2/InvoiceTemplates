@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IES Brand & Governance Center (Control)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; overflow: hidden; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .chart-container { position: relative; width: 100%; height: 180px; }
+
+        .nav-pill { transition: all 0.2s ease; border-left: 3px solid transparent; }
+        .nav-pill.active { background-color: #eff6ff; border-left-color: #2563eb; color: #1e40af; font-weight: 600; }
+        .nav-pill:not(.active):hover { background-color: #f1f5f9; border-left-color: #cbd5e1; }
+
+        .list-item-card { transition: all 0.2s ease; border: 1px solid transparent; }
+        .list-item-card.active { background-color: #ffffff; border-color: #bfdbfe; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .list-item-card:not(.active):hover { background-color: #f8fafc; border-color: #e2e8f0; }
+
+        :root {
+            --brand-primary: #2563eb;
+            --brand-secondary: #0f172a;
+        }
+        .preview-header { background-color: var(--brand-secondary); transition: background-color 0.3s ease; }
+        .preview-accent { color: var(--brand-primary); transition: color 0.3s ease; }
+        .preview-border { border-color: var(--brand-primary); transition: border-color 0.3s ease; }
+        .preview-bg { background-color: var(--brand-primary); transition: background-color 0.3s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        .toast-enter { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body class="h-screen flex flex-col antialiased">
+
+<aside class="fixed inset-y-0 left-0 w-16 bg-slate-900 text-white flex flex-col z-50 shadow-2xl border-r border-slate-800 transition-all duration-300 hover:w-64 group overflow-hidden">
+    <div class="h-16 flex items-center justify-center group-hover:justify-start group-hover:px-6 border-b border-slate-800 bg-slate-950 shrink-0">
+        <span class="text-2xl font-black text-emerald-400">IES</span>
+        <span class="ml-3 font-bold tracking-wider text-xs uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Template Studio</span>
+    </div>
+    
+    <nav class="flex-1 py-6 space-y-2 w-64">
+        <div class="px-6 mb-3 hidden group-hover:block text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap transition-opacity">Ecosystem Modules</div>
+        
+        <a href="Library.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🗂️</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Library</span>
+        </a>
+        <a href="Brand.html" class="w-full flex items-center px-4 py-3 bg-slate-800 text-white border-l-4 border-blue-500 transition">
+            <span class="text-xl">🎨</span><span class="ml-4 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">Governance</span>
+        </a>
+        <a href="BuilderStudio.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🛠️</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Active Builder</span>
+        </a>
+        <a href="Approval.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">✅</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Approvals</span>
+        </a>
+    </nav>
+    
+    <div class="p-4 border-t border-slate-800 bg-slate-900 flex items-center justify-center group-hover:justify-start gap-3 w-64">
+        <div class="w-8 h-8 rounded bg-blue-600 flex shrink-0 items-center justify-center text-white font-bold text-xs">SA</div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">
+            <div class="text-white font-semibold">System Admin</div>
+            <div class="text-slate-400">Global Creator Role</div>
+        </div>
+    </div>
+</aside>
+
+<div class="flex-1 flex flex-col pl-16 h-screen overflow-hidden relative">
+
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-20 shadow-sm">
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+            <span>Workspace Settings</span> <span class="text-slate-300">/</span> <span class="font-bold text-slate-800">Brand & Governance Center</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-xs text-slate-500 flex items-center gap-1.5 font-medium bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Synced Globally
+            </div>
+            <button onclick="app.showToast('Global assets published successfully. 24 templates updated.')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-2">
+                <span>🔄</span> Publish Global Changes
+            </button>
+        </div>
+    </header>
+
+    <div class="bg-indigo-50 border-b border-indigo-100 px-8 py-3 flex items-start gap-3 shrink-0">
+        <span class="text-indigo-500 mt-0.5 text-lg">🛡️</span>
+        <div>
+            <h4 class="text-xs font-black text-indigo-900 uppercase tracking-wider">Administrator Zone</h4>
+            <p class="text-xs text-indigo-700 mt-0.5 font-medium leading-relaxed">Assets managed here are locked globally. Changes made in this center will override and automatically update all active templates utilizing these components across all entities.</p>
+        </div>
+    </div>
+
+    <main class="flex-1 flex overflow-hidden bg-slate-50">
+        
+        <div class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 z-10 pt-6">
+            <div class="px-6 mb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Categories</div>
+            
+            <nav class="flex flex-col space-y-1 px-3">
+                <button onclick="app.switchCategory('brand')" id="cat-brand" class="nav-pill active flex items-center gap-3 px-4 py-3 rounded-r-lg text-sm text-slate-600 text-left w-full">
+                    <span class="text-xl">🎨</span> Brand Identity
+                </button>
+                <button onclick="app.switchCategory('snippets')" id="cat-snippets" class="nav-pill flex items-center justify-between px-4 py-3 rounded-r-lg text-sm text-slate-600 text-left w-full">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl">⚖️</span> Legal Snippets
+                    </div>
+                    <span class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded">4</span>
+                </button>
+                <button onclick="app.switchCategory('headers')" id="cat-headers" class="nav-pill flex items-center justify-between px-4 py-3 rounded-r-lg text-sm text-slate-600 text-left w-full">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl">🏢</span> Structural Blocks
+                    </div>
+                    <span class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded">3</span>
+                </button>
+            </nav>
+
+            <div class="mt-auto p-6 border-t border-slate-100 bg-slate-50/50">
+                <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Global Adoption</h4>
+                <div class="chart-container">
+                    <canvas id="adoptionChart"></canvas>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-3 text-center font-medium">85% of active templates strictly use centralized governance snippets.</p>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto custom-scroll p-8 relative">
+            
+            <div id="view-brand" class="max-w-5xl mx-auto space-y-8 animate-fade-in">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Brand Identity</h2>
+                        <p class="text-sm text-slate-500 mt-2">Configure global logos and color schemes. These variables cascade to all standard templates.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    
+                    <div class="lg:col-span-3 space-y-6">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>🖼️</span> Primary Enterprise Logo</h3>
+                            <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-blue-50 hover:border-blue-400 transition cursor-pointer flex flex-col items-center justify-center group">
+                                <div class="w-20 h-20 bg-slate-900 rounded-xl flex items-center justify-center text-white text-3xl font-black mb-4 shadow-lg group-hover:scale-105 transition-transform duration-300">AC</div>
+                                <span class="text-sm font-bold text-blue-600">Click to upload new vector or high-res image</span>
+                                <span class="text-xs text-slate-400 mt-2 font-medium">PNG, JPG (Max 5MB). Transparent background recommended.</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>🎨</span> Global Color Palette</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50">
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800">Primary Accent</p>
+                                        <p class="text-[11px] text-slate-500 mt-1">Used for highlights, buttons, and totals borders.</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xs font-mono text-slate-500 font-bold">#2563EB</span>
+                                        <input type="color" value="#2563eb" class="w-10 h-10 rounded border border-slate-300 cursor-pointer shadow-sm" onchange="app.updateBrandColor('primary', this.value)">
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50">
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800">Secondary / Header</p>
+                                        <p class="text-[11px] text-slate-500 mt-1">Used for document headers and prominent backgrounds.</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xs font-mono text-slate-500 font-bold">#0F172A</span>
+                                        <input type="color" value="#0f172a" class="w-10 h-10 rounded border border-slate-300 cursor-pointer shadow-sm" onchange="app.updateBrandColor('secondary', this.value)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>👁️</span> Real-Time Application</h3>
+                        <div class="flex-1 bg-slate-100 rounded-xl border border-slate-200 p-6 flex items-center justify-center relative overflow-hidden shadow-inner">
+                            
+                            <div class="bg-white w-full max-w-sm rounded-lg shadow-xl overflow-hidden flex flex-col transition-all duration-300 transform scale-95 hover:scale-100 border border-slate-200">
+                                <div class="preview-header p-5 flex justify-between items-center">
+                                    <div class="w-10 h-10 bg-white/20 rounded shadow-inner flex items-center justify-center text-white font-black text-sm">AC</div>
+                                    <span class="text-white font-bold tracking-widest text-sm opacity-90">INVOICE</span>
+                                </div>
+                                
+                                <div class="p-6 space-y-6">
+                                    <div class="flex justify-between border-b-2 preview-border pb-3">
+                                        <div class="space-y-1.5">
+                                            <div class="h-2 w-20 bg-slate-200 rounded"></div>
+                                            <div class="h-2 w-32 bg-slate-200 rounded"></div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="preview-accent font-black text-2xl leading-none">$1,250.00</div>
+                                            <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Total Due</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between text-[9px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1"><span>Description</span><span>Amount</span></div>
+                                        <div class="flex justify-between text-[11px] font-medium text-slate-700"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span> Consulting Services</span><span>$500.00</span></div>
+                                        <div class="flex justify-between text-[11px] font-medium text-slate-700"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span> License Fees</span><span>$750.00</span></div>
+                                    </div>
+
+                                    <div class="preview-bg text-white text-xs font-bold py-2.5 rounded text-center shadow-md mt-6 cursor-pointer">
+                                        Pay Invoice Now
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <p class="text-[10px] font-medium text-slate-500 mt-4 text-center leading-relaxed">Colors apply automatically to all templates utilizing standard Intuit structural blocks.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-snippets" class="hidden h-full flex flex-col animate-fade-in max-w-6xl mx-auto w-full">
+                <div class="flex justify-between items-end mb-6 shrink-0">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Legal Snippets</h2>
+                        <p class="text-sm text-slate-500 mt-2">Manage centralized terms, conditions, and compliance text.</p>
+                    </div>
+                    <button class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-2">
+                        <span>➕</span> New Snippet
+                    </button>
+                </div>
+
+                <div class="flex-1 flex gap-6 overflow-hidden">
+                    
+                    <div class="w-80 flex flex-col gap-3 overflow-y-auto custom-scroll pr-2" id="snippet-list">
+                        </div>
+
+                    <div class="flex-1 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col overflow-hidden">
+                        
+                        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/80">
+                            <div>
+                                <h3 id="editor-title" class="text-xl font-bold text-slate-900">Standard Terms (US)</h3>
+                                <p class="text-[10px] font-mono text-slate-500 mt-1.5 font-bold">ID: <span id="editor-id">snp-001</span></p>
+                            </div>
+                            <span id="editor-badge" class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest">Active in 3 Templates</span>
+                        </div>
+
+                        <div class="flex-1 p-8 overflow-y-auto custom-scroll flex flex-col gap-8">
+                            
+                            <div>
+                                <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Snippet Content</label>
+                                <div class="border border-slate-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition shadow-sm bg-white">
+                                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-2 flex gap-2 items-center">
+                                        <button class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-200 text-slate-700 font-bold text-sm transition">B</button>
+                                        <button class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-200 text-slate-700 italic text-sm transition">I</button>
+                                        <div class="w-px h-6 bg-slate-300 mx-2"></div>
+                                        <button class="px-3 h-7 flex items-center justify-center rounded hover:bg-blue-50 text-blue-700 text-xs font-bold gap-1.5 bg-white border border-slate-200 transition shadow-sm"><span>🔗</span> Insert Data Token</button>
+                                    </div>
+                                    <textarea id="editor-content" class="w-full h-48 p-5 text-sm text-slate-700 outline-none resize-none leading-relaxed" spellcheck="false"></textarea>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-3 font-medium">Available tokens: <span class="font-mono text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">{Company.LegalName}</span></p>
+                            </div>
+
+                            <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 shadow-inner">
+                                <h4 class="text-xs font-black text-amber-900 uppercase tracking-widest mb-3 flex items-center gap-2"><span>⚠️</span> Impact Analysis Warning</h4>
+                                <p class="text-xs text-amber-800 mb-5 font-medium leading-relaxed">Publishing changes to this global snippet will immediately and irreversibly alter the following active templates:</p>
+                                
+                                <div class="flex flex-wrap gap-3" id="impact-list">
+                                    </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="view-headers" class="hidden h-full flex flex-col animate-fade-in max-w-6xl mx-auto w-full">
+                <div class="flex justify-between items-end mb-6 shrink-0">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Structural Blocks</h2>
+                        <p class="text-sm text-slate-500 mt-2">Configure locked header and footer layouts for consistent organizational framing.</p>
+                    </div>
+                    <button class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-2">
+                        <span>➕</span> New Structure
+                    </button>
+                </div>
+
+                <div class="flex-1 flex gap-6 overflow-hidden">
+                    
+                    <div class="w-80 flex flex-col gap-3 overflow-y-auto custom-scroll pr-2" id="header-list">
+                        </div>
+
+                    <div class="flex-1 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col overflow-hidden">
+                        
+                        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/80">
+                            <div>
+                                <h3 id="hf-title" class="text-xl font-bold text-slate-900">Standard Corp Header</h3>
+                                <p class="text-[10px] font-mono text-slate-500 mt-1.5 font-bold">ID: <span id="hf-id">hdr-001</span></p>
+                            </div>
+                            <span id="hf-badge" class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest">Active in X Templates</span>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto custom-scroll flex">
+                            
+                            <div class="w-1/2 p-8 border-r border-slate-100 space-y-8 bg-white">
+                                <div class="space-y-6">
+                                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Layout Settings</h4>
+                                    
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Block Alignment</label>
+                                        <select id="hf-align" onchange="app.updateHeaderPreview()" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-medium text-slate-800 bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer shadow-sm">
+                                            <option value="left">Left Aligned</option>
+                                            <option value="center">Center Aligned</option>
+                                            <option value="right">Right Aligned</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="space-y-3 pt-2">
+                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Visible Elements</label>
+                                        <label class="flex items-center gap-4 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer border border-slate-200 transition">
+                                            <input type="checkbox" id="hf-logo" onchange="app.updateHeaderPreview()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                                            <span class="text-sm font-bold text-slate-800">Primary Logo</span>
+                                        </label>
+                                        <label class="flex items-center gap-4 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer border border-slate-200 transition">
+                                            <input type="checkbox" id="hf-name" onchange="app.updateHeaderPreview()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                                            <span class="text-sm font-bold text-slate-800">Legal Company Name</span>
+                                        </label>
+                                        <label class="flex items-center gap-4 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer border border-slate-200 transition">
+                                            <input type="checkbox" id="hf-address" onchange="app.updateHeaderPreview()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                                            <span class="text-sm font-bold text-slate-800">Corporate Address</span>
+                                        </label>
+                                        <label class="flex items-center gap-4 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer border border-slate-200 transition">
+                                            <input type="checkbox" id="hf-tax" onchange="app.updateHeaderPreview()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                                            <span class="text-sm font-bold text-slate-800">Tax ID Number</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-1/2 p-8 bg-slate-50/80 flex flex-col">
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2 mb-6">Live Output Preview</h4>
+                                
+                                <div class="w-full bg-white shadow-lg min-h-[300px] border border-slate-200 p-8 transition-all duration-300 rounded-xl relative">
+                                    <div class="absolute top-2 right-3 text-[10px] font-bold text-slate-300 uppercase tracking-widest">Document Edge</div>
+                                    
+                                    <div id="hf-preview-box" class="flex flex-col gap-4 transition-all duration-300 border-2 border-dashed border-blue-300 bg-blue-50/30 p-5 relative rounded">
+                                        <div class="absolute -top-3 -left-px bg-blue-100 text-blue-800 text-[9px] font-bold px-2 py-0.5 rounded border border-blue-200 uppercase tracking-wider">Locked Boundary</div>
+                                        
+                                        <div id="prev-logo" class="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center text-white text-2xl font-black shadow-md transition-all duration-300">AC</div>
+                                        
+                                        <div id="prev-text-group" class="transition-all duration-300 space-y-1.5">
+                                            <h1 id="prev-name" class="text-xl font-black text-slate-900 tracking-tight">ACME CORPORATION</h1>
+                                            <p id="prev-address" class="text-xs text-slate-500">123 Business Pkwy, Enterprise City, CA 90210</p>
+                                            <p id="prev-tax" class="text-[10px] font-mono text-slate-400 font-bold mt-1 pt-1.5 border-t border-slate-200 inline-block">Tax ID: 99-9999999</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-8 pt-8 border-t border-slate-100 opacity-30">
+                                        <div class="h-3 w-32 bg-slate-300 rounded mb-3"></div>
+                                        <div class="h-2 w-full bg-slate-200 rounded mb-2"></div>
+                                        <div class="h-2 w-5/6 bg-slate-200 rounded"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 hidden text-sm font-bold border border-slate-700">
+    <span id="toast-icon" class="text-xl">✅</span>
+    <span id="toast-msg">Action successful.</span>
+</div>
+
+<script>
+    const db = {
+        snippets: [
+            { id: 'snp-001', title: 'Standard Terms (US)', content: 'All payments are strictly Net 30. A late fee of 1.5% per month will be applied to past due balances. All goods remain property of {Company.LegalName} until paid in full.', templates: ['Standard B2B Services', 'Marketing Retainer', 'T&M Detail'] },
+            { id: 'snp-002', title: 'EU GDPR Disclaimer', content: 'In accordance with GDPR, your data is processed solely for executing this transaction. To request data deletion, contact privacy@acmecorp.com.', templates: ['International Services (EUR)'] },
+            { id: 'snp-003', title: 'AIA Retainage Terms', content: 'Standard AIA payment certification applies. Subcontractors must provide conditional lien waivers before retainage release.', templates: ['AIA G702 Master', 'Commercial Build T&M'] }
+        ],
+        headers: [
+            { id: 'hdr-001', title: 'Standard Corporate Header', align: 'left', showLogo: true, showName: true, showAddress: true, showTax: false, templates: ['Standard B2B Services', 'Time & Materials Detail', 'Marketing Retainer'] },
+            { id: 'hdr-002', title: 'Minimalist Centered', align: 'center', showLogo: true, showName: false, showAddress: false, showTax: false, templates: ['Freelancer Layout', 'Creative Studio Invoice'] },
+            { id: 'hdr-003', title: 'EU Compliant Strict', align: 'left', showLogo: true, showName: true, showAddress: true, showTax: true, templates: ['International Services (EUR)'] }
+        ]
+    };
+
+    const app = {
+        state: {
+            category: 'brand',
+            snippetId: 'snp-001',
+            headerId: 'hdr-001'
+        },
+
+        init() {
+            this.renderSnippets();
+            this.loadSnippet('snp-001');
+            this.renderHeaders();
+            this.loadHeader('hdr-001');
+            this.initChart();
+        },
+
+        switchCategory(cat) {
+            this.state.category = cat;
+            
+            document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
+            document.getElementById(`cat-${cat}`).classList.add('active');
+
+            ['brand', 'snippets', 'headers'].forEach(v => document.getElementById(`view-${v}`).classList.add('hidden'));
+            document.getElementById(`view-${cat}`).classList.remove('hidden');
+        },
+
+        updateBrandColor(type, hex) {
+            if(type === 'primary') document.documentElement.style.setProperty('--brand-primary', hex);
+            if(type === 'secondary') document.documentElement.style.setProperty('--brand-secondary', hex);
+        },
+
+        renderSnippets() {
+            const container = document.getElementById('snippet-list');
+            container.innerHTML = '';
+            db.snippets.forEach(s => {
+                const active = s.id === this.state.snippetId ? 'active' : 'bg-slate-50/80';
+                container.innerHTML += `
+                    <div onclick="app.loadSnippet('${s.id}')" class="list-item-card p-5 rounded-2xl cursor-pointer ${active}">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-slate-900 text-sm leading-tight pr-2">${s.title}</h4>
+                            <span class="text-[10px] font-bold bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full shrink-0">${s.templates.length}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">${s.content}</p>
+                    </div>
+                `;
+            });
+        },
+
+        loadSnippet(id) {
+            this.state.snippetId = id;
+            this.renderSnippets();
+            const s = db.snippets.find(x => x.id === id);
+            if(!s) return;
+
+            document.getElementById('editor-title').innerText = s.title;
+            document.getElementById('editor-id').innerText = s.id;
+            document.getElementById('editor-badge').innerText = `Active in ${s.templates.length} Templates`;
+            document.getElementById('editor-content').value = s.content;
+
+            document.getElementById('impact-list').innerHTML = s.templates.map(t => `
+                <div class="bg-white/80 border border-amber-200 shadow-sm rounded-lg px-3 py-2 flex items-center gap-2">
+                    <span class="text-amber-500">📄</span><span class="text-xs font-bold text-amber-900">${t}</span>
+                </div>`).join('');
+        },
+
+        renderHeaders() {
+            const container = document.getElementById('header-list');
+            container.innerHTML = '';
+            db.headers.forEach(h => {
+                const active = h.id === this.state.headerId ? 'active' : 'bg-slate-50/80';
+                container.innerHTML += `
+                    <div onclick="app.loadHeader('${h.id}')" class="list-item-card p-5 rounded-2xl cursor-pointer ${active}">
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400">🏢</span>
+                                <h4 class="font-bold text-slate-900 text-sm truncate w-40">${h.title}</h4>
+                            </div>
+                            <span class="text-[10px] font-bold bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">${h.templates.length}</span>
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-500 flex gap-2 uppercase tracking-wider">
+                            <span class="bg-white border border-slate-200 px-2 py-1 rounded">${h.align} align</span>
+                            ${h.showLogo ? '<span class="bg-white border border-slate-200 px-2 py-1 rounded text-blue-600">Logo</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        },
+
+        loadHeader(id) {
+            this.state.headerId = id;
+            this.renderHeaders();
+            const h = db.headers.find(x => x.id === id);
+            if(!h) return;
+
+            document.getElementById('hf-title').innerText = h.title;
+            document.getElementById('hf-id').innerText = h.id;
+            document.getElementById('hf-badge').innerText = `Active in ${h.templates.length} Templates`;
+
+            document.getElementById('hf-align').value = h.align;
+            document.getElementById('hf-logo').checked = h.showLogo;
+            document.getElementById('hf-name').checked = h.showName;
+            document.getElementById('hf-address').checked = h.showAddress;
+            document.getElementById('hf-tax').checked = h.showTax;
+
+            document.getElementById('hf-impact-list').innerHTML = h.templates.map(t => `
+                <div class="bg-white border border-amber-200 shadow-sm rounded-lg px-3 py-2 flex items-center gap-2">
+                    <span class="text-amber-500 text-xs">📄</span><span class="text-xs font-bold text-amber-900">${t}</span>
+                </div>`).join('');
+
+            this.updateHeaderPreview();
+        },
+
+        updateHeaderPreview() {
+            const align = document.getElementById('hf-align').value;
+            const logo = document.getElementById('hf-logo').checked;
+            const name = document.getElementById('hf-name').checked;
+            const address = document.getElementById('hf-address').checked;
+            const tax = document.getElementById('hf-tax').checked;
+
+            const box = document.getElementById('hf-preview-box');
+            box.className = `flex gap-5 transition-all duration-300 border-2 border-dashed border-blue-300 bg-blue-50/30 p-6 relative rounded-xl`;
+            
+            if (align === 'center') box.classList.add('flex-col', 'items-center', 'text-center');
+            else if (align === 'right') box.classList.add('flex-col', 'items-end', 'text-right');
+            else box.classList.add('flex-row', 'items-start', 'text-left');
+
+            document.getElementById('prev-logo').style.display = logo ? 'flex' : 'none';
+            document.getElementById('prev-name').style.display = name ? 'block' : 'none';
+            document.getElementById('prev-address').style.display = address ? 'block' : 'none';
+            document.getElementById('prev-tax').style.display = tax ? 'inline-block' : 'none';
+            document.getElementById('prev-text-group').style.display = (name || address || tax) ? 'block' : 'none';
+        },
+
+        initChart() {
+            const ctx = document.getElementById('adoptionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Global Assets', 'Custom Typed'],
+                    datasets: [{
+                        data: [85, 15],
+                        backgroundColor: ['#2563eb', '#cbd5e1'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '75%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        },
+
+        showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('toast-enter');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('toast-enter');
+            }, 3000);
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => app.init());
+</script>
+</body>
+</html>

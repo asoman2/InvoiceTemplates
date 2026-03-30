@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IES Active Builder Studio (Creation & Consumption)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #1e293b; overflow: hidden; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Chart Container */
+        .chart-container { position: relative; width: 100%; height: 140px; max-height: 140px; }
+
+        /* Navigation & Toggles */
+        .mode-btn { transition: all 0.2s ease; }
+        .mode-btn.active { background-color: #ffffff; color: #2563eb; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* =========================================
+           THE RENDERING ENGINE (CSS Cascades)
+           ========================================= */
+        
+        /* --- 1. DESIGN MODE (Admin Workspace) --- */
+        .mode-design .canvas-paper { 
+            background: #ffffff; 
+            box-shadow: 0 0 0 1px #cbd5e1, 0 10px 40px -10px rgba(0,0,0,0.1); 
+            margin: 2rem auto; border-radius: 4px;
+        }
+        .mode-design .canvas-block { 
+            border: 1px dashed #94a3b8; 
+            margin-bottom: 8px; position: relative; cursor: pointer; 
+            transition: all 0.15s ease; background: rgba(255,255,255,0.8);
+        }
+        .mode-design .canvas-block:hover { border-color: #3b82f6; background-color: rgba(239, 246, 255, 0.5); }
+        .mode-design .canvas-block.selected { border: 2px solid #2563eb; background-color: #eff6ff; z-index: 10; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
+        
+        /* Badges & Locks */
+        .mode-design .design-badge { display: flex; }
+        .mode-design .canvas-block[data-locked="true"]::after {
+            content: '🔒 Locked Structure';
+            position: absolute; top: -10px; right: 10px;
+            background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5;
+            font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+            pointer-events: none; box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 20;
+        }
+        
+        /* Data Token Visuals */
+        .mode-design .data-token { 
+            background: #e0e7ff; color: #3730a3; padding: 2px 6px; 
+            border-radius: 4px; font-size: 0.85em; display: inline-block;
+            border: 1px solid #c7d2fe; font-weight: 600;
+        }
+        .mode-design .clerk-input, .mode-design .pdf-render { display: none; }
+
+        /* --- 2. STAFF VIEW (Billing Clerk Data Entry) --- */
+        .mode-staff .canvas-paper { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; margin: 2rem auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .mode-staff .canvas-block { border: 1px solid transparent; padding: 6px; margin-bottom: 4px; }
+        
+        /* RBAC Lock Interaction Rules */
+        .mode-staff .canvas-block[data-locked="false"] { border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 6px; transition: all 0.2s; }
+        .mode-staff .canvas-block[data-locked="false"]:focus-within { border-color: #93c5fd; background: #eff6ff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .mode-staff .canvas-block[data-locked="true"] { opacity: 0.85; background: transparent; pointer-events: none; } /* Locked blocks layout cannot be touched */
+        
+        .mode-staff .design-badge, .mode-staff .data-token { display: none; }
+        .mode-staff .pdf-render { display: none; }
+        
+        /* Inputs only visible in Staff mode */
+        .mode-staff .clerk-input { 
+            display: block; width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; 
+            padding: 8px 10px; font-size: 13px; background: #fff; color: #0f172a;
+            transition: border-color 0.2s, box-shadow 0.2s; pointer-events: auto; /* Re-enable pointer events for inputs inside locked blocks */
+        }
+        .mode-staff .clerk-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .mode-staff .clerk-input.readonly-map { background: #f1f5f9; color: #64748b; border-color: #e2e8f0; cursor: not-allowed; }
+
+        /* --- 3. CUSTOMER PDF (Final Output) --- */
+        .mode-pdf { background-color: #475569 !important; }
+        .mode-pdf .canvas-paper { 
+            background: #ffffff; padding: 48px !important; border-radius: 0; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); margin: 3rem auto;
+        }
+        .mode-pdf .canvas-block { border: none !important; margin-bottom: 8px; padding: 0 !important; pointer-events: none; background: transparent !important; }
+        
+        .mode-pdf .design-badge, .mode-pdf .data-token, .mode-pdf .clerk-input { display: none; }
+        .mode-pdf .pdf-render { display: block; color: #0f172a; }
+
+        /* =========================================
+           RBAC UI OVERLAYS (Admin vs Clerk)
+           ========================================= */
+        .role-clerk .admin-only { filter: grayscale(100%); opacity: 0.5; pointer-events: none; }
+        .clerk-overlay { display: none; }
+        .role-clerk .clerk-overlay { display: flex; }
+
+        /* Utilities */
+        .section-header { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .section-header::after { content: ""; flex: 1; height: 1px; background: #e2e8f0; }
+    </style>
+</head>
+<body class="h-screen flex flex-col antialiased">
+
+<aside class="fixed inset-y-0 left-0 w-16 bg-slate-900 text-white flex flex-col z-50 shadow-2xl border-r border-slate-800 transition-all duration-300 hover:w-64 group overflow-hidden">
+    <div class="h-16 flex items-center justify-center group-hover:justify-start group-hover:px-6 border-b border-slate-800 bg-slate-950 shrink-0">
+        <span class="text-2xl font-black text-emerald-400">IES</span>
+        <span class="ml-3 font-bold tracking-wider text-xs uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Template Studio</span>
+    </div>
+    
+    <nav class="flex-1 py-6 space-y-2 w-64">
+        <div class="px-6 mb-3 hidden group-hover:block text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap transition-opacity">Ecosystem Modules</div>
+        
+        <a href="Library.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🗂️</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Library</span>
+        </a>
+        <a href="Brand.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🎨</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Governance</span>
+        </a>
+        <a href="BuilderStudio.html" class="w-full flex items-center px-4 py-3 bg-slate-800 text-white border-l-4 border-blue-500 transition">
+            <span class="text-xl">🛠️</span><span class="ml-4 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">Active Builder</span>
+        </a>
+        <a href="Approval.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">✅</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Approvals</span>
+        </a>
+    </nav>
+    
+    <div class="p-4 border-t border-slate-800 bg-slate-900 flex items-center justify-center group-hover:justify-start gap-3 w-64">
+        <div class="w-8 h-8 rounded bg-blue-600 flex shrink-0 items-center justify-center text-white font-bold text-xs">SA</div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">
+            <div class="text-white font-semibold">System Admin</div>
+            <div class="text-slate-400">Global Creator Role</div>
+        </div>
+    </div>
+</aside>
+
+<div class="flex-1 flex flex-col pl-16 h-screen overflow-hidden relative">
+
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-40 shadow-sm relative">
+        
+        <div class="flex items-center gap-4">
+            <div class="flex flex-col">
+                <div class="flex items-center gap-3">
+                    <span class="font-extrabold text-slate-900 text-lg tracking-tight">AIA Progress Billing G702/G703</span>
+                    <span class="bg-amber-100 text-amber-800 border border-amber-200 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">Draft v3.1</span>
+                </div>
+                <span class="text-[10px] font-mono text-slate-500">ID: TPL-AIA-884</span>
+            </div>
+        </div>
+
+        <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200 shadow-inner">
+            <button onclick="app.setMode('design')" id="btn-design" class="mode-btn active px-5 py-1.5 text-xs text-slate-500 rounded-md flex items-center gap-2">
+                <span>📐</span> Design Mode
+            </button>
+            <button onclick="app.setMode('staff')" id="btn-staff" class="mode-btn px-5 py-1.5 text-xs text-slate-500 rounded-md flex items-center gap-2">
+                <span>💻</span> Staff Entry
+            </button>
+            <button onclick="app.setMode('pdf')" id="btn-pdf" class="mode-btn px-5 py-1.5 text-xs text-slate-500 rounded-md flex items-center gap-2">
+                <span>📄</span> Client PDF
+            </button>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm">
+                <span class="text-xl">🎭</span>
+                <div class="flex flex-col">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Simulate Persona</span>
+                    <select id="role-simulator" class="bg-transparent border-none text-slate-800 text-xs font-bold outline-none cursor-pointer p-0">
+                        <option value="admin">Design Admin</option>
+                        <option value="clerk">Billing Clerk</option>
+                    </select>
+                </div>
+            </div>
+            <button id="action-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-bold transition shadow-md border border-blue-700">Save &amp; Publish</button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden bg-slate-100 transition-colors duration-300" id="main-workspace">
+
+        <aside id="pane-toolbox" class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 z-20 shadow-sm relative admin-only transition-all duration-300">
+            
+            <div class="absolute inset-0 bg-slate-50/90 backdrop-blur-[2px] z-30 flex-col items-center justify-center text-center p-6 border-r border-slate-200 clerk-overlay">
+                <span class="text-4xl mb-3">🛡️</span>
+                <h4 class="font-bold text-slate-900 text-sm">Tools Locked</h4>
+                <p class="text-[10px] text-slate-600 mt-2 leading-relaxed">Billing Clerks cannot alter organizational standards. Structural editing disabled.</p>
+            </div>
+
+            <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+                <h2 class="font-black text-slate-500 text-[10px] uppercase tracking-widest flex items-center gap-2"><span>🧱</span> Component Library</h2>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto custom-scroll px-4 py-3">
+                
+                <div class="section-header !mt-2">Structure &amp; Math</div>
+                <div class="space-y-2">
+                    <div class="p-2.5 border border-slate-200 bg-white rounded-lg cursor-grab hover:border-blue-400 hover:shadow-md transition flex items-center gap-3">
+                        <span class="text-slate-400 text-lg">📝</span> <span class="text-xs font-semibold text-slate-700">Text Block</span>
+                    </div>
+                    <div class="p-2.5 border border-slate-200 bg-white rounded-lg cursor-grab hover:border-blue-400 hover:shadow-md transition flex items-center gap-3">
+                        <span class="text-slate-400 text-lg">🔲</span> <span class="text-xs font-semibold text-slate-700">2-Column Layout</span>
+                    </div>
+                    <div class="p-2.5 border border-slate-200 bg-white rounded-lg cursor-grab hover:border-blue-400 hover:shadow-md transition flex items-center gap-3">
+                        <span class="text-slate-400 text-lg">💰</span> <span class="text-xs font-semibold text-slate-700">Calculation Totals</span>
+                    </div>
+                </div>
+
+                <div class="section-header mt-6">AIA Data Objects</div>
+                <div class="space-y-2">
+                    <div class="p-2.5 border border-slate-200 bg-white rounded-lg cursor-grab hover:border-emerald-400 hover:shadow-md transition flex items-center gap-3">
+                        <span class="text-emerald-500 text-lg">👥</span> <span class="text-xs font-semibold text-slate-700">Project/Client Context</span>
+                    </div>
+                    <div class="p-2.5 border border-slate-200 bg-white rounded-lg cursor-grab hover:border-emerald-400 hover:shadow-md transition flex items-center gap-3">
+                        <span class="text-emerald-500 text-lg">📊</span> <span class="text-xs font-semibold text-slate-700">G703 SOV Array</span>
+                    </div>
+                </div>
+
+                <div class="section-header mt-6">Global Snippets</div>
+                <div class="space-y-2">
+                    <div class="p-3 border border-indigo-200 bg-indigo-50 rounded-lg cursor-grab hover:border-indigo-400 transition flex flex-col relative overflow-hidden group shadow-sm">
+                        <div class="absolute right-0 top-0 bottom-0 bg-indigo-100 flex items-center px-1 border-l border-indigo-200"><span class="text-[10px]">🔒</span></div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-indigo-500 text-lg">🏢</span><span class="text-xs font-bold text-indigo-900">Corp Header</span>
+                        </div>
+                        <span class="text-[9px] text-indigo-600 truncate w-40">Logo + Standard Address</span>
+                    </div>
+                    <div class="p-3 border border-indigo-200 bg-indigo-50 rounded-lg cursor-grab hover:border-indigo-400 transition flex flex-col relative overflow-hidden group shadow-sm">
+                        <div class="absolute right-0 top-0 bottom-0 bg-indigo-100 flex items-center px-1 border-l border-indigo-200"><span class="text-[10px]">🔒</span></div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-indigo-500 text-lg">⚖️</span><span class="text-xs font-bold text-indigo-900">AIA Retainage Terms</span>
+                        </div>
+                        <span class="text-[9px] text-indigo-600 truncate w-40">Condition waivers required...</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex-1 overflow-y-auto custom-scroll mode-design relative flex justify-center p-8 transition-colors duration-500" id="canvas-container">
+            
+            <div class="w-full max-w-[1024px] min-h-[1300px] canvas-paper p-12 flex flex-col transition-all duration-300 relative">
+                
+                <div class="canvas-block p-5 bg-slate-50/50 rounded-lg" data-id="blk-header" data-type="snippet" data-locked="true">
+                    <div class="design-badge text-[9px] font-bold text-indigo-700 uppercase bg-indigo-100 px-2 py-0.5 absolute -top-2.5 left-4 border border-indigo-200 rounded items-center gap-1 shadow-sm"><span>🔒</span> Global Header (Inherited)</div>
+                    
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-5">
+                            <div class="w-20 h-20 bg-slate-900 rounded-xl flex items-center justify-center text-white text-3xl font-black shadow-lg">AC</div>
+                            <div>
+                                <h1 class="text-3xl font-black text-slate-900 tracking-tight">ACME CONSTRUCT</h1>
+                                <p class="text-sm text-slate-500 mt-1">123 Builder Way, Enterprise City, CA</p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-right">
+                            <h2 class="text-4xl font-light text-slate-300 tracking-widest mb-4">INVOICE</h2>
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm items-center">
+                                <div class="font-bold text-slate-500 text-right">App For Payment:</div>
+                                <div class="text-right">
+                                    <span class="data-token">{Sys.AutoNum}</span>
+                                    <input type="text" class="clerk-input font-mono text-right readonly-map" value="APP-0012" readonly title="Auto-generated by system">
+                                    <span class="pdf-render font-mono font-bold text-slate-800">APP-0012</span>
+                                </div>
+                                <div class="font-bold text-slate-500 text-right">Period To:</div>
+                                <div class="text-right">
+                                    <span class="data-token">{Sys.PeriodEnd}</span>
+                                    <input type="date" class="clerk-input text-right" value="2026-10-31">
+                                    <span class="pdf-render font-medium text-slate-800">Oct 31, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-px w-full bg-slate-200 my-6"></div>
+
+                <div class="canvas-block p-6 flex gap-10" data-id="blk-client" data-type="client" data-locked="false">
+                    <div class="design-badge text-[9px] font-bold text-emerald-700 uppercase bg-emerald-100 px-2 py-0.5 absolute -top-2.5 left-4 border border-emerald-200 rounded items-center gap-1 shadow-sm"><span>👥</span> Project Context Map</div>
+                    
+                    <div class="flex-1">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-1">Project Owner</h3>
+                        
+                        <div class="space-y-2 mb-2">
+                            <div class="data-token">{Client.Name}</div><br>
+                            <div class="data-token">{Client.BillingAddr}</div>
+                        </div>
+
+                        <div class="clerk-input p-0 border-none bg-transparent space-y-3">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Lookup Owner Entity</label>
+                                <select class="w-full border border-slate-300 rounded p-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm">
+                                    <option>Select Owner...</option>
+                                    <option selected>Stark Developments LLC</option>
+                                </select>
+                            </div>
+                            <textarea class="w-full border border-slate-200 rounded p-2 text-sm bg-slate-50 text-slate-600 outline-none readonly-map shadow-inner" rows="3" readonly>10880 Malibu Point&#10;Malibu, CA 90265</textarea>
+                        </div>
+
+                        <div class="pdf-render text-base">
+                            <p class="font-bold text-slate-900">Stark Developments LLC</p>
+                            <p class="text-slate-600 leading-relaxed mt-1 text-sm">10880 Malibu Point<br>Malibu, CA 90265</p>
+                        </div>
+                    </div>
+
+                    <div class="flex-1">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-1">Contract Alignment</h3>
+                        
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center gap-3"><span class="w-24 text-xs font-bold text-slate-500">Project:</span> <span class="data-token">{Proj.Name}</span></div>
+                            <div class="flex items-center gap-3"><span class="w-24 text-xs font-bold text-slate-500">Contract #:</span> <span class="data-token">{Client.ContractID}</span></div>
+                        </div>
+
+                        <div class="clerk-input p-0 border-none bg-transparent space-y-3">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Linked Project / Estimate</label>
+                                <div class="w-full border border-blue-200 bg-blue-50 text-blue-800 px-3 py-2 rounded-lg text-sm font-semibold flex justify-between items-center readonly-map shadow-sm">
+                                    Titan Tower Phase 1 <span class="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Sync Active</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Contract Reference #</label>
+                                <input type="text" class="w-full border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none shadow-sm" value="CNTR-2025-88A">
+                            </div>
+                        </div>
+
+                        <div class="pdf-render text-sm space-y-2 mt-2">
+                            <p class="flex items-center"><span class="font-bold text-slate-600 w-28">Project:</span> Titan Tower Phase 1</p>
+                            <p class="flex items-center"><span class="font-bold text-slate-600 w-28">Contract #:</span> CNTR-2025-88A</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="canvas-block mt-8 p-3" data-id="blk-table" data-type="table" data-locked="true">
+                    <div class="design-badge text-[9px] font-bold text-blue-700 uppercase bg-blue-100 px-2 py-0.5 absolute -top-2.5 left-4 border border-blue-200 rounded items-center gap-1 shadow-sm"><span>📊</span> AIA G703 Continuation Array (Locked Structure)</div>
+                    
+                    <table class="w-full text-left border-collapse mt-3">
+                        <thead>
+                            <tr class="border-b-2 border-slate-800 text-slate-900 text-xs font-black uppercase tracking-wider bg-slate-50">
+                                <th class="py-3 px-3 w-1/3 rounded-tl-lg">Description of Work</th>
+                                <th class="py-3 px-3 text-right">Scheduled Value</th>
+                                <th class="py-3 px-3 text-center">% Complete</th>
+                                <th class="py-3 px-3 text-right rounded-tr-lg">Amount Due</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            
+                            <tr class="border-b border-slate-200 bg-slate-50/50 design-badge w-full table-row">
+                                <td class="py-4 px-3"><span class="data-token">{Array.Desc}</span></td>
+                                <td class="py-4 px-3 text-right"><span class="data-token">{Array.Value}</span></td>
+                                <td class="py-4 px-3 text-center"><span class="data-token">{Array.Percent}</span></td>
+                                <td class="py-4 px-3 text-right"><span class="data-token bg-blue-100 border-blue-300 font-bold">{Calc.LineTot}</span></td>
+                            </tr>
+
+                            <tr class="border-b border-slate-200 hover:bg-slate-50 transition group">
+                                <td class="py-2 px-2">
+                                    <span class="pdf-render font-semibold text-slate-800 px-1 py-2">Site Prep &amp; Excavation</span>
+                                    <input type="text" class="clerk-input border-transparent hover:border-slate-300 focus:bg-white bg-transparent font-medium" value="Site Prep & Excavation">
+                                </td>
+                                <td class="py-2 px-2 text-right">
+                                    <span class="pdf-render text-slate-600 px-1 py-2">$150,000.00</span>
+                                    <input type="text" class="clerk-input text-right border-transparent hover:border-slate-300 focus:bg-white bg-transparent" value="150,000.00">
+                                </td>
+                                <td class="py-2 px-2 text-center relative">
+                                    <span class="pdf-render font-bold text-slate-800 px-1 py-2">100%</span>
+                                    <div class="clerk-input border-transparent bg-transparent p-0 flex justify-center">
+                                        <input type="number" class="w-16 text-center border border-slate-300 rounded p-1.5 focus:ring-2 focus:ring-blue-500 bg-white" value="100">
+                                    </div>
+                                </td>
+                                <td class="py-2 px-3 font-bold text-right align-middle text-slate-900 group-hover:bg-slate-50">$150,000.00</td>
+                            </tr>
+                            
+                            <tr class="border-b border-slate-200 hover:bg-slate-50 transition group">
+                                <td class="py-2 px-2">
+                                    <span class="pdf-render font-semibold text-slate-800 px-1 py-2">Structural Concrete</span>
+                                    <input type="text" class="clerk-input border-transparent hover:border-slate-300 focus:bg-white bg-transparent font-medium" value="Structural Concrete">
+                                </td>
+                                <td class="py-2 px-2 text-right">
+                                    <span class="pdf-render text-slate-600 px-1 py-2">$250,000.00</span>
+                                    <input type="text" class="clerk-input text-right border-transparent hover:border-slate-300 focus:bg-white bg-transparent" value="250,000.00">
+                                </td>
+                                <td class="py-2 px-2 text-center relative">
+                                    <span class="pdf-render font-bold text-slate-800 px-1 py-2">60%</span>
+                                    <div class="clerk-input border-transparent bg-transparent p-0 flex justify-center">
+                                        <input type="number" class="w-16 text-center border border-slate-300 rounded p-1.5 focus:ring-2 focus:ring-blue-500 bg-blue-50 text-blue-900 font-bold" value="60">
+                                    </div>
+                                </td>
+                                <td class="py-2 px-3 font-bold text-right align-middle text-slate-900 group-hover:bg-slate-50">$150,000.00</td>
+                            </tr>
+
+                            <tr class="clerk-input p-0 border-none bg-transparent table-row">
+                                <td colspan="4" class="py-4 text-center bg-slate-50/50 border-b border-slate-200 rounded-b-lg">
+                                    <button class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center justify-center gap-1.5 mx-auto px-4 py-1.5 border border-blue-200 bg-white rounded-lg shadow-sm transition"><span>➕</span> Add Manual Line Item</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="canvas-block p-6 mt-4 flex justify-end" data-id="blk-totals" data-type="totals" data-locked="true">
+                    <div class="design-badge text-[9px] font-bold text-amber-700 uppercase bg-amber-100 px-2 py-0.5 absolute -top-2.5 right-4 border border-amber-200 rounded items-center gap-1 shadow-sm"><span>💰</span> Calculation Block (Locked)</div>
+                    
+                    <div class="w-80 bg-slate-50/80 p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between py-2 text-sm text-slate-700 border-b border-slate-200 items-center">
+                            <span class="font-bold">Total Work Completed</span>
+                            <span class="data-token">{Calc.SumCompleted}</span>
+                            <span class="clerk-input text-right p-0 border-none bg-transparent w-auto font-medium readonly-map" readonly>300,000.00</span>
+                            <span class="pdf-render font-medium text-slate-800">$300,000.00</span>
+                        </div>
+                        <div class="flex justify-between py-2 text-sm text-red-600 border-b border-slate-200 items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold italic">Less Retainage</span>
+                                <span class="clerk-input p-0 border-none bg-transparent w-auto inline">
+                                    <select class="text-[10px] font-bold border border-slate-300 rounded bg-white py-1 px-1.5 text-slate-700 outline-none"><option>10% Standard</option><option>5% Reduced</option></select>
+                                </span>
+                            </div>
+                            <span class="data-token bg-red-100 text-red-800 border-red-300">{Calc.Retainage}</span>
+                            <span class="clerk-input text-right p-0 border-none bg-transparent w-auto font-medium readonly-map italic" readonly>(30,000.00)</span>
+                            <span class="pdf-render font-medium italic">($30,000.00)</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-4 pt-3 text-xl font-black text-slate-900 border-t-2 border-slate-800">
+                            <span>Current Payment Due</span>
+                            <span class="data-token text-sm bg-blue-200 border-blue-400 text-blue-900">{Calc.GrandTotal}</span>
+                            <span class="clerk-input text-right text-blue-700 p-0 border-none bg-transparent w-auto readonly-map" readonly>270,000.00</span>
+                            <span class="pdf-render text-blue-700">$270,000.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 min-h-[50px]"></div>
+
+                <div class="canvas-block p-8 bg-slate-50 border-t-2 border-slate-200 mt-8 rounded-b-lg" data-id="blk-footer" data-type="snippet" data-locked="true">
+                    <div class="design-badge text-[9px] font-bold text-indigo-700 uppercase bg-indigo-100 px-2 py-0.5 absolute -top-2.5 left-4 border border-indigo-200 rounded items-center gap-1 shadow-sm"><span>⚖️</span> Compliance Snippet (Global)</div>
+                    <div class="text-center text-xs text-slate-500 space-y-3 max-w-2xl mx-auto">
+                        <p class="font-bold text-slate-700 text-sm">Application and Certificate for Payment</p>
+                        <p class="leading-relaxed">The undersigned Contractor certifies that to the best of their knowledge, information and belief the Work covered by this Application for Payment has been completed in accordance with the Contract Documents.</p>
+                        <div class="pt-4 mt-4 border-t border-slate-200 text-[10px] text-slate-400 font-mono">
+                            <span class="data-token mx-auto block w-max mb-1">{Snippet.AIA_Cert_Text}</span>
+                            <span class="clerk-input text-center p-0 border-none bg-transparent readonly-map" readonly>Requires conditional lien waivers prior to disbursement.</span>
+                            <span class="pdf-render">Requires conditional lien waivers prior to disbursement.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <aside id="pane-inspector" class="w-80 bg-white border-l border-slate-200 flex flex-col shrink-0 shadow-[-4px_0_24px_-10px_rgba(0,0,0,0.05)] relative admin-only transition-all duration-300">
+            
+            <div class="absolute inset-0 bg-slate-50/90 backdrop-blur-[2px] z-50 flex-col items-center justify-center p-8 text-center clerk-overlay border-l border-slate-200">
+                <span class="text-5xl mb-4">🔒</span>
+                <h4 class="font-black text-slate-900 text-lg uppercase tracking-tight">Properties Locked</h4>
+                <p class="text-xs text-slate-600 leading-relaxed mt-3">
+                    You are simulating the <strong>Billing Clerk</strong> experience. Structure, data bindings, and RBAC rules are locked by the Design Admin. Interact with fields directly on the Canvas.
+                </p>
+            </div>
+
+            <div class="h-14 flex items-center px-6 border-b border-slate-100 bg-slate-50 shrink-0">
+                <h2 class="font-black text-slate-500 text-[10px] uppercase tracking-widest flex items-center gap-2"><span>⚙️</span> Contextual Inspector</h2>
+            </div>
+
+            <div id="inspector-empty" class="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400">
+                <span class="text-5xl mb-4 opacity-50">🖱️</span>
+                <p class="text-sm font-bold text-slate-700 mb-2">No Block Selected</p>
+                <p class="text-[11px] leading-relaxed">Click any highlighted block on the Canvas in <strong>Design Mode</strong> to manage its data mappings and security rules.</p>
+            </div>
+
+            <div id="inspector-content" class="flex-1 overflow-y-auto custom-scroll p-6 hidden flex flex-col">
+                
+                <div class="pb-5 border-b border-slate-200">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div id="inspect-icon" class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-2xl shadow-inner">🧱</div>
+                        <div>
+                            <h3 id="inspect-title" class="font-bold text-slate-900 text-sm">Block Name</h3>
+                            <span id="inspect-id" class="text-[9px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 mt-1 inline-block">id: null</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="inspect-dynamic" class="flex-1 space-y-6 pt-5"></div>
+
+                <div class="pt-6 mt-6 border-t border-slate-200 shrink-0">
+                    <div class="section-header !text-red-500">Security &amp; RBAC</div>
+                    
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100 shadow-inner">
+                        <label class="flex items-start gap-3 cursor-pointer group">
+                            <input type="checkbox" id="inspect-lock" class="mt-0.5 rounded border-red-300 text-red-600 focus:ring-red-500 w-4 h-4 cursor-pointer transition">
+                            <div>
+                                <span class="text-sm font-bold text-red-900 block leading-none group-hover:text-red-700 transition">Lock Structural Edits</span>
+                                <span class="text-[10px] text-red-700/80 block mt-2 leading-relaxed font-medium">
+                                    Forces this block into a read-only layout state for Billing Clerks. Data entry fields (if unmapped) remain active.
+                                </span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+    </main>
+</div>
+
+<script>
+    const app = {
+        state: {
+            mode: 'design',
+            role: 'admin',
+            selectedBlockId: null
+        },
+
+        elements: {
+            workspace: document.getElementById('main-workspace'),
+            blocks: document.querySelectorAll('.canvas-block'),
+            roleSim: document.getElementById('role-simulator'),
+            btns: {
+                design: document.getElementById('btn-design'),
+                staff: document.getElementById('btn-staff'),
+                pdf: document.getElementById('btn-pdf')
+            },
+            inspector: {
+                empty: document.getElementById('inspector-empty'),
+                content: document.getElementById('inspector-content'),
+                icon: document.getElementById('inspect-icon'),
+                title: document.getElementById('inspect-title'),
+                id: document.getElementById('inspect-id'),
+                dynamic: document.getElementById('inspect-dynamic'),
+                lockToggle: document.getElementById('inspect-lock')
+            }
+        },
+
+        init() {
+            this.setupInteractions();
+            // Pre-select the complex table block to demonstrate the Chart.js integration immediately
+            const tableBlock = document.querySelector('[data-id="blk-table"]');
+            if(tableBlock) this.selectBlock(tableBlock);
+        },
+
+        // --- Roles & Modes Engine ---
+        setMode(mode) {
+            // Enforce RBAC logic: Clerks cannot enter Design Mode
+            if (this.state.role === 'clerk' && mode === 'design') {
+                alert("Access Denied: Billing Clerks do not have permission to access Design Mode.");
+                return;
+            }
+
+            this.state.mode = mode;
+
+            // Update UI Buttons
+            Object.values(this.elements.btns).forEach(b => {
+                b.className = "mode-btn px-5 py-1.5 text-xs text-slate-500 rounded-md flex items-center gap-2";
+            });
+            this.elements.btns[mode].className = "mode-btn active px-5 py-1.5 text-xs rounded-md flex items-center gap-2";
+
+            // The Rendering Engine: Update top-level CSS class
+            this.elements.workspace.classList.remove('mode-design', 'mode-staff', 'mode-pdf');
+            this.elements.workspace.classList.add(`mode-${mode}`);
+
+            // Update action button context
+            const actionBtn = document.getElementById('action-btn');
+            if(mode === 'design') { actionBtn.innerText = 'Save Template'; actionBtn.className = "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-bold transition shadow-md border border-blue-700"; }
+            else if(mode === 'staff') { actionBtn.innerText = 'Submit Invoice'; actionBtn.className = "bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-bold transition shadow-md border border-emerald-700"; }
+            else { actionBtn.innerText = 'Download PDF'; actionBtn.className = "bg-slate-800 hover:bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold transition shadow-md border border-slate-900"; }
+
+            // Manage Inspector State
+            if(mode !== 'design') {
+                this.elements.blocks.forEach(b => b.classList.remove('selected'));
+                this.elements.inspector.empty.classList.remove('hidden');
+                this.elements.inspector.content.classList.add('hidden');
+            } else if (this.state.selectedBlockId) {
+                const block = document.querySelector(`[data-id="${this.state.selectedBlockId}"]`);
+                if(block) block.classList.add('selected');
+                this.elements.inspector.empty.classList.add('hidden');
+                this.elements.inspector.content.classList.remove('hidden');
+                if(block.getAttribute('data-type') === 'table') this.renderDataChart();
+            }
+        },
+
+        setRole(role) {
+            this.state.role = role;
+            if(role === 'clerk') {
+                document.body.classList.add('role-clerk');
+                this.setMode('staff'); // Force context
+                this.elements.btns.design.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                document.body.classList.remove('role-clerk');
+                this.elements.btns.design.classList.remove('opacity-50', 'cursor-not-allowed');
+                this.setMode('design'); // Return to creator context
+            }
+        },
+
+        // --- Canvas & Inspector Interactions ---
+        setupInteractions() {
+            this.elements.roleSim.addEventListener('change', (e) => this.setRole(e.target.value));
+
+            this.elements.blocks.forEach(block => {
+                block.addEventListener('click', (e) => {
+                    if (this.state.mode !== 'design' || this.state.role !== 'admin') return; 
+                    e.stopPropagation();
+                    this.selectBlock(block);
+                });
+            });
+
+            document.getElementById('canvas-container').addEventListener('click', (e) => {
+                if (e.target.id === 'canvas-container' || e.target.classList.contains('canvas-paper')) {
+                    this.clearSelection();
+                }
+            });
+
+            this.elements.inspector.lockToggle.addEventListener('change', (e) => {
+                if(!this.state.selectedBlockId) return;
+                const block = document.querySelector(`[data-id="${this.state.selectedBlockId}"]`);
+                block.setAttribute('data-locked', e.target.checked);
+            });
+        },
+
+        selectBlock(block) {
+            this.elements.blocks.forEach(b => b.classList.remove('selected'));
+            block.classList.add('selected');
+
+            this.state.selectedBlockId = block.getAttribute('data-id');
+            const type = block.getAttribute('data-type');
+            const isLocked = block.getAttribute('data-locked') === 'true';
+
+            this.elements.inspector.empty.classList.add('hidden');
+            this.elements.inspector.content.classList.remove('hidden');
+            this.elements.inspector.id.innerText = `id: ${this.state.selectedBlockId}`;
+            
+            this.elements.inspector.lockToggle.checked = isLocked;
+            this.elements.inspector.lockToggle.disabled = (type === 'snippet');
+
+            this.injectProperties(type);
+        },
+
+        clearSelection() {
+            this.elements.blocks.forEach(b => b.classList.remove('selected'));
+            this.state.selectedBlockId = null;
+            this.elements.inspector.empty.classList.remove('hidden');
+            this.elements.inspector.content.classList.add('hidden');
+        },
+
+        injectProperties(type) {
+            let html = '';
+            
+            if (type === 'client') {
+                this.elements.inspector.icon.innerText = '👥';
+                this.elements.inspector.title.innerText = 'Project Context Map';
+                html = `
+                    <div class="section-header !mt-0">Data Object Binding</div>
+                    <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-4 shadow-sm">
+                        <div>
+                            <label class="text-[10px] font-black text-blue-900 uppercase tracking-widest block mb-2">Primary Entity</label>
+                            <select class="w-full border border-blue-200 rounded-lg p-2.5 text-xs font-bold text-blue-900 bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm cursor-pointer">
+                                <option>Intuit.Customer</option>
+                                <option>Intuit.ProjectOwner</option>
+                            </select>
+                        </div>
+                        <div class="pt-3 border-t border-blue-100">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" checked class="rounded border-blue-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
+                                <span class="text-xs font-bold text-blue-900">Allow Clerks to override entity</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="section-header">Display Fields</div>
+                    <div class="space-y-3 text-xs font-medium text-slate-700 border border-slate-200 rounded-xl p-5 bg-white shadow-sm">
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" checked class="rounded border-slate-300 text-blue-600 w-4 h-4 focus:ring-blue-500"> Company Legal Name</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" checked class="rounded border-slate-300 text-blue-600 w-4 h-4 focus:ring-blue-500"> Billing Address</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" class="rounded border-slate-300 text-blue-600 w-4 h-4 focus:ring-blue-500"> Secondary Contact</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" checked class="rounded border-slate-300 text-blue-600 w-4 h-4 focus:ring-blue-500"> Contract / PO Number</label>
+                    </div>
+                `;
+            }
+            else if (type === 'table') {
+                this.elements.inspector.icon.innerText = '📊';
+                this.elements.inspector.title.innerText = 'G703 Continuation Array';
+                html = `
+                    <div class="section-header !mt-0">Array Source Link</div>
+                    <select class="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-bold text-slate-800 bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm cursor-pointer">
+                        <option>Intuit.Project.Estimate_SOV</option>
+                        <option>Manual Entry Only</option>
+                    </select>
+                    <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">Links the grid to the project's original bidded Schedule of Values.</p>
+
+                    <div class="section-header">Column Mapping</div>
+                    <div class="border border-slate-200 rounded-xl divide-y divide-slate-100 text-xs bg-slate-50 shadow-sm overflow-hidden">
+                        <div class="p-3 flex justify-between items-center"><span class="font-bold text-slate-700">Desc</span> <span class="font-mono text-slate-500 bg-white px-2 py-1 border border-slate-200 rounded-md shadow-sm">{Array.Desc}</span></div>
+                        <div class="p-3 flex justify-between items-center"><span class="font-bold text-slate-700">Sched Val</span> <span class="font-mono text-slate-500 bg-white px-2 py-1 border border-slate-200 rounded-md shadow-sm">{Array.Value}</span></div>
+                        <div class="p-3 flex justify-between items-center"><span class="font-bold text-slate-700">% Done</span> <span class="font-mono text-slate-500 bg-white px-2 py-1 border border-slate-200 rounded-md shadow-sm">{Array.Percent}</span></div>
+                        <div class="p-3 flex justify-between items-center bg-blue-50/50"><span class="font-black text-blue-800">Total (Math)</span> <span class="font-mono text-blue-700 bg-white px-2 py-1 border border-blue-200 rounded-md shadow-sm">Val * Perc</span></div>
+                    </div>
+                    
+                    <div class="section-header">Data Health Insights</div>
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                        <div class="chart-container">
+                            <canvas id="dataHealthChart"></canvas>
+                        </div>
+                        <p class="text-[9px] font-bold text-center text-slate-400 mt-3 uppercase tracking-widest">Historical Auto-Map Success</p>
+                    </div>
+                `;
+                
+                // Render UI then draw chart (delay to ensure DOM is ready)
+                setTimeout(() => this.renderDataChart(), 50);
+            }
+            else if (type === 'totals') {
+                this.elements.inspector.icon.innerText = '💰';
+                this.elements.inspector.title.innerText = 'Calculation Engine';
+                html = `
+                    <div class="section-header !mt-0">Math Logic</div>
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-5">
+                        <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Subtotal Target Area</label>
+                            <select class="w-full border border-slate-300 rounded-lg p-2 text-xs font-mono font-bold text-slate-700 bg-slate-50 outline-none"><option>Sum([blk-table])</option></select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">AIA Retainage Rule</label>
+                            <select class="w-full border border-slate-300 rounded-lg p-2.5 text-xs font-bold text-slate-800 bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm cursor-pointer"><option>10% Standard Hold</option><option>Variable by Phase</option><option>None</option></select>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (type === 'snippet') {
+                this.elements.inspector.icon.innerText = '🔒';
+                this.elements.inspector.title.innerText = 'Global Asset';
+                html = `
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-6 shadow-inner text-center">
+                        <span class="text-4xl block mb-3">🏢</span>
+                        <h4 class="text-xs font-black text-indigo-900 mb-2 uppercase tracking-widest">Centralized Governance</h4>
+                        <p class="text-xs text-indigo-800 leading-relaxed mb-5">
+                            This structural block is inherited from the Brand Center. Data mapping, text, and layout cannot be altered at the template level to ensure strict enterprise compliance.
+                        </p>
+                        <a href="Brand.html" class="block w-full bg-white border border-indigo-200 rounded-lg py-2.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition shadow-sm text-center">Review in Brand Center</a>
+                    </div>
+                `;
+            }
+
+            this.elements.inspector.dynamic.innerHTML = html;
+        },
+
+        // --- Charting Integration ---
+        renderDataChart() {
+            const canvas = document.getElementById('dataHealthChart');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            if(window.healthChartInstance) window.healthChartInstance.destroy();
+
+            window.healthChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Successfully Mapped', 'Required Manual Entry'],
+                    datasets: [{
+                        data: [94, 6],
+                        backgroundColor: ['#10b981', '#f1f5f9'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                },
+                plugins: [{
+                    id: 'textCenter',
+                    beforeDraw: function(chart) {
+                        var width = chart.width, height = chart.height, ctx = chart.ctx;
+                        ctx.restore();
+                        var fontSize = (height / 100).toFixed(2);
+                        ctx.font = "900 " + fontSize + "em Inter";
+                        ctx.textBaseline = "middle";
+                        ctx.fillStyle = "#0f172a";
+                        var text = "94%", textX = Math.round((width - ctx.measureText(text).width) / 2), textY = height / 1.4;
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+    };
+
+    // Initialize App
+    document.addEventListener('DOMContentLoaded', () => app.init());
+</script>
+</body>
+</html>

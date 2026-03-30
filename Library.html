@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IES Template Library (Discovery)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; overflow: hidden; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 250px;
+    max-height: 300px;
+}
+
+.tab-btn { border-bottom: 2px solid transparent; transition: all 0.2s; }
+.tab-btn.active { border-bottom-color: #2563eb; color: #2563eb; font-weight: 600; }
+
+.template-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.template-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+
+.css-doc-thumbnail {
+    width: 80px; height: 110px; background: white; border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); display: flex; flex-direction: column;
+    padding: 6px; gap: 4px; transform: rotate(2deg); transition: transform 0.3s;
+}
+.template-card:hover .css-doc-thumbnail { transform: rotate(0deg) scale(1.05); }
+
+@keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+.toast-enter { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+</style>
+</head>
+<body class="h-screen flex flex-col antialiased">
+
+<aside class="fixed inset-y-0 left-0 w-16 bg-slate-900 text-white flex flex-col z-50 shadow-2xl border-r border-slate-800 transition-all duration-300 hover:w-64 group overflow-hidden">
+    <div class="h-16 flex items-center justify-center group-hover:justify-start group-hover:px-6 border-b border-slate-800 bg-slate-950 shrink-0">
+        <span class="text-2xl font-black text-emerald-400">IES</span>
+        <span class="ml-3 font-bold tracking-wider text-xs uppercase opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Template Studio</span>
+    </div>
+    
+    <nav class="flex-1 py-6 space-y-2 w-64">
+        <div class="px-6 mb-3 hidden group-hover:block text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap transition-opacity">Ecosystem Modules</div>
+        
+        <a href="Library.html" class="w-full flex items-center px-4 py-3 bg-slate-800 text-white border-l-4 border-blue-500 transition">
+            <span class="text-xl">🗂️</span><span class="ml-4 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">Library</span>
+        </a>
+        <a href="Brand.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🎨</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Governance</span>
+        </a>
+        <a href="BuilderStudio.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">🛠️</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Active Builder</span>
+        </a>
+        <a href="Approval.html" class="w-full flex items-center px-4 py-3 text-slate-400 border-l-4 border-transparent hover:bg-slate-800 hover:text-white transition">
+            <span class="text-xl">✅</span><span class="ml-4 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Approvals</span>
+        </a>
+    </nav>
+    
+    <div class="p-4 border-t border-slate-800 bg-slate-900 flex items-center justify-center group-hover:justify-start gap-3 w-64">
+        <div class="w-8 h-8 rounded bg-blue-600 flex shrink-0 items-center justify-center text-white font-bold text-xs">SA</div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">
+            <div class="text-white font-semibold">System Admin</div>
+            <div class="text-slate-400">Global Creator Role</div>
+        </div>
+    </div>
+</aside>
+
+<div class="flex-1 flex flex-col pl-16 h-screen overflow-hidden relative">
+
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-20 shadow-sm">
+        <div>
+            <h1 class="text-xl font-bold text-slate-900">Template Discovery</h1>
+            <p class="text-xs text-slate-500">Manage organizational standards and factory defaults.</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="app.showToast('AI Migration Engine Initialized. Please select legacy file.')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition border border-slate-200 flex items-center gap-2">
+                <span>🤖</span> AI Migrate Legacy
+            </button>
+            <button onclick="app.showToast('Opening Active Builder for new template...')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-2">
+                <span>➕</span> Create Blank
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto custom-scroll p-8 bg-slate-50">
+        <div class="max-w-7xl mx-auto space-y-8">
+            
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-1 flex flex-col gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Org Templates</p>
+                            <span class="text-xl">📄</span>
+                        </div>
+                        <h2 class="text-3xl font-black text-slate-800">18</h2>
+                        <p class="text-xs text-emerald-600 mt-2 font-medium flex items-center gap-1"><span>▲</span> 3 published this month</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Invoice Volume (30d)</p>
+                            <span class="text-xl">💸</span>
+                        </div>
+                        <h2 class="text-3xl font-black text-slate-800">4,285</h2>
+                        <p class="text-xs text-slate-500 mt-2 font-medium">Generated via compliant templates</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                    <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2"><span>📈</span> Utilization &amp; Throughput (Last 30 Days)</h3>
+                    <div class="flex-1 chart-container">
+                        <canvas id="utilizationChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+                
+                <div class="border-b border-slate-200 bg-slate-50 px-6 pt-4 shrink-0">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                        <nav class="flex space-x-6" id="browser-tabs">
+                            <button onclick="app.switchTab('org')" id="tab-org" class="tab-btn active pb-3 px-1 text-sm font-medium text-slate-600 hover:text-slate-900">
+                                My Organization (18)
+                            </button>
+                            <button onclick="app.switchTab('factory')" id="tab-factory" class="tab-btn pb-3 px-1 text-sm font-medium text-slate-500 hover:text-slate-900">
+                                IES Factory Defaults (42)
+                            </button>
+                        </nav>
+
+                        <div class="flex items-center gap-3 pb-3 w-full md:w-auto">
+                            <div class="relative w-full md:w-64">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400">🔍</span>
+                                <input type="text" id="search-input" placeholder="Search templates..." class="w-full pl-9 pr-4 py-1.5 border border-slate-300 rounded text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <select id="filter-industry" class="text-sm border border-slate-300 rounded px-3 py-1.5 bg-white text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer hidden md:block">
+                                <option value="all">All Industries</option>
+                                <option value="construction">Construction</option>
+                                <option value="services">Professional Services</option>
+                                <option value="retail">Wholesale/Retail</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-slate-50/50 flex-1">
+                    <div id="grid-org" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                    <div id="grid-factory" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+</div>
+
+<div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-lg shadow-2xl z-50 flex items-center gap-3 hidden text-sm font-medium border border-slate-700">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Action completed.</span>
+</div>
+
+<script>
+const appData = {
+    orgTemplates: [
+        { id: 'o1', title: 'AIA Master G702/G703', industry: 'construction', status: 'published', edited: 'Today', author: 'System Admin', usage: 1450, desc: 'Standard progress billing mapped to SOV with 10% retainage logic.' },
+        { id: 'o2', title: 'T&M Detail (Legal)', industry: 'services', status: 'published', edited: '2 days ago', author: 'Jane D.', usage: 980, desc: 'Groups timesheets by attorney level. Includes trust account block.' },
+        { id: 'o3', title: 'Wholesale Bulk Drop-Ship', industry: 'retail', status: 'published', edited: '1 week ago', author: 'Mark S.', usage: 1855, desc: 'Optimized for high-volume SKUs with tiered discount calculations.' },
+        { id: 'o4', title: 'Fixed Fee Milestone', industry: 'services', status: 'draft', edited: '3 hrs ago', author: 'System Admin', usage: 0, desc: 'Simplified layout without hourly breakdowns. Pending Brand approval.' },
+        { id: 'o5', title: 'EU VAT Compliant Services', industry: 'services', status: 'published', edited: '1 month ago', author: 'Jane D.', usage: 420, desc: 'Includes reverse charge logic and multi-currency display.' }
+    ],
+    factoryTemplates: [
+        { id: 'f1', title: 'Intuit Standard Construction', industry: 'construction', icon: '🏗️', desc: 'Out-of-the-box compliant AIA application for payment.' },
+        { id: 'f2', title: 'Intuit Pro Services', industry: 'services', icon: '💼', desc: 'Clean, modern layout for consultants and agencies.' },
+        { id: 'f3', title: 'Intuit Product Sales', industry: 'retail', icon: '📦', desc: 'Standard product invoice with shipping and tracking columns.' },
+        { id: 'f4', title: 'Intuit Non-Profit Grant', industry: 'services', icon: '🏛️', desc: 'Tailored for fund tracking and grant specific reporting.' },
+        { id: 'f5', title: 'Intuit Medical Billing', industry: 'services', icon: '⚕️', desc: 'Includes secure patient ID mapping and insurance code columns.' }
+    ]
+};
+
+const app = {
+    activeTab: 'org',
+
+    init() {
+        this.renderOrgGrid();
+        this.renderFactoryGrid();
+        this.initChart();
+        this.setupFilters();
+    },
+
+    switchTab(tab) {
+        this.activeTab = tab;
+        document.getElementById('tab-org').classList.remove('active');
+        document.getElementById('tab-factory').classList.remove('active');
+        document.getElementById(`tab-${tab}`).classList.add('active');
+
+        document.getElementById('grid-org').classList.add('hidden');
+        document.getElementById('grid-factory').classList.add('hidden');
+        document.getElementById(`grid-${tab}`).classList.remove('hidden');
+        
+        this.filterTemplates();
+    },
+
+    setupFilters() {
+        document.getElementById('search-input').addEventListener('input', () => this.filterTemplates());
+        document.getElementById('filter-industry').addEventListener('change', () => this.filterTemplates());
+    },
+
+    filterTemplates() {
+        const term = document.getElementById('search-input').value.toLowerCase();
+        const ind = document.getElementById('filter-industry').value;
+        const grid = document.getElementById(`grid-${this.activeTab}`);
+        const cards = grid.children;
+
+        Array.from(cards).forEach(card => {
+            const title = card.getAttribute('data-title').toLowerCase();
+            const cardInd = card.getAttribute('data-industry');
+            const matchTerm = title.includes(term);
+            const matchInd = ind === 'all' || cardInd === ind;
+            card.style.display = (matchTerm && matchInd) ? 'flex' : 'none';
+        });
+    },
+
+    generateCssThumbnail() {
+        return `
+            <div class="css-doc-thumbnail">
+                <div class="flex justify-between items-start mb-1">
+                    <div class="w-4 h-4 bg-slate-800 rounded-sm"></div>
+                    <div class="w-8 h-1 bg-slate-300 rounded-full"></div>
+                </div>
+                <div class="w-full h-1 bg-blue-100 rounded-full mb-1"></div>
+                <div class="w-full h-12 bg-slate-50 border border-slate-100 flex flex-col gap-1 p-1">
+                    <div class="w-full h-1 bg-slate-200"></div>
+                    <div class="w-full h-1 bg-slate-200"></div>
+                    <div class="w-full h-1 bg-slate-200"></div>
+                </div>
+                <div class="w-1/2 h-1.5 bg-slate-300 ml-auto mt-auto rounded-full"></div>
+            </div>
+        `;
+    },
+
+    renderOrgGrid() {
+        const grid = document.getElementById('grid-org');
+        grid.innerHTML = '';
+        appData.orgTemplates.forEach(tpl => {
+            const badge = tpl.status === 'published' 
+                ? '<span class="absolute top-3 right-3 bg-emerald-100 text-emerald-800 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider z-10 border border-emerald-200">Published</span>'
+                : '<span class="absolute top-3 right-3 bg-amber-100 text-amber-800 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider z-10 border border-amber-200">Draft</span>';
+            
+            grid.innerHTML += `
+                <div class="template-card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col relative group" data-title="${tpl.title}" data-industry="${tpl.industry}">
+                    ${badge}
+                    <div class="h-36 bg-slate-100 border-b border-slate-200 flex items-center justify-center p-4 relative overflow-hidden">
+                        <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:10px_10px]"></div>
+                        ${this.generateCssThumbnail()}
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <h3 class="font-bold text-slate-800 text-sm mb-1">${tpl.title}</h3>
+                        <p class="text-[10px] text-slate-500 mb-3 font-medium">Edited ${tpl.edited} by ${tpl.author}</p>
+                        <p class="text-xs text-slate-600 mb-4 line-clamp-2 leading-relaxed flex-1">${tpl.desc}</p>
+                        <div class="flex gap-2 mt-auto">
+                            <a href="BuilderStudio.html" class="flex-1 bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-600 text-center text-slate-700 py-1.5 rounded text-xs font-bold transition">Edit Layout</a>
+                            <button onclick="app.showToast('Duplicated template.')" class="px-3 py-1.5 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded text-slate-600 transition">📑</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    },
+
+    renderFactoryGrid() {
+        const grid = document.getElementById('grid-factory');
+        grid.innerHTML = '';
+        appData.factoryTemplates.forEach(tpl => {
+            grid.innerHTML += `
+                <div class="template-card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col group" data-title="${tpl.title}" data-industry="${tpl.industry}">
+                    <div class="h-28 bg-blue-50 border-b border-blue-100 flex flex-col items-center justify-center p-4 relative">
+                        <span class="absolute top-2 left-2 text-[9px] font-bold text-blue-600 bg-white px-2 py-0.5 rounded border border-blue-200 uppercase tracking-widest">Intuit Certified</span>
+                        <span class="text-4xl filter drop-shadow-sm mt-2 transform group-hover:scale-110 transition">${tpl.icon}</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <h3 class="font-bold text-slate-800 text-sm mb-2">${tpl.title}</h3>
+                        <p class="text-xs text-slate-600 mb-4 leading-relaxed flex-1">${tpl.desc}</p>
+                        <button onclick="app.showToast('Duplicating to Org Templates...')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-xs font-bold transition shadow-sm">
+                            Duplicate & Customize
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    },
+
+    initChart() {
+        const ctx = document.getElementById('utilizationChart').getContext('2d');
+        const sortedData = [...appData.orgTemplates].sort((a,b) => b.usage - a.usage).slice(0,4);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: sortedData.map(d => d.title.split(' ')[0] + '...'),
+                datasets: [{
+                    label: 'Invoices Generated',
+                    data: sortedData.map(d => d.usage),
+                    backgroundColor: '#2563EB',
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { padding: 10, cornerRadius: 4 } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Inter', size: 10 } } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 10 } } }
+                }
+            }
+        });
+    },
+
+    showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').innerText = msg;
+        toast.classList.remove('hidden');
+        toast.classList.add('toast-enter');
+        setTimeout(() => {
+            toast.classList.add('hidden');
+            toast.classList.remove('toast-enter');
+        }, 3000);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => app.init());
+</script>
+</body>
+</html>
