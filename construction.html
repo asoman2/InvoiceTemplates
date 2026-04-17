@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Construction Billing — Plain Language Primer · Intuit Enterprise Suite</title>
+<style>
+  /* ── INTUIT DESIGN TOKENS ── */
+  :root {
+    --ies-blue:        #365ebf;
+    --ies-blue-dark:   #1a3a7a;
+    --ies-blue-mid:    #4272d4;
+    --ies-blue-light:  #e8eef9;
+    --ies-green:       #108043;
+    --ies-green-light: #e3f5eb;
+    --ies-orange:      #e36c00;
+    --ies-orange-light:#fdf0e3;
+    --ies-purple:      #6b3fa0;
+    --ies-purple-light:#f0ebf8;
+    --gray-900: #1a1a1a;
+    --gray-700: #3c3c3c;
+    --gray-500: #6b6b6b;
+    --gray-300: #d4d4d4;
+    --gray-100: #f4f4f6;
+    --white:    #ffffff;
+    --font: "Avenir Next", "Avenir", "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px;
+    --s6:24px; --s8:32px; --s10:40px; --s12:48px; --s16:64px;
+    --r-sm:4px; --r-md:8px; --r-lg:12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: 15px; line-height: 1.6; color: var(--gray-700); background: var(--gray-100); }
+
+  /* NAV */
+  .top-nav {
+    background: var(--ies-blue-dark);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--s8); height: 52px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-brand { display: flex; align-items: center; gap: var(--s3); color: var(--white); font-size: 13px; font-weight: 600; text-decoration: none; }
+  .nav-brand-logo { width: 28px; height: 28px; background: var(--ies-blue); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; }
+  .nav-sep { color: rgba(255,255,255,.3); margin: 0 var(--s1); }
+  .nav-sub { color: rgba(255,255,255,.6); font-weight: 400; }
+  .nav-cta { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.12); padding: 6px 14px; border-radius: var(--r-sm); transition: background .15s; }
+  .nav-cta:hover { background: rgba(255,255,255,.22); }
+
+  /* HERO */
+  .hero { background: var(--ies-blue-dark); color: var(--white); padding: var(--s12) var(--s8) var(--s10); border-bottom: 3px solid var(--ies-blue); }
+  .hero-inner { max-width: 900px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: var(--s2); background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.8); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: var(--s5); }
+  .hero h1 { font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -.02em; margin-bottom: var(--s4); }
+  .hero-sub { font-size: 15px; color: rgba(255,255,255,.7); max-width: 720px; margin-bottom: var(--s8); line-height: 1.65; }
+  .hero-btns { display: flex; gap: var(--s3); flex-wrap: wrap; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 6px; background: var(--white); color: var(--ies-blue-dark); font-family: var(--font); font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: var(--r-sm); text-decoration: none; transition: opacity .15s; }
+  .btn-primary:hover { opacity: .9; }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: rgba(255,255,255,.85); font-family: var(--font); font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: var(--r-sm); text-decoration: none; border: 1px solid rgba(255,255,255,.3); transition: border-color .15s; }
+  .btn-ghost:hover { border-color: rgba(255,255,255,.7); }
+
+  /* LAYOUT */
+  .page { max-width: 1200px; margin: 0 auto; padding: var(--s10) var(--s8) var(--s16); }
+  section { margin-bottom: var(--s12); }
+  .divider { border: none; border-top: 1px solid var(--gray-300); margin: 0 0 var(--s12); }
+
+  /* SECTION HEADER */
+  .sec-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ies-blue); margin-bottom: var(--s2); }
+  .sec-title { font-size: 20px; font-weight: 700; color: var(--gray-900); letter-spacing: -.01em; margin-bottom: var(--s2); }
+  .sec-sub { font-size: 14px; color: var(--gray-500); margin-bottom: var(--s6); }
+
+  /* CALLOUT */
+  .callout { background: var(--ies-blue-light); border-left: 4px solid var(--ies-blue); border-radius: 0 var(--r-md) var(--r-md) 0; padding: var(--s6) var(--s8); }
+  .callout-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ies-blue); margin-bottom: var(--s3); }
+  .callout p { font-size: 14px; color: var(--gray-700); line-height: 1.7; }
+  .callout p + p { margin-top: var(--s3); }
+  .callout strong { color: var(--gray-900); }
+
+  /* PERSONA GRID */
+  .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); }
+  @media (max-width: 600px) { .persona-grid { grid-template-columns: 1fr; } }
+  .persona-card { background: var(--white); border-radius: var(--r-md); padding: var(--s6); box-shadow: 0 1px 4px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.05); border-top: 3px solid; }
+  .p-owner { border-top-color: var(--ies-blue); }
+  .p-arch  { border-top-color: var(--ies-purple); }
+  .p-sub   { border-top-color: var(--ies-orange); }
+  .p-clerk { border-top-color: var(--ies-green); }
+  .persona-top { display: flex; align-items: center; gap: var(--s3); margin-bottom: var(--s4); }
+  .p-avatar { width: 40px; height: 40px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .p-owner .p-avatar { background: var(--ies-blue-light); }
+  .p-arch  .p-avatar { background: var(--ies-purple-light); }
+  .p-sub   .p-avatar { background: var(--ies-orange-light); }
+  .p-clerk .p-avatar { background: var(--ies-green-light); }
+  .p-name { font-size: 14px; font-weight: 700; color: var(--gray-900); }
+  .p-role { font-size: 12px; color: var(--gray-500); margin-top: 1px; }
+  .persona-card p { font-size: 13.5px; color: var(--gray-700); line-height: 1.65; margin-bottom: var(--s3); }
+  .persona-card p:last-child { margin-bottom: 0; }
+  .worry { display: flex; align-items: flex-start; gap: var(--s2); background: var(--gray-100); border-radius: var(--r-sm); padding: var(--s3) var(--s4); font-size: 12.5px; color: var(--gray-500); font-style: italic; line-height: 1.5; }
+  .worry::before { content: '💬'; font-style: normal; flex-shrink: 0; }
+
+  /* TABLE */
+  .table-card { background: var(--white); border-radius: var(--r-md); box-shadow: 0 1px 4px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.05); overflow: hidden; margin: var(--s4) 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: var(--gray-900); color: var(--white); text-align: left; padding: 10px 16px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #fafafa; }
+  .t-title { font-weight: 600; color: var(--gray-900); }
+  .t-sub { font-size: 11.5px; color: var(--gray-500); margin-top: 2px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; }
+  .b-done   { background: var(--ies-green-light);   color: var(--ies-green); }
+  .b-active { background: var(--ies-blue-light);    color: var(--ies-blue); }
+  .b-change { background: var(--ies-orange-light);  color: var(--ies-orange); }
+
+  /* FLOW */
+  .flow-card { background: var(--white); border-radius: var(--r-md); padding: var(--s6) var(--s8); box-shadow: 0 1px 4px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.05); }
+  .flow-item { display: flex; align-items: flex-start; gap: var(--s4); padding: var(--s5) 0; border-bottom: 1px solid var(--gray-100); }
+  .flow-item:last-child { border-bottom: none; }
+  .flow-num { width: 32px; height: 32px; border-radius: 50%; background: var(--ies-blue); color: var(--white); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .flow-body { flex: 1; }
+  .flow-body strong { display: block; font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+  .flow-body span { font-size: 13.5px; color: var(--gray-500); line-height: 1.6; }
+  .flow-tag { align-self: center; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .ft-sub   { background: var(--ies-orange-light); color: var(--ies-orange); }
+  .ft-gc    { background: var(--ies-blue-light);   color: var(--ies-blue); }
+  .ft-clerk { background: var(--ies-green-light);  color: var(--ies-green); }
+  .ft-arch  { background: var(--ies-purple-light); color: var(--ies-purple); }
+  .ft-own   { background: var(--gray-100);         color: var(--gray-700); }
+
+  /* GLOSSARY */
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: var(--s4); }
+  .g-item { background: var(--white); border-radius: var(--r-md); padding: var(--s5); box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04); }
+  .g-term  { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ies-blue); margin-bottom: var(--s1); }
+  .g-plain { font-size: 13.5px; font-weight: 700; color: var(--gray-900); margin-bottom: var(--s2); }
+  .g-desc  { font-size: 12.5px; color: var(--gray-500); line-height: 1.6; }
+
+  /* FOOTER CTA */
+  .cta-block { background: var(--ies-blue-dark); border-radius: var(--r-lg); padding: var(--s10) var(--s8); text-align: center; color: var(--white); margin-bottom: var(--s12); }
+  .cta-block h3 { font-size: 20px; font-weight: 700; margin-bottom: var(--s3); }
+  .cta-block p  { font-size: 14px; color: rgba(255,255,255,.7); margin-bottom: var(--s6); max-width: 440px; margin-inline: auto; }
+  .cta-links { margin-top: var(--s5); display: flex; justify-content: center; gap: var(--s6); flex-wrap: wrap; }
+  .cta-links a { font-size: 12.5px; color: rgba(255,255,255,.6); text-decoration: none; }
+  .cta-links a:hover { color: var(--white); }
+
+  /* PAGE FOOTER */
+  .site-footer { text-align: center; font-size: 12px; color: var(--gray-500); padding: var(--s6); border-top: 1px solid var(--gray-300); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <a class="nav-brand" href="https://asoman2.github.io/InvoiceTemplates/" target="_blank">
+    <div class="nav-brand-logo">IES</div>
+    Intuit Enterprise Suite
+    <span class="nav-sep">·</span>
+    <span class="nav-sub">Reader's guide</span>
+  </a>
+  <a class="nav-cta" href="https://asoman2.github.io/InvoiceTemplates/" target="_blank">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    Full strategy doc
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">📄 Plain language primer</div>
+    <h1>Construction billing,<br>explained simply</h1>
+    <p class="hero-sub">Before you read the strategy document, this guide explains the core concepts — the billing process, the people involved, and the key terms — without any construction jargon.</p>
+    <div class="hero-btns">
+      <a class="btn-primary" href="https://asoman2.github.io/InvoiceTemplates/" target="_blank">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open strategy document
+      </a>
+      <a class="btn-ghost" href="https://asoman2.github.io/InvoiceTemplates/Data.html" target="_blank">
+        AIA billing lifecycle →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- 01: BIG IDEA -->
+  <section>
+    <p class="sec-label">01 · The big idea</p>
+    <h2 class="sec-title">What is construction billing?</h2>
+    <p class="sec-sub">Why large projects need a structured, staged payment system — and how it protects everyone involved.</p>
+    <div class="callout">
+      <p class="callout-label">Think of it this way</p>
+      <p>Imagine hiring a contractor to build your house. Instead of handing over all the money upfront, you agree to pay <strong>in stages</strong> — a little at a time, as each part of the work is genuinely completed.</p>
+      <p>Before work begins, the contractor gives you a <strong>to-do list with a price tag on every task</strong>: clearing the land costs $50,000, the foundation costs $120,000, the roof costs $80,000. Every month, they send a bill saying: <em>"I finished one-third of the foundation — please pay me $40,000."</em></p>
+      <p>There's also a built-in safety net: you <strong>hold back 10% of each payment</strong> until the entire project is done and you're satisfied. That withheld money is called <strong>retainage</strong> — it protects you if something goes wrong at the very end.</p>
+      <p>On million-dollar projects, this monthly process involves many people, hundreds of line items, and strict paperwork rules. The strategy document describes software that makes all of this <strong>automatic, accurate, and fully auditable</strong>.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- 02: PERSONAS -->
+  <section>
+    <p class="sec-label">02 · The people involved</p>
+    <h2 class="sec-title">Four roles in every payment cycle</h2>
+    <p class="sec-sub">Each payment application passes through four people. Each has a distinct job — and a distinct worry.</p>
+    <div class="persona-grid">
+
+      <div class="persona-card p-owner">
+        <div class="persona-top">
+          <div class="p-avatar">🏢</div>
+          <div><div class="p-name">The Owner</div><div class="p-role">The client — writing the cheques</div></div>
+        </div>
+        <p>They're funding the entire project. Their central question is: <em>is the work actually done before I release any money?</em> They won't approve anything without an independent sign-off from the Architect first.</p>
+        <div class="worry">Am I being billed for work that hasn't been finished?</div>
+      </div>
+
+      <div class="persona-card p-arch">
+        <div class="persona-top">
+          <div class="p-avatar">✍️</div>
+          <div><div class="p-name">The Architect</div><div class="p-role">The independent referee — their signature unlocks payment</div></div>
+        </div>
+        <p>They designed the building and now physically visit the site to verify what's being claimed is actually there. Their signature is what releases the money. If something doesn't check out, the whole application comes back for revision.</p>
+        <div class="worry">If I approve something that isn't done, my professional reputation is on the line.</div>
+      </div>
+
+      <div class="persona-card p-sub">
+        <div class="persona-top">
+          <div class="p-avatar">👷</div>
+          <div><div class="p-name">The Subcontractor</div><div class="p-role">The specialist doing the actual work</div></div>
+        </div>
+        <p>The plumbing crew, the electricians, the steel erectors — whoever did the physical work. They need to get paid on time because they're already paying their own workers out of pocket while waiting. A single paperwork error can delay payment by weeks.</p>
+        <div class="worry">If I fill the form out wrong, payment is delayed while my crew still needs wages.</div>
+      </div>
+
+      <div class="persona-card p-clerk">
+        <div class="persona-top">
+          <div class="p-avatar">📈</div>
+          <div><div class="p-name">The Billing Clerk</div><div class="p-role">The numbers person — the last check before submission</div></div>
+        </div>
+        <p>Working behind the scenes at the main construction company. They verify every calculation, confirm the retainage percentage is exactly right, and make sure every required document is attached. One error and the whole package gets kicked back to start.</p>
+        <div class="worry">A rounding error or missing document means restarting the whole submission.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- 03: SOV TABLE -->
+  <section>
+    <p class="sec-label">03 · The billing table</p>
+    <h2 class="sec-title">How to read a Schedule of Values</h2>
+    <p class="sec-sub">The SOV is the master price list for the project. Here's what each column means in plain English.</p>
+
+    <div class="callout" style="margin-bottom: var(--s5);">
+      <p class="callout-label">What you're looking at</p>
+      <p>Each row is one task on the project. The columns answer: <strong>what was agreed as the cost, what's already been billed, what's being claimed this month,</strong> and <strong>how much is being held back as a safety deposit.</strong></p>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Agreed price</th>
+            <th>Billed before</th>
+            <th>Billing this month</th>
+            <th>Safety deposit held (10%)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="t-title">Site preparation</div><div class="t-sub">Clearing and levelling the land</div></td>
+            <td>$50,000</td><td>$50,000</td><td>$0</td><td>$5,000 still held</td>
+            <td><span class="badge b-done">Done</span></td>
+          </tr>
+          <tr>
+            <td><div class="t-title">Foundation</div><div class="t-sub">Concrete base of the building</div></td>
+            <td>$120,000</td><td>$60,000</td><td>$40,000</td><td>$10,000 this cycle</td>
+            <td><span class="badge b-active">In progress</span></td>
+          </tr>
+          <tr>
+            <td><div class="t-title">Extra drainage (CO-1)</div><div class="t-sub">Unexpected work added mid-project</div></td>
+            <td>$15,000</td><td>$0</td><td>$15,000</td><td>$1,500 this cycle</td>
+            <td><span class="badge b-change">Change order</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top: var(--s5);">
+      <p class="callout-label">Two things to notice</p>
+      <p><strong>Site preparation is 100% done, but $5,000 is still held.</strong> That safety deposit only releases when the entire project is finished and accepted — not just this one task. That's the whole point of retainage.</p>
+      <p><strong>The drainage work wasn't in the original plan.</strong> When it came up, both parties agreed a price and signed a change order — a formal amendment. It immediately joins the billing cycle and is tracked just like everything else.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- 04: FLOW -->
+  <section>
+    <p class="sec-label">04 · The approval process</p>
+    <h2 class="sec-title">How a payment gets approved</h2>
+    <p class="sec-sub">Think of this as a relay race. Each person is a gatekeeper. If anyone finds a problem, the application goes back to the start.</p>
+
+    <div class="flow-card">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div class="flow-body"><strong>Work gets done on site</strong><span>The crew completes their assigned tasks and notes what materials are stored on-site waiting to be installed.</span></div>
+        <span class="flow-tag ft-sub">Subcontractor</span>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div class="flow-body"><strong>Progress is written up as a bill</strong><span>The subcontractor fills in a standard form stating exactly what percentage of each task is complete and how much they're claiming this month.</span></div>
+        <span class="flow-tag ft-sub">Subcontractor</span>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">3</div>
+        <div class="flow-body"><strong>The general contractor checks it against the plan</strong><span>They compare the claim against the original Schedule of Values and flag anything that doesn't match — especially unapproved extra work.</span></div>
+        <span class="flow-tag ft-gc">General contractor</span>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">4</div>
+        <div class="flow-body"><strong>Finance runs the final numbers check</strong><span>The billing clerk verifies every calculation, confirms the retainage percentage, and ensures all required paperwork and lien waivers are attached.</span></div>
+        <span class="flow-tag ft-clerk">Billing clerk</span>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">5</div>
+        <div class="flow-body"><strong>The architect physically verifies and signs</strong><span>They visit the site, confirm the claimed work genuinely exists, and sign the Certificate for Payment — or return it with revision notes if something is off.</span></div>
+        <span class="flow-tag ft-arch">Architect</span>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">6</div>
+        <div class="flow-body"><strong>The owner releases payment</strong><span>With the architect's certified approval in hand, the owner pays the invoiced amount — minus the retainage still held as the project safety deposit.</span></div>
+        <span class="flow-tag ft-own">Owner</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- 05: GLOSSARY -->
+  <section>
+    <p class="sec-label">05 · Glossary</p>
+    <h2 class="sec-title">Key terms, plain and simple</h2>
+    <p class="sec-sub">Terms you'll encounter throughout the strategy document, translated into everyday language.</p>
+    <div class="glossary-grid">
+      <div class="g-item"><div class="g-term">SOV</div><div class="g-plain">Schedule of Values</div><div class="g-desc">The master to-do list with a dollar value on every task. All billing must tie back to this list — nothing can be billed that isn't on it.</div></div>
+      <div class="g-item"><div class="g-term">Retainage</div><div class="g-plain">The safety deposit</div><div class="g-desc">Typically 10% of each payment held back by the owner until the full project is done and accepted. Protects against defects or unfinished work at the very end.</div></div>
+      <div class="g-item"><div class="g-term">AIA G702 / G703</div><div class="g-plain">The standard billing forms</div><div class="g-desc">Industry-standard documents. G702 is the one-page summary. G703 is the detailed line-by-line breakdown. Together they form the monthly payment application.</div></div>
+      <div class="g-item"><div class="g-term">Change Order</div><div class="g-plain">A formal amendment</div><div class="g-desc">When unexpected work arises, a change order records the new scope and agreed price, and formally adds it to the SOV so it can be billed.</div></div>
+      <div class="g-item"><div class="g-term">Pay Application</div><div class="g-plain">The monthly invoice package</div><div class="g-desc">The full bundle submitted each billing period — the G702 summary, G703 detail sheet, lien waivers, and all supporting documents.</div></div>
+      <div class="g-item"><div class="g-term">Lien Waiver</div><div class="g-plain">A "paid in full" receipt</div><div class="g-desc">A legal document signed by subcontractors confirming they've been paid and won't place a legal claim against the property for that amount.</div></div>
+      <div class="g-item"><div class="g-term">RBAC</div><div class="g-plain">Permission levels</div><div class="g-desc">Role-Based Access Control. A billing clerk can fill in numbers but can't change the template design — like a bank teller who can process transactions but can't change bank policy.</div></div>
+      <div class="g-item"><div class="g-term">WIP / WBS</div><div class="g-plain">Work tracker / task list</div><div class="g-desc">Work-in-Progress and Work Breakdown Structure. Internal tools tracking what's done, started, and not yet begun — feeding directly into the billing system.</div></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <h3>Ready for the full strategy document?</h3>
+    <p>Now that you're familiar with the core concepts, the strategy document will make complete sense.</p>
+    <a class="btn-primary" href="https://asoman2.github.io/InvoiceTemplates/" target="_blank">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Open the IES Invoice Designer strategy doc
+    </a>
+    <div class="cta-links">
+      <a href="https://asoman2.github.io/InvoiceTemplates/Library.html" target="_blank">View template library →</a>
+      <a href="https://asoman2.github.io/InvoiceTemplates/Data.html" target="_blank">AIA billing lifecycle simulation →</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="site-footer">© 2026 Plain Language Primer · Intuit Enterprise Suite Invoice Designer</div>
+
+</body>
+</html>
