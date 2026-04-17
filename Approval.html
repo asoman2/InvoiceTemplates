@@ -127,8 +127,8 @@
             <div class="flex flex-col">
                 <span class="text-[9px] text-white/70 uppercase font-black tracking-widest leading-none mb-1">Simulate Persona</span>
                 <select id="persona-select" onchange="app.switchPersona(this.value)" class="bg-transparent border-none text-white text-sm font-bold outline-none cursor-pointer p-0">
-                    <option value="designer">Alex (Template Designer)</option>
-                    <option value="approver">Morgan (Compliance Approver)</option>
+                    <option value="designer">Diana K. (MEP Template Designer)</option>
+                    <option value="approver">Morgan L. (Compliance Approver)</option>
                 </select>
             </div>
         </div>
@@ -142,7 +142,7 @@
                 <header class="flex justify-between items-end">
                     <div>
                         <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">My Submissions</h2>
-                        <p class="text-sm text-slate-500 mt-2">Track the approval status of your template drafts.</p>
+                        <p class="text-sm text-slate-500 mt-2">Diana K. · Meridian MEP · Template Designer — track the approval status of your draft templates.</p>
                     </div>
                     <a href="BuilderStudio.html" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-2">
                         <span>➕</span> Submit New Draft
@@ -162,14 +162,14 @@
                             <p class="text-xs font-black text-emerald-500 uppercase tracking-widest">Approved</p>
                             <span class="text-xl">✅</span>
                         </div>
-                        <h3 class="text-4xl font-black text-slate-800" id="designer-approved-count">12</h3>
+                        <h3 class="text-4xl font-black text-slate-800" id="designer-approved-count">1</h3>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-xs font-black text-red-500 uppercase tracking-widest">Rejected</p>
                             <span class="text-xl">❌</span>
                         </div>
-                        <h3 class="text-4xl font-black text-slate-800">2</h3>
+                        <h3 class="text-4xl font-black text-slate-800">1</h3>
                     </div>
                 </div>
 
@@ -182,6 +182,7 @@
                             <tr>
                                 <th class="px-6 py-4 font-bold">Req ID</th>
                                 <th class="px-6 py-4 font-bold">Template Name</th>
+                                <th class="px-6 py-4 font-bold">Entity</th>
                                 <th class="px-6 py-4 font-bold">Date Submitted</th>
                                 <th class="px-6 py-4 font-bold">Status</th>
                                 <th class="px-6 py-4 font-bold text-right">Action</th>
@@ -244,21 +245,21 @@
 
                         <div class="flex gap-8 text-sm border-t border-slate-100 pt-5">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 border border-blue-200 flex items-center justify-center font-bold text-xs">AD</div>
+                                <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 border border-teal-200 flex items-center justify-center font-bold text-xs" id="req-author-avatar">DK</div>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] font-bold text-slate-400 uppercase">Submitted By</span>
-                                    <span class="font-bold text-slate-800" id="req-author">Alex (Designer)</span>
+                                    <span class="font-bold text-slate-800" id="req-author">Diana K. (MEP Designer)</span>
                                 </div>
                             </div>
                             <div class="w-px h-8 bg-slate-200"></div>
                             <div class="flex flex-col justify-center">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase">Date Submitted</span>
-                                <span class="font-bold text-slate-700" id="req-date">Today</span>
+                                <span class="font-bold text-slate-700" id="req-date">Today, 9:14 AM</span>
                             </div>
                             <div class="w-px h-8 bg-slate-200"></div>
                             <div class="flex flex-col justify-center">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase">Impact</span>
-                                <span class="font-bold text-slate-700">Modifies 1 Active Template</span>
+                                <span class="font-bold text-slate-700" id="req-impact">Modifies retainage logic across 2 active MEP templates</span>
                             </div>
                         </div>
                     </div>
@@ -328,31 +329,50 @@
 <script>
     let requestsDB = [
         { 
-            id: 'REQ-084', 
-            title: 'AIA Construction Template', 
-            date: 'Just Now', 
+            id: 'REQ-091', 
+            title: 'MEP Sub-App G703 — Reduced Retainage (Draft)', 
+            entity: 'Meridian MEP',
+            entityInitials: 'DK',
+            author: 'Diana K. (MEP Designer)',
+            date: 'Today, 9:14 AM', 
             status: 'pending',
+            impact: 'Modifies retainage logic across 2 active MEP templates',
             changes: [
-                { type: 'added', text: 'Added dynamic Retainage Calculation block to comply with new state regulations.' },
-                { type: 'removed', text: 'Removed legacy signature line (replaced by digital cert).' }
+                { type: 'added', text: 'Retainage rate reduced from 10% to 5% for projects where {Project.PctComplete} ≥ 50%, per AIA A201-2017 §9.8 and CNTR-2025-HV01 amendment.' },
+                { type: 'added', text: 'Conditional logic block added: retainage rider snippet (snp-003) auto-attaches when project completion threshold is met.' },
+                { type: 'removed', text: 'Removed hardcoded 10% retainage constant — replaced by dynamic {Contract.RetainagePct} token resolved at billing time.' }
             ],
             wireframeType: 'aia'
         },
         { 
-            id: 'REQ-012', 
-            title: 'Standard B2B Services', 
-            date: 'Oct 12, 2025', 
+            id: 'REQ-079', 
+            title: 'AIA G702/G703 — Meridian Commercial (CO-1 Append Logic)', 
+            entity: 'Meridian Commercial',
+            entityInitials: 'SR',
+            author: 'Sandra R. (Admin)',
+            date: 'Sep 22, 2025', 
             status: 'approved',
-            changes: [],
-            wireframeType: 'standard'
+            impact: 'Updated master GC template — affected 4 active projects',
+            changes: [
+                { type: 'added', text: 'Change Order auto-append: approved AIA G701 change orders now automatically append as new SOV rows with CO prefix and correct retainage math.' },
+                { type: 'added', text: 'CO-1 waterproofing line ($143,000) validated and visible at 50% completion in Harborview App #04.' }
+            ],
+            wireframeType: 'aia'
         },
         { 
-            id: 'REQ-008', 
-            title: 'Wholesale Invoice', 
-            date: 'Sep 28, 2025', 
+            id: 'REQ-071', 
+            title: 'MEP Sub-Application G703 — Meridian MEP (Entity Token Fix)', 
+            entity: 'Meridian MEP',
+            entityInitials: 'DK',
+            author: 'Diana K. (MEP Designer)',
+            date: 'Aug 30, 2025', 
             status: 'rejected',
-            changes: [],
-            wireframeType: 'standard'
+            impact: 'Rejected: {subsidiary.taxId} token override not permitted at template level',
+            changes: [
+                { type: 'added', text: 'Attempted to hardcode Tax ID 47-2819304 as static text instead of using {subsidiary.taxId} token.' },
+                { type: 'removed', text: 'Removed centralized Tax ID token binding — rejected by compliance. All entity identifiers must resolve dynamically from Brand Center.' }
+            ],
+            wireframeType: 'aia'
         }
     ];
 
@@ -384,10 +404,10 @@
                 
                 // Keep classes synced with new expanding sidebar logic
                 sidebarInfo.innerHTML = `
-                    <div class="w-8 h-8 rounded bg-blue-600 flex shrink-0 items-center justify-center text-white font-black text-xs shadow-inner">AD</div>
+                    <div class="w-8 h-8 rounded bg-teal-700 flex shrink-0 items-center justify-center text-white font-black text-xs shadow-inner">DK</div>
                     <div class="opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">
-                        <div class="text-slate-100 font-black">Alex (Designer)</div>
-                        <div class="text-slate-400 font-medium">Creator Role</div>
+                        <div class="text-slate-100 font-black">Diana K.</div>
+                        <div class="text-slate-400 font-medium">MEP Designer · Meridian MEP</div>
                     </div>
                 `;
                 
@@ -400,10 +420,10 @@
                 
                 // Keep classes synced with new expanding sidebar logic
                 sidebarInfo.innerHTML = `
-                    <div class="w-8 h-8 rounded bg-emerald-600 flex shrink-0 items-center justify-center text-white font-black text-xs shadow-inner">MC</div>
+                    <div class="w-8 h-8 rounded bg-emerald-600 flex shrink-0 items-center justify-center text-white font-black text-xs shadow-inner">ML</div>
                     <div class="opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">
-                        <div class="text-slate-100 font-black">Morgan (Approver)</div>
-                        <div class="text-emerald-400 font-bold">Compliance Role</div>
+                        <div class="text-slate-100 font-black">Morgan L.</div>
+                        <div class="text-emerald-400 font-bold">Compliance Approver · Corp</div>
                     </div>
                 `;
 
@@ -443,6 +463,7 @@
                     <tr class="hover:bg-slate-50 transition">
                         <td class="px-6 py-4 font-mono font-bold text-slate-500">${req.id}</td>
                         <td class="px-6 py-4 font-bold text-slate-900">${req.title}</td>
+                        <td class="px-6 py-4 text-slate-600 text-xs font-medium">${req.entity}</td>
                         <td class="px-6 py-4 text-slate-600">${req.date}</td>
                         <td class="px-6 py-4">${statusBadge}</td>
                         <td class="px-6 py-4 text-right">
@@ -468,13 +489,15 @@
                 const isActive = req.id === this.state.activeReqId;
                 queueContainer.innerHTML += `
                     <div onclick="app.loadReviewDetail('${req.id}')" class="queue-item p-4 rounded-xl ${isActive ? 'active' : 'border border-transparent'}">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-bold text-slate-900 text-sm truncate pr-2">${req.title}</h4>
-                            <span class="text-[9px] font-mono font-bold bg-slate-100 border border-slate-200 text-slate-500 px-1.5 py-0.5 rounded">${req.id}</span>
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-slate-900 text-sm leading-snug pr-2">${req.title}</h4>
+                            <span class="text-[9px] font-mono font-bold bg-slate-100 border border-slate-200 text-slate-500 px-1.5 py-0.5 rounded shrink-0">${req.id}</span>
                         </div>
+                        <p class="text-[10px] text-slate-500 mb-2">${req.impact}</p>
                         <div class="flex items-center gap-2 mt-2">
-                            <div class="w-5 h-5 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[9px]">AD</div>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase">${req.date}</span>
+                            <div class="w-5 h-5 rounded bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-[9px]">${req.entityInitials}</div>
+                            <span class="text-[10px] font-bold text-slate-500">${req.author}</span>
+                            <span class="text-[10px] text-slate-400 ml-auto">${req.date}</span>
                         </div>
                     </div>
                 `;
@@ -493,6 +516,16 @@
 
             document.getElementById('req-id').innerText = req.id;
             document.getElementById('req-title').innerText = req.title;
+            document.getElementById('req-author').innerText = req.author;
+            document.getElementById('req-date').innerText = req.date;
+
+            // Update impact text
+            const impactEl = document.getElementById('req-impact');
+            if (impactEl) impactEl.innerText = req.impact;
+
+            // Update author avatar initials
+            const avatarEl = document.getElementById('req-author-avatar');
+            if (avatarEl) avatarEl.innerText = req.entityInitials;
             
             const logList = document.getElementById('change-log');
             logList.innerHTML = req.changes.map(c => {

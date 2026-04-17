@@ -42,16 +42,18 @@
     <header class="bg-slate-900 text-white shadow-xl z-50 relative">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center font-black text-xl shadow-inner">🏗️</div>
+                <div class="w-10 h-10 rounded flex items-center justify-center font-black text-xl shadow-inner" style="background:#1e3a5f">MC</div>
                 <div>
-                    <h1 class="text-sm font-bold tracking-tight">Neon Apex Tower Project</h1>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">AIA Billing & WIP Lifecycle Simulation</p>
+                    <h1 class="text-sm font-bold tracking-tight">Harborview Office Complex — Meridian Commercial LLC</h1>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">AIA G702/G703 Billing &amp; WIP Lifecycle · CNTR-2025-HV01</p>
                 </div>
             </div>
             <div class="hidden md:flex items-center gap-6 text-xs font-mono bg-slate-800 px-4 py-2 rounded-lg border border-slate-700">
-                <div><span class="text-slate-400">Total Contract:</span> <span class="font-bold text-emerald-400">$5,000,000</span></div>
+                <div><span class="text-slate-400">Revised Contract:</span> <span class="font-bold text-emerald-400">$4,963,000</span></div>
                 <div class="w-px h-4 bg-slate-600"></div>
                 <div><span class="text-slate-400">Standard Retainage:</span> <span class="font-bold text-amber-400">10%</span></div>
+                <div class="w-px h-4 bg-slate-600"></div>
+                <div><span class="text-slate-400">Owner:</span> <span class="font-bold text-blue-400">Harborview Partners LLC</span></div>
             </div>
         </div>
     </header>
@@ -64,13 +66,13 @@
                 <div class="hidden md:block absolute top-1/2 left-10 right-10 h-1 bg-slate-200 -z-10 -translate-y-1/2"></div>
                 
                 <button onclick="app.setPhase(1)" id="btn-phase-1" class="phase-btn active w-full md:w-1/3 bg-white border-2 border-slate-300 text-slate-700 py-3 px-4 rounded-xl font-bold text-sm z-10">
-                    Phase 1: Foundation<br><span class="text-[10px] font-normal opacity-80">Month 1 • App #01</span>
+                    App #01: Site &amp; Foundation<br><span class="text-[10px] font-normal opacity-80">Month 1 · Jul 2025</span>
                 </button>
                 <button onclick="app.setPhase(2)" id="btn-phase-2" class="phase-btn w-full md:w-1/3 bg-white border-2 border-slate-300 text-slate-700 py-3 px-4 rounded-xl font-bold text-sm z-10">
-                    Phase 2: Superstructure<br><span class="text-[10px] font-normal opacity-80">Month 3 • App #03</span>
+                    App #03: Steel &amp; MEP Rough-In<br><span class="text-[10px] font-normal opacity-80">Month 3 · Sep 2025</span>
                 </button>
                 <button onclick="app.setPhase(3)" id="btn-phase-3" class="phase-btn w-full md:w-1/3 bg-white border-2 border-slate-300 text-slate-700 py-3 px-4 rounded-xl font-bold text-sm z-10">
-                    Phase 3: Substantial Comp.<br><span class="text-[10px] font-normal opacity-80">Month 6 • App #06</span>
+                    App #04: Curtain Wall &amp; CO-1<br><span class="text-[10px] font-normal opacity-80">Month 4 · Oct 2025</span>
                 </button>
             </div>
         </section>
@@ -102,63 +104,68 @@
         // --- 1. The Single Source of Truth Database ---
         // Enhanced to include 'cost' data to demonstrate WIP (Work in Progress) capabilities.
         const projectDB = {
-            totalContract: 5000000,
-            estTotalCost: 4000000, // Targeting a 20% Gross Margin
+            totalContract: 4963000,
+            estTotalCost: 3970400, // Targeting ~20% Gross Margin
             phases: {
                 1: {
-                    title: "Month 1: Site Prep & Foundation",
-                    desc: "The project has just begun. Site work is complete, and foundations are halfway poured.",
-                    retainageRule: "10% Standard",
+                    title: "App #01 · Jul 2025 — Site Preparation & Foundation Start",
+                    desc: "Project mobilizes. Meridian Commercial completes full site preparation & demolition. Foundation concrete begins — 40% poured by period close. MEP and curtain wall not yet started.",
+                    appNum: "APP-0001",
+                    retainageRule: "10% Standard (CNTR-2025-HV01 §7.2)",
                     g702: {
-                        contractSum: 5000000, netChanges: 0, totalCompleted: 750000,
-                        retainage: 75000, lessPrevious: 0, currentDue: 675000, balanceToFinish: 4250000
+                        contractSum: 4820000, netChanges: 0, totalCompleted: 476000,
+                        retainage: 47600, lessPrevious: 0, currentDue: 428400, balanceToFinish: 4344000
                     },
-                    internalWIP: { actualCostsToDate: 560000, estimatedCostAtCompletion: 4000000 },
+                    internalWIP: { actualCostsToDate: 395000, estimatedCostAtCompletion: 3970400 },
                     g703: [
-                        { id: '01', desc: 'General Conditions', scheduled: 500000, prev: 0, current: 50000, percent: 10, ret: 5000, cost: 45000 },
-                        { id: '02', desc: 'Site Work & Excavation', scheduled: 400000, prev: 0, current: 400000, percent: 100, ret: 40000, cost: 310000 },
-                        { id: '03', desc: 'Concrete Foundation', scheduled: 600000, prev: 0, current: 300000, percent: 50, ret: 30000, cost: 205000 },
-                        { id: '04', desc: 'Structural Steel (Sub)', scheduled: 1500000, prev: 0, current: 0, percent: 0, ret: 0, cost: 0 },
-                        { id: '05', desc: 'MEP Rough-ins (Sub)', scheduled: 1000000, prev: 0, current: 0, percent: 0, ret: 0, cost: 0 },
-                        { id: '06', desc: 'Finishes', scheduled: 1000000, prev: 0, current: 0, percent: 0, ret: 0, cost: 0 }
+                        { id: '01', desc: 'Site Prep & Demolition',     scheduled: 218000,  prev: 0,       current: 218000, percent: 100, ret: 21800, cost: 188000 },
+                        { id: '02', desc: 'Foundation & Below-Grade',   scheduled: 645000,  prev: 0,       current: 258000, percent: 40,  ret: 25800, cost: 207000 },
+                        { id: '03', desc: 'Structural Steel & Decking', scheduled: 920000,  prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: '04', desc: 'MEP Rough-In (Meridian MEP)',scheduled: 780000,  prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: '05', desc: 'Glass Curtain Wall & Façade',scheduled: 1140000, prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: '06', desc: 'Interior Buildout & Finishes',scheduled: 860000, prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: '07', desc: 'Commissioning & Testing',    scheduled: 257000,  prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 }
                     ]
                 },
                 2: {
-                    title: "Month 3: Superstructure & Framing",
-                    desc: "Foundations are complete. The steel subcontractor is heavily active, and MEP rough-ins have begun. A Change Order was added.",
-                    retainageRule: "10% Standard",
+                    title: "App #03 · Sep 2025 — Structural Steel & MEP Rough-In Underway",
+                    desc: "Foundation complete. Meridian Commercial's steel crew is active at 60%. Meridian MEP (subsidiary) begins MEP rough-in at 25% — their sub-application consolidates here under the master G702. No change orders yet.",
+                    appNum: "APP-0003",
+                    retainageRule: "10% Standard (CNTR-2025-HV01 §7.2)",
                     g702: {
-                        contractSum: 5000000, netChanges: 50000, totalCompleted: 2750000,
-                        retainage: 275000, lessPrevious: 675000, currentDue: 1800000, balanceToFinish: 2300000
+                        contractSum: 4820000, netChanges: 0, totalCompleted: 1453500,
+                        retainage: 145350, lessPrevious: 428400, currentDue: 879750, balanceToFinish: 3366500
                     },
-                    internalWIP: { actualCostsToDate: 2350000, estimatedCostAtCompletion: 4040000 },
+                    internalWIP: { actualCostsToDate: 1218000, estimatedCostAtCompletion: 3970400 },
                     g703: [
-                        { id: '01', desc: 'General Conditions', scheduled: 500000, prev: 50000, current: 150000, percent: 40, ret: 20000, cost: 160000 },
-                        { id: '02', desc: 'Site Work & Excavation', scheduled: 400000, prev: 400000, current: 0, percent: 100, ret: 40000, cost: 310000 },
-                        { id: '03', desc: 'Concrete Foundation', scheduled: 600000, prev: 300000, current: 300000, percent: 100, ret: 60000, cost: 460000 },
-                        { id: '04', desc: 'Structural Steel (Sub)', scheduled: 1500000, prev: 0, current: 1200000, percent: 80, ret: 120000, cost: 1050000 },
-                        { id: '05', desc: 'MEP Rough-ins (Sub)', scheduled: 1000000, prev: 0, current: 300000, percent: 30, ret: 30000, cost: 230000 },
-                        { id: '06', desc: 'Finishes', scheduled: 1000000, prev: 0, current: 0, percent: 0, ret: 0, cost: 0 },
-                        { id: 'CO1', desc: 'CO-1: Added Reinforcement', scheduled: 50000, prev: 0, current: 50000, percent: 100, ret: 5000, cost: 40000 }
+                        { id: '01', desc: 'Site Prep & Demolition',     scheduled: 218000,  prev: 218000,  current: 0,      percent: 100, ret: 21800, cost: 188000 },
+                        { id: '02', desc: 'Foundation & Below-Grade',   scheduled: 645000,  prev: 258000,  current: 387000, percent: 100, ret: 64500, cost: 530000 },
+                        { id: '03', desc: 'Structural Steel & Decking', scheduled: 920000,  prev: 0,       current: 552000, percent: 60,  ret: 55200, cost: 468000 },
+                        { id: '04', desc: 'MEP Rough-In (Meridian MEP)',scheduled: 780000,  prev: 0,       current: 195000, percent: 25,  ret: 19500, cost: 162000 },
+                        { id: '05', desc: 'Glass Curtain Wall & Façade',scheduled: 1140000, prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: '06', desc: 'Interior Buildout & Finishes',scheduled: 860000, prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: '07', desc: 'Commissioning & Testing',    scheduled: 257000,  prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 }
                     ]
                 },
                 3: {
-                    title: "Month 6: Substantial Completion",
-                    desc: "Project is substantially complete. The Architect has approved reducing total retainage held from 10% down to 5%.",
-                    retainageRule: "Reduced to 5% Total",
+                    title: "App #04 · Oct 2025 — Curtain Wall Starts & CO-1 Waterproofing In-Flight",
+                    desc: "The current billing period. Steel at 85%, MEP at 45%. Curtain wall installation begins at 10% with $228K HVAC materials stored on-site. CO-1 (Enhanced Lobby Waterproofing, $143K) is approved and drawn at 50%. Diana K. (Meridian MEP) has submitted a revised retainage rider for approval — pending Morgan L.'s sign-off.",
+                    appNum: "APP-0004",
+                    retainageRule: "10% Standard (CNTR-2025-HV01 §7.2) — 5% rider under review",
                     g702: {
-                        contractSum: 5000000, netChanges: 50000, totalCompleted: 4900000,
-                        retainage: 245000, lessPrevious: 2475000, currentDue: 2180000, balanceToFinish: 150000
+                        contractSum: 4820000, netChanges: 143000, totalCompleted: 2444500,
+                        retainage: 384600, lessPrevious: 1453500, currentDue: 606400, balanceToFinish: 2518500
                     },
-                    internalWIP: { actualCostsToDate: 4150000, estimatedCostAtCompletion: 4080000 }, // Slight cost overrun
+                    internalWIP: { actualCostsToDate: 2048000, estimatedCostAtCompletion: 3970400 },
                     g703: [
-                        { id: '01', desc: 'General Conditions', scheduled: 500000, prev: 200000, current: 300000, percent: 100, ret: 25000, cost: 480000 },
-                        { id: '02', desc: 'Site Work & Excavation', scheduled: 400000, prev: 400000, current: 0, percent: 100, ret: 20000, cost: 310000 },
-                        { id: '03', desc: 'Concrete Foundation', scheduled: 600000, prev: 600000, current: 0, percent: 100, ret: 30000, cost: 460000 },
-                        { id: '04', desc: 'Structural Steel (Sub)', scheduled: 1500000, prev: 1200000, current: 300000, percent: 100, ret: 75000, cost: 1300000 },
-                        { id: '05', desc: 'MEP Rough-ins (Sub)', scheduled: 1000000, prev: 300000, current: 700000, percent: 100, ret: 50000, cost: 820000 },
-                        { id: '06', desc: 'Finishes', scheduled: 1000000, prev: 0, current: 900000, percent: 90, ret: 45000, cost: 740000 },
-                        { id: 'CO1', desc: 'CO-1: Added Reinforcement', scheduled: 50000, prev: 50000, current: 0, percent: 100, ret: 2500, cost: 40000 }
+                        { id: '01', desc: 'Site Prep & Demolition',      scheduled: 218000,  prev: 218000,  current: 0,      percent: 100, ret: 21800, cost: 188000 },
+                        { id: '02', desc: 'Foundation & Below-Grade',    scheduled: 645000,  prev: 645000,  current: 0,      percent: 100, ret: 64500, cost: 530000 },
+                        { id: '03', desc: 'Structural Steel & Decking',  scheduled: 920000,  prev: 552000,  current: 230000, percent: 85,  ret: 92000, cost: 688000 },
+                        { id: '04', desc: 'MEP Rough-In (Meridian MEP)', scheduled: 780000,  prev: 195000,  current: 156000, percent: 45,  ret: 78000, cost: 294000 },
+                        { id: '05', desc: 'Glass Curtain Wall & Façade', scheduled: 1140000, prev: 0,       current: 114000, percent: 10,  ret: 114000, cost: 91200 },
+                        { id: '06', desc: 'Interior Buildout & Finishes',scheduled: 860000,  prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: '07', desc: 'Commissioning & Testing',     scheduled: 257000,  prev: 0,       current: 0,      percent: 0,   ret: 0,     cost: 0 },
+                        { id: 'CO1', desc: 'CO-1: Lobby Waterproofing',  scheduled: 143000,  prev: 0,       current: 71500,  percent: 50,  ret: 14300, cost: 56800 }
                     ]
                 }
             }
@@ -199,16 +206,16 @@
                 `;
 
                 if (this.state.persona === 'owner') {
-                    html += `<div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r"><p class="text-xs text-blue-800 font-medium"><strong>Owner Context:</strong> Owners focus on high-level financial health. They rely on the G702 cover sheet summary to understand capital deployment, retainage withheld as security, and remaining budget to finish.</p></div></div>`;
+                    html += `<div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r"><p class="text-xs text-blue-800 font-medium"><strong>Harborview Partners LLC (Owner):</strong> Reviewing capital deployment and retainage security. The G702 cover sheet shows total completed-to-date, retainage withheld per CNTR-2025-HV01 §7.2, and current payment due. Note that CO-1 (Lobby Waterproofing, $143K) is now reflected in the adjusted contract sum.</p></div></div>`;
                     html += this.renderOwnerView(phaseData);
                 } else if (this.state.persona === 'architect') {
-                    html += `<div class="bg-emerald-50 border-l-4 border-emerald-500 p-3 rounded-r"><p class="text-xs text-emerald-800 font-medium"><strong>Architect Context:</strong> Architects must certify the invoice. They scrutinize the G703 Continuation Sheet line-by-line to ensure the % billed matches physical reality on site before legally signing off.</p></div></div>`;
+                    html += `<div class="bg-emerald-50 border-l-4 border-emerald-500 p-3 rounded-r"><p class="text-xs text-emerald-800 font-medium"><strong>Westbrook &amp; Associates (Architect):</strong> Must certify each line of the G703 before Harborview Partners releases payment. Pay attention to MEP Rough-In (line 04) — Meridian MEP is a subsidiary entity whose sub-application consolidates here. Curtain wall (line 05) shows only 10% complete with $228K materials stored.</p></div></div>`;
                     html += this.renderArchitectView(phaseData);
                 } else if (this.state.persona === 'subcontractor') {
-                    html += `<div class="bg-slate-100 border-l-4 border-slate-500 p-3 rounded-r"><p class="text-xs text-slate-800 font-medium"><strong>Subcontractor Context:</strong> Subcontractors only care about their specific scope. Enterprise RBAC sandboxes their view, ensuring they only see their assigned SOV line item to input their progress.</p></div></div>`;
+                    html += `<div class="bg-slate-100 border-l-4 border-slate-500 p-3 rounded-r"><p class="text-xs text-slate-800 font-medium"><strong>Diana K. — Meridian MEP (Subsidiary):</strong> Sandboxed to SOV line 04 only. Enters MEP Rough-In progress for this period. Entity token <code class="font-mono text-xs bg-white px-1 rounded">{subsidiary.taxId}</code> auto-stamps Meridian MEP's EIN 47-2819304. The 5% retainage rider (REQ-091) is pending Morgan L.'s approval before it can apply.</p></div></div>`;
                     html += this.renderSubcontractorView(phaseData);
                 } else if (this.state.persona === 'coordinator') {
-                    html += `<div class="bg-purple-50 border-l-4 border-purple-500 p-3 rounded-r"><p class="text-xs text-purple-800 font-medium"><strong>Internal Coordinator Context:</strong> The crucial link between external billing (Revenue) and internal job costing. They track Work-In-Progress (WIP) to ensure the project is not "Underbilled" (bleeding cash) and that gross margins are maintained.</p></div></div>`;
+                    html += `<div class="bg-purple-50 border-l-4 border-purple-500 p-3 rounded-r"><p class="text-xs text-purple-800 font-medium"><strong>Sandra R. — Meridian Commercial (Internal WIP Controller):</strong> Tracks the gap between external billing (earned revenue per G702) and internal job costs. A healthy positive variance means the project is billing ahead of costs. Watch for margin fade on MEP and curtain wall as those scopes ramp up in App #05 and #06.</p></div></div>`;
                     html += this.renderCoordinatorView(phaseData);
                 }
 
@@ -282,7 +289,10 @@
                     <div class="max-w-5xl mx-auto animate-fade-in space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                             <div class="bg-slate-800 p-4 flex justify-between items-center text-white">
-                                <h3 class="font-bold text-sm tracking-wider uppercase">G703 Continuation Sheet - Architect Review</h3>
+                                <div>
+                                    <h3 class="font-bold text-sm tracking-wider uppercase">G703 Continuation Sheet — Westbrook &amp; Associates Review</h3>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Harborview Office Complex · Meridian Commercial LLC · ${data.appNum}</p>
+                                </div>
                                 <div class="flex gap-3">
                                     <button class="bg-rose-500 hover:bg-rose-600 px-4 py-1.5 rounded text-xs font-bold transition shadow-sm">Reject Line Item</button>
                                     <button class="bg-emerald-500 hover:bg-emerald-600 px-4 py-1.5 rounded text-xs font-bold transition shadow-sm flex items-center gap-2"><span>✍️</span> Certify Payment</button>
@@ -322,57 +332,70 @@
             },
 
             renderSubcontractorView(data) {
-                const subData = data.g703.find(r => r.id === '04'); // Steel Sub
+                const subData = data.g703.find(r => r.id === '04'); // MEP sub — Meridian MEP
                 const isComplete = subData.percent === 100;
                 
                 return `
                     <div class="max-w-3xl mx-auto animate-fade-in space-y-6">
-                        <div class="bg-white border-t-4 border-blue-600 rounded-xl shadow-md p-8">
+                        <div class="bg-white border-t-4 rounded-xl shadow-md p-8" style="border-color:#0f766e">
                             <div class="flex justify-between items-start mb-8 border-b border-slate-100 pb-4">
-                                <div>
-                                    <h2 class="text-2xl font-black text-slate-900">SteelCore Framing LLC</h2>
-                                    <p class="text-sm text-slate-500 mt-1">Vendor Portal • Neon Apex Tower</p>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-black shadow" style="background:#0f766e">MM</div>
+                                    <div>
+                                        <h2 class="text-2xl font-black text-slate-900">Meridian MEP</h2>
+                                        <p class="text-sm text-slate-500 mt-0.5">Subsidiary Vendor Portal · Harborview Office Complex</p>
+                                        <p class="text-xs font-mono text-slate-400">EIN: 47-2819304 · SOV Line 04</p>
+                                    </div>
                                 </div>
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">Sandboxed View</span>
+                                <div class="text-right">
+                                    <span class="bg-teal-100 text-teal-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest block mb-1">Sandboxed View</span>
+                                    <span class="text-[9px] text-slate-400 font-mono">Entity token: {subsidiary.taxId}</span>
+                                </div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-6 mb-8">
                                 <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Your Total Contract</p>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Your SOV Contract Value</p>
                                     <p class="text-xl font-mono font-bold text-slate-800">${this.formatCurrency(subData.scheduled)}</p>
+                                    <p class="text-xs text-slate-500 mt-1">MEP Rough-In scope per CNTR-2025-HV01</p>
                                 </div>
                                 <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Previously Billed</p>
                                     <p class="text-xl font-mono font-bold text-slate-800">${this.formatCurrency(subData.prev)}</p>
+                                    <p class="text-xs text-slate-500 mt-1">Certified by Westbrook &amp; Associates</p>
                                 </div>
                             </div>
 
-                            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
-                                <h3 class="text-sm font-bold text-blue-900 mb-4">Application for Current Period</h3>
+                            <div class="bg-teal-50 border border-teal-200 rounded-xl p-6 mb-8">
+                                <h3 class="text-sm font-bold text-teal-900 mb-1">Application for Current Period</h3>
+                                <p class="text-xs text-teal-700 mb-4">Diana K. entering progress for Oct 31, 2025 billing cycle.</p>
                                 <div class="flex items-center gap-6">
                                     <div class="flex-1">
                                         <label class="block text-xs font-bold text-slate-700 mb-2">Enter % Complete to Date:</label>
                                         <div class="relative">
-                                            <input type="number" ${isComplete ? 'disabled' : ''} class="w-full border border-slate-300 rounded-lg p-3 text-lg font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none ${isComplete ? 'bg-slate-100 text-slate-500' : 'bg-white'}" value="${subData.percent}">
+                                            <input type="number" ${isComplete ? 'disabled' : ''} class="w-full border border-slate-300 rounded-lg p-3 text-lg font-bold text-slate-900 focus:ring-2 focus:ring-teal-500 outline-none ${isComplete ? 'bg-slate-100 text-slate-500' : 'bg-white'}" value="${subData.percent}">
                                             <span class="absolute right-4 top-1/2 transform -translate-y-1/2 font-bold text-slate-400">%</span>
                                         </div>
                                     </div>
                                     <div class="text-3xl text-slate-300">➔</div>
                                     <div class="flex-1">
-                                        <label class="block text-xs font-bold text-slate-700 mb-2">Calculated Value Earned:</label>
-                                        <div class="border border-transparent p-3 text-2xl font-mono font-bold text-emerald-600">
-                                            ${this.formatCurrency((subData.percent / 100) * subData.scheduled)}
+                                        <label class="block text-xs font-bold text-slate-700 mb-2">Calculated Value Earned This Period:</label>
+                                        <div class="border border-transparent p-3 text-2xl font-mono font-bold text-teal-600">
+                                            ${this.formatCurrency(subData.current)}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="flex justify-between items-center pt-6 border-t border-slate-100">
-                                <div class="text-xs text-amber-600 font-bold bg-amber-50 px-3 py-1.5 rounded">
-                                    Retainage currently withheld by GC: ${this.formatCurrency(subData.ret)}
+                                <div class="space-y-1">
+                                    <div class="text-xs text-amber-600 font-bold bg-amber-50 px-3 py-1.5 rounded">
+                                        10% Retainage withheld by GC: ${this.formatCurrency(subData.ret)}
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 px-1">REQ-091: 5% retainage rider pending Morgan L. approval</p>
                                 </div>
-                                <button class="${isComplete ? 'bg-slate-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white px-8 py-3 rounded-lg text-sm font-bold shadow-md transition">
-                                    ${isComplete ? 'Fully Billed' : 'Submit Progress to GC'}
+                                <button class="${isComplete ? 'bg-slate-300 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700'} text-white px-8 py-3 rounded-lg text-sm font-bold shadow-md transition">
+                                    ${isComplete ? 'Fully Billed' : 'Submit Sub-Application to Meridian Commercial'}
                                 </button>
                             </div>
                         </div>

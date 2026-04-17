@@ -86,7 +86,7 @@
             <div class="text-xs text-slate-500 flex items-center gap-1.5 font-medium bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Synced Globally
             </div>
-            <button onclick="app.showToast('Global assets published successfully. 24 templates updated.')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-2">
+            <button onclick="app.showToast('Global assets published. 6 Meridian templates updated across 3 entities.')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-2">
                 <span>🔄</span> Publish Global Changes
             </button>
         </div>
@@ -138,85 +138,143 @@
                 <div class="flex justify-between items-end">
                     <div>
                         <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Brand Identity</h2>
-                        <p class="text-sm text-slate-500 mt-2">Configure global logos and color schemes. These variables cascade to all standard templates.</p>
+                        <p class="text-sm text-slate-500 mt-2">Configure logos and color schemes per entity. Subsidiary templates inherit parent palette unless overridden. Changes cascade to all templates using centralized structural blocks.</p>
+                    </div>
+                </div>
+
+                <!-- Entity Switcher -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-3 flex items-center gap-2">
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">Active Entity</span>
+                        <span class="text-xs text-slate-400">— select to configure branding</span>
+                    </div>
+                    <div class="grid grid-cols-3 divide-x divide-slate-200" id="entity-tabs">
+                        <button onclick="app.switchEntity('ent-commercial')" id="etab-ent-commercial" class="entity-tab p-5 text-left hover:bg-blue-50 transition border-b-2 border-blue-600 bg-blue-50">
+                            <div class="flex items-center gap-3 mb-1">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-black" style="background:#1e3a5f">MC</div>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-900">Meridian Commercial</div>
+                                    <div class="text-[10px] text-slate-500">Parent / GC Entity · 4 templates</div>
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="app.switchEntity('ent-mep')" id="etab-ent-mep" class="entity-tab p-5 text-left hover:bg-teal-50 transition border-b-2 border-transparent">
+                            <div class="flex items-center gap-3 mb-1">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-black" style="background:#0f766e">MM</div>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-900">Meridian MEP</div>
+                                    <div class="text-[10px] text-slate-500">Subsidiary — Mechanical · 2 templates</div>
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="app.switchEntity('ent-residential')" id="etab-ent-residential" class="entity-tab p-5 text-left hover:bg-violet-50 transition border-b-2 border-transparent">
+                            <div class="flex items-center gap-3 mb-1">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-black" style="background:#7c3aed">MR</div>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-900">Meridian Residential</div>
+                                    <div class="text-[10px] text-slate-500">Subsidiary — Homebuilding · 1 template</div>
+                                </div>
+                            </div>
+                        </button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                    
                     <div class="lg:col-span-3 space-y-6">
                         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                            <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>🖼️</span> Primary Enterprise Logo</h3>
+                            <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-2"><span>🖼️</span> Entity Logo</h3>
+                            <p class="text-xs text-slate-500 mb-4">Injected via <code class="bg-slate-100 px-1.5 py-0.5 rounded text-blue-700 font-mono">{subsidiary.logo@Url}</code> token at output time — no duplicate templates needed.</p>
                             <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-blue-50 hover:border-blue-400 transition cursor-pointer flex flex-col items-center justify-center group">
-                                <div class="w-20 h-20 bg-slate-900 rounded-xl flex items-center justify-center text-white text-3xl font-black mb-4 shadow-lg group-hover:scale-105 transition-transform duration-300">AC</div>
+                                <div id="entity-logo-preview" class="w-20 h-20 rounded-xl flex items-center justify-center text-white text-3xl font-black mb-4 shadow-lg group-hover:scale-105 transition-transform duration-300" style="background:#1e3a5f">MC</div>
                                 <span class="text-sm font-bold text-blue-600">Click to upload new vector or high-res image</span>
-                                <span class="text-xs text-slate-400 mt-2 font-medium">PNG, JPG (Max 5MB). Transparent background recommended.</span>
+                                <span class="text-xs text-slate-400 mt-2 font-medium">PNG, SVG (Max 5MB). Transparent background recommended.</span>
                             </div>
                         </div>
 
                         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                            <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>🎨</span> Global Color Palette</h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2"><span>🎨</span> Entity Color Palette</h3>
+                                <span id="entity-inherit-badge" class="text-[10px] bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded font-bold">Inherits from Parent</span>
+                            </div>
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50">
                                     <div>
                                         <p class="text-sm font-bold text-slate-800">Primary Accent</p>
-                                        <p class="text-[11px] text-slate-500 mt-1">Used for highlights, buttons, and totals borders.</p>
+                                        <p class="text-[11px] text-slate-500 mt-1">Highlights, buttons, totals borders.</p>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <span class="text-xs font-mono text-slate-500 font-bold">#2563EB</span>
-                                        <input type="color" value="#2563eb" class="w-10 h-10 rounded border border-slate-300 cursor-pointer shadow-sm" onchange="app.updateBrandColor('primary', this.value)">
+                                        <span id="color-primary-hex" class="text-xs font-mono text-slate-500 font-bold">#1e3a5f</span>
+                                        <input type="color" id="color-primary" value="#1e3a5f" class="w-10 h-10 rounded border border-slate-300 cursor-pointer shadow-sm" onchange="app.updateBrandColor('primary', this.value)">
                                     </div>
                                 </div>
                                 <div class="flex items-center justify-between p-4 border border-slate-100 rounded-xl bg-slate-50">
                                     <div>
-                                        <p class="text-sm font-bold text-slate-800">Secondary / Header</p>
-                                        <p class="text-[11px] text-slate-500 mt-1">Used for document headers and prominent backgrounds.</p>
+                                        <p class="text-sm font-bold text-slate-800">Header / Secondary</p>
+                                        <p class="text-[11px] text-slate-500 mt-1">Document headers, prominent backgrounds.</p>
                                     </div>
                                     <div class="flex items-center gap-3">
-                                        <span class="text-xs font-mono text-slate-500 font-bold">#0F172A</span>
-                                        <input type="color" value="#0f172a" class="w-10 h-10 rounded border border-slate-300 cursor-pointer shadow-sm" onchange="app.updateBrandColor('secondary', this.value)">
+                                        <span id="color-secondary-hex" class="text-xs font-mono text-slate-500 font-bold">#0f172a</span>
+                                        <input type="color" id="color-secondary" value="#0f172a" class="w-10 h-10 rounded border border-slate-300 cursor-pointer shadow-sm" onchange="app.updateBrandColor('secondary', this.value)">
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>🏢</span> Entity Legal Details</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                                    <span class="text-slate-500 font-medium">Legal Name</span>
+                                    <span id="entity-legal-name" class="font-bold text-slate-800">Meridian Commercial LLC</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                                    <span class="text-slate-500 font-medium">Tax ID (EIN)</span>
+                                    <span id="entity-tax-id" class="font-mono font-bold text-slate-800">82-4401937</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2">
+                                    <span class="text-slate-500 font-medium">Billing Address</span>
+                                    <span id="entity-address" class="text-slate-800 text-right">4500 Harbor Blvd, Suite 300<br>San Diego, CA 92101</span>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-[10px] text-slate-400 font-medium">Injected via <code class="font-mono text-blue-600">{subsidiary.legalName}</code>, <code class="font-mono text-blue-600">{subsidiary.taxId}</code>, <code class="font-mono text-blue-600">{subsidiary.address}</code> tokens.</p>
                         </div>
                     </div>
 
                     <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-                        <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>👁️</span> Real-Time Application</h3>
-                        <div class="flex-1 bg-slate-100 rounded-xl border border-slate-200 p-6 flex items-center justify-center relative overflow-hidden shadow-inner">
-                            
+                        <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><span>👁️</span> Real-Time Template Preview</h3>
+                        <div class="flex-1 bg-slate-100 rounded-xl border border-slate-200 p-4 flex items-center justify-center relative overflow-hidden shadow-inner">
                             <div class="bg-white w-full max-w-sm rounded-lg shadow-xl overflow-hidden flex flex-col transition-all duration-300 transform scale-95 hover:scale-100 border border-slate-200">
-                                <div class="preview-header p-5 flex justify-between items-center">
-                                    <div class="w-10 h-10 bg-white/20 rounded shadow-inner flex items-center justify-center text-white font-black text-sm">AC</div>
-                                    <span class="text-white font-bold tracking-widest text-sm opacity-90">INVOICE</span>
+                                <div class="preview-header p-4 flex justify-between items-center">
+                                    <div id="preview-logo" class="w-10 h-10 rounded-lg shadow-inner flex items-center justify-center text-white font-black text-sm" style="background:rgba(255,255,255,0.2)">MC</div>
+                                    <div class="text-right">
+                                        <div class="text-white font-bold tracking-widest text-xs opacity-90">APPLICATION FOR PAYMENT</div>
+                                        <div class="text-white/60 text-[9px] mt-0.5">App No: APP-0004 · Period To: Oct 31, 2025</div>
+                                    </div>
                                 </div>
-                                
-                                <div class="p-6 space-y-6">
+                                <div class="p-5 space-y-4">
                                     <div class="flex justify-between border-b-2 preview-border pb-3">
                                         <div class="space-y-1.5">
-                                            <div class="h-2 w-20 bg-slate-200 rounded"></div>
-                                            <div class="h-2 w-32 bg-slate-200 rounded"></div>
+                                            <div id="preview-entity-name" class="text-xs font-black text-slate-800">MERIDIAN COMMERCIAL LLC</div>
+                                            <div id="preview-entity-tax" class="text-[9px] font-mono text-slate-400">EIN: 82-4401937</div>
+                                            <div class="h-1.5 w-28 bg-slate-200 rounded mt-1"></div>
                                         </div>
                                         <div class="text-right">
-                                            <div class="preview-accent font-black text-2xl leading-none">$1,250.00</div>
-                                            <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Total Due</div>
+                                            <div class="preview-accent font-black text-xl leading-none">$606,400</div>
+                                            <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Current Due</div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="space-y-3">
-                                        <div class="flex justify-between text-[9px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1"><span>Description</span><span>Amount</span></div>
-                                        <div class="flex justify-between text-[11px] font-medium text-slate-700"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span> Consulting Services</span><span>$500.00</span></div>
-                                        <div class="flex justify-between text-[11px] font-medium text-slate-700"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span> License Fees</span><span>$750.00</span></div>
-                                    </div>
-
-                                    <div class="preview-bg text-white text-xs font-bold py-2.5 rounded text-center shadow-md mt-6 cursor-pointer">
-                                        Pay Invoice Now
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between text-[9px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1"><span>SOV Line Item</span><span>Amount</span></div>
+                                        <div class="flex justify-between text-[10px] font-medium text-slate-700"><span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span>Structural Steel</span><span>$230,000</span></div>
+                                        <div class="flex justify-between text-[10px] font-medium text-slate-700"><span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span>MEP Rough-In</span><span>$156,000</span></div>
+                                        <div class="flex justify-between text-[10px] font-medium text-slate-700"><span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span>CO-1: Waterproofing</span><span>$71,500</span></div>
+                                        <div class="flex justify-between text-[10px] font-medium text-slate-700"><span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full preview-bg"></span>Glass Curtain Wall</span><span>$114,000</span></div>
+                                        <div class="flex justify-between text-[10px] font-bold text-slate-500 border-t border-slate-100 pt-1 mt-1"><span>Less Retainage (10%)</span><span class="text-red-500">−$384,600 held</span></div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-                        <p class="text-[10px] font-medium text-slate-500 mt-4 text-center leading-relaxed">Colors apply automatically to all templates utilizing standard Intuit structural blocks.</p>
+                        <p class="text-[10px] font-medium text-slate-500 mt-4 text-center leading-relaxed">Entity branding cascades automatically via token injection. Switch entities above to preview each subsidiary's output.</p>
                     </div>
                 </div>
             </div>
@@ -349,12 +407,12 @@
                                     <div id="hf-preview-box" class="flex flex-col gap-4 transition-all duration-300 border-2 border-dashed border-blue-300 bg-blue-50/30 p-5 relative rounded">
                                         <div class="absolute -top-3 -left-px bg-blue-100 text-blue-800 text-[9px] font-bold px-2 py-0.5 rounded border border-blue-200 uppercase tracking-wider">Locked Boundary</div>
                                         
-                                        <div id="prev-logo" class="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center text-white text-2xl font-black shadow-md transition-all duration-300">AC</div>
+                                        <div id="prev-logo" class="w-16 h-16 rounded-lg flex items-center justify-center text-white text-2xl font-black shadow-md transition-all duration-300" style="background:#1e3a5f">MC</div>
                                         
                                         <div id="prev-text-group" class="transition-all duration-300 space-y-1.5">
-                                            <h1 id="prev-name" class="text-xl font-black text-slate-900 tracking-tight">ACME CORPORATION</h1>
-                                            <p id="prev-address" class="text-xs text-slate-500">123 Business Pkwy, Enterprise City, CA 90210</p>
-                                            <p id="prev-tax" class="text-[10px] font-mono text-slate-400 font-bold mt-1 pt-1.5 border-t border-slate-200 inline-block">Tax ID: 99-9999999</p>
+                                            <h1 id="prev-name" class="text-xl font-black text-slate-900 tracking-tight">MERIDIAN COMMERCIAL LLC</h1>
+                                            <p id="prev-address" class="text-xs text-slate-500">4500 Harbor Blvd, Suite 300, San Diego, CA 92101</p>
+                                            <p id="prev-tax" class="text-[10px] font-mono text-slate-400 font-bold mt-1 pt-1.5 border-t border-slate-200 inline-block">Tax ID: 82-4401937</p>
                                         </div>
                                     </div>
                                     
@@ -383,15 +441,21 @@
 
 <script>
     const db = {
+        entities: [
+            { id: 'ent-commercial', label: 'Meridian Commercial', taxId: '82-4401937', address: '4500 Harbor Blvd, Suite 300, San Diego, CA 92101', logoInitials: 'MC', logoColor: '#1e3a5f', role: 'Parent / GC Entity', templates: 4 },
+            { id: 'ent-mep', label: 'Meridian MEP', taxId: '47-2819304', address: '820 Industrial Way, Chula Vista, CA 91911', logoInitials: 'MM', logoColor: '#0f766e', role: 'Subsidiary — Mechanical', templates: 2 },
+            { id: 'ent-residential', label: 'Meridian Residential', taxId: '61-9032145', address: '4500 Harbor Blvd, Suite 310, San Diego, CA 92101', logoInitials: 'MR', logoColor: '#7c3aed', role: 'Subsidiary — Homebuilding', templates: 1 }
+        ],
         snippets: [
-            { id: 'snp-001', title: 'Standard Terms (US)', content: 'All payments are strictly Net 30. A late fee of 1.5% per month will be applied to past due balances. All goods remain property of {Company.LegalName} until paid in full.', templates: ['Standard B2B Services', 'Marketing Retainer', 'T&M Detail'] },
-            { id: 'snp-002', title: 'EU GDPR Disclaimer', content: 'In accordance with GDPR, your data is processed solely for executing this transaction. To request data deletion, contact privacy@acmecorp.com.', templates: ['International Services (EUR)'] },
-            { id: 'snp-003', title: 'AIA Retainage Terms', content: 'Standard AIA payment certification applies. Subcontractors must provide conditional lien waivers before retainage release.', templates: ['AIA G702 Master', 'Commercial Build T&M'] }
+            { id: 'snp-001', title: 'AIA Payment Certification (US)', content: 'The undersigned Contractor certifies that to the best of their knowledge, information and belief the Work covered by this Application for Payment has been completed in accordance with the Contract Documents. Payment of the amount certified is conditional upon receipt of conditional lien waivers from all subcontractors performing work in the current period. Retainage is held per {Client.ContractID} §7.2 at {Contract.RetainagePct}% until Substantial Completion.', templates: ['AIA G702/G703 — Meridian Commercial', 'MEP Sub-Application G703 — Meridian MEP', 'Residential Progress Bill — Meridian Residential'] },
+            { id: 'snp-002', title: 'Net 30 Standard Payment Terms', content: 'All amounts are due Net 30 from invoice date. A late payment charge of 1.5% per month (18% per annum) will be assessed on all past-due balances. {Company.LegalName} reserves all rights under applicable lien laws. This invoice is issued by {subsidiary.legalName}, a subsidiary of Meridian Construction Group LLC.', templates: ['AIA G702/G703 — Meridian Commercial', 'T&M Professional Services — Meridian Consulting', 'Material Supply Invoice — Wholesale'] },
+            { id: 'snp-003', title: 'Reduced Retainage Rider (>50% Complete)', content: 'Per AIA A201-2017 §9.8 and project-specific amendment, retainage on completed portions of the Work shall be reduced to five percent (5%) once the Work is fifty percent (50%) complete and the Architect has certified a Payment Application confirming satisfactory progress. This rider applies to CNTR-2025-HV01 and any project where {Project.PctComplete} ≥ 50%.', templates: ['MEP Sub-App G703 — Reduced Retainage (Draft)'] },
+            { id: 'snp-004', title: 'Change Order Disclosure', content: 'This application includes amounts attributable to executed Change Orders. All Change Orders have been approved in writing via AIA G701 prior to inclusion in this billing cycle. Unapproved change directives are excluded from this application and will appear in a subsequent billing period upon execution.', templates: ['AIA G702/G703 — Meridian Commercial'] }
         ],
         headers: [
-            { id: 'hdr-001', title: 'Standard Corporate Header', align: 'left', showLogo: true, showName: true, showAddress: true, showTax: false, templates: ['Standard B2B Services', 'Time & Materials Detail', 'Marketing Retainer'] },
-            { id: 'hdr-002', title: 'Minimalist Centered', align: 'center', showLogo: true, showName: false, showAddress: false, showTax: false, templates: ['Freelancer Layout', 'Creative Studio Invoice'] },
-            { id: 'hdr-003', title: 'EU Compliant Strict', align: 'left', showLogo: true, showName: true, showAddress: true, showTax: true, templates: ['International Services (EUR)'] }
+            { id: 'hdr-001', title: 'Meridian Commercial — Standard AIA', align: 'left', showLogo: true, showName: true, showAddress: true, showTax: true, entity: 'ent-commercial', name: 'MERIDIAN COMMERCIAL', address: '4500 Harbor Blvd, Suite 300, San Diego, CA 92101', taxId: '82-4401937', logoInitials: 'MC', logoColor: '#1e3a5f', templates: ['AIA G702/G703 — Meridian Commercial', 'T&M Professional Services — Meridian Consulting', 'Material Supply Invoice — Wholesale'] },
+            { id: 'hdr-002', title: 'Meridian MEP — Subsidiary Header', align: 'left', showLogo: true, showName: true, showAddress: true, showTax: true, entity: 'ent-mep', name: 'MERIDIAN MEP', address: '820 Industrial Way, Chula Vista, CA 91911', taxId: '47-2819304', logoInitials: 'MM', logoColor: '#0f766e', templates: ['MEP Sub-Application G703 — Meridian MEP', 'MEP Sub-App G703 — Reduced Retainage (Draft)'] },
+            { id: 'hdr-003', title: 'Meridian Residential — Homebuilding', align: 'left', showLogo: true, showName: true, showAddress: true, showTax: true, entity: 'ent-residential', name: 'MERIDIAN RESIDENTIAL', address: '4500 Harbor Blvd, Suite 310, San Diego, CA 92101', taxId: '61-9032145', logoInitials: 'MR', logoColor: '#7c3aed', templates: ['Residential Progress Bill — Meridian Residential'] }
         ]
     };
 
@@ -399,7 +463,8 @@
         state: {
             category: 'brand',
             snippetId: 'snp-001',
-            headerId: 'hdr-001'
+            headerId: 'hdr-001',
+            entityId: 'ent-commercial'
         },
 
         init() {
@@ -408,6 +473,66 @@
             this.renderHeaders();
             this.loadHeader('hdr-001');
             this.initChart();
+        },
+
+        switchEntity(id) {
+            this.state.entityId = id;
+            const ent = db.entities.find(e => e.id === id);
+            if (!ent) return;
+
+            // Update entity tab highlight
+            document.querySelectorAll('.entity-tab').forEach(tab => {
+                tab.classList.remove('border-blue-600', 'bg-blue-50', 'border-teal-600', 'bg-teal-50', 'border-violet-600', 'bg-violet-50');
+                tab.classList.add('border-transparent');
+            });
+            const activeTab = document.getElementById(`etab-${id}`);
+            if (activeTab) {
+                activeTab.classList.remove('border-transparent');
+                if (id === 'ent-commercial') activeTab.classList.add('border-blue-600', 'bg-blue-50');
+                if (id === 'ent-mep') activeTab.classList.add('border-teal-600', 'bg-teal-50');
+                if (id === 'ent-residential') activeTab.classList.add('border-violet-600', 'bg-violet-50');
+            }
+
+            // Update logo preview
+            const logo = document.getElementById('entity-logo-preview');
+            if (logo) { logo.textContent = ent.logoInitials; logo.style.background = ent.logoColor; }
+            const prevLogo = document.getElementById('prev-logo');
+            if (prevLogo) { prevLogo.textContent = ent.logoInitials; prevLogo.style.background = ent.logoColor; }
+            const previewLogo = document.getElementById('preview-logo');
+            if (previewLogo) { previewLogo.textContent = ent.logoInitials; previewLogo.style.background = 'rgba(255,255,255,0.2)'; }
+
+            // Update colors
+            document.getElementById('color-primary').value = ent.logoColor;
+            document.getElementById('color-primary-hex').textContent = ent.logoColor;
+            document.documentElement.style.setProperty('--brand-primary', ent.logoColor);
+            document.documentElement.style.setProperty('--brand-secondary', ent.logoColor);
+
+            // Update legal details
+            const nameEl = document.getElementById('entity-legal-name');
+            const taxEl = document.getElementById('entity-tax-id');
+            const addrEl = document.getElementById('entity-address');
+            if (nameEl) nameEl.textContent = ent.label + ' LLC';
+            if (taxEl) taxEl.textContent = ent.taxId;
+            if (addrEl) addrEl.innerHTML = ent.address.replace(', ', '<br>');
+
+            // Update header preview
+            const prevName = document.getElementById('prev-name');
+            const prevAddr = document.getElementById('prev-address');
+            const prevTax = document.getElementById('prev-tax');
+            const previewEntityName = document.getElementById('preview-entity-name');
+            const previewEntityTax = document.getElementById('preview-entity-tax');
+            if (prevName) prevName.textContent = ent.label.toUpperCase() + ' LLC';
+            if (prevAddr) prevAddr.textContent = ent.address;
+            if (prevTax) prevTax.textContent = 'Tax ID: ' + ent.taxId;
+            if (previewEntityName) previewEntityName.textContent = ent.label.toUpperCase() + ' LLC';
+            if (previewEntityTax) previewEntityTax.textContent = 'EIN: ' + ent.taxId;
+
+            // Inherit badge
+            const badge = document.getElementById('entity-inherit-badge');
+            if (badge) {
+                if (id === 'ent-commercial') badge.textContent = 'Parent Entity';
+                else badge.textContent = 'Inherits from Parent · Overridden';
+            }
         },
 
         switchCategory(cat) {
@@ -497,6 +622,16 @@
             document.getElementById('hf-name').checked = h.showName;
             document.getElementById('hf-address').checked = h.showAddress;
             document.getElementById('hf-tax').checked = h.showTax;
+
+            // Update preview content with real entity data
+            const prevLogo = document.getElementById('prev-logo');
+            const prevName = document.getElementById('prev-name');
+            const prevAddr = document.getElementById('prev-address');
+            const prevTax = document.getElementById('prev-tax');
+            if (prevLogo) { prevLogo.textContent = h.logoInitials; prevLogo.style.background = h.logoColor; }
+            if (prevName) prevName.textContent = h.name;
+            if (prevAddr) prevAddr.textContent = h.address;
+            if (prevTax) prevTax.textContent = 'Tax ID: ' + h.taxId;
 
             document.getElementById('hf-impact-list').innerHTML = h.templates.map(t => `
                 <div class="bg-white border border-amber-200 shadow-sm rounded-lg px-3 py-2 flex items-center gap-2">

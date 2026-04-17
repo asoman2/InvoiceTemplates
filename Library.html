@@ -83,7 +83,7 @@ body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f17
     <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-20 shadow-sm">
         <div>
             <h1 class="text-xl font-bold text-slate-900">Template Discovery</h1>
-            <p class="text-xs text-slate-500">Manage organizational standards and factory defaults.</p>
+            <p class="text-xs text-slate-500">Meridian Construction Group · 3 entities · Managing organizational standards and factory defaults.</p>
         </div>
         <div class="flex items-center gap-4">
             <button onclick="app.showToast('AI Migration Engine Initialized. Please select legacy file.')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition border border-slate-200 flex items-center gap-2">
@@ -105,8 +105,8 @@ body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f17
                             <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Org Templates</p>
                             <span class="text-xl">📄</span>
                         </div>
-                        <h2 class="text-3xl font-black text-slate-800">18</h2>
-                        <p class="text-xs text-emerald-600 mt-2 font-medium flex items-center gap-1"><span>▲</span> 3 published this month</p>
+                        <h2 class="text-3xl font-black text-slate-800">6</h2>
+                        <p class="text-xs text-emerald-600 mt-2 font-medium flex items-center gap-1"><span>▲</span> 1 published this month · 3 entities</p>
                     </div>
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                         <div class="flex justify-between items-start mb-2">
@@ -173,18 +173,19 @@ body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f17
 <script>
 const appData = {
     orgTemplates: [
-        { id: 'o1', title: 'AIA Master G702/G703', industry: 'construction', status: 'published', edited: 'Today', author: 'System Admin', usage: 1450, desc: 'Standard progress billing mapped to SOV with 10% retainage logic.' },
-        { id: 'o2', title: 'T&M Detail (Legal)', industry: 'services', status: 'published', edited: '2 days ago', author: 'Jane D.', usage: 980, desc: 'Groups timesheets by attorney level. Includes trust account block.' },
-        { id: 'o3', title: 'Wholesale Bulk Drop-Ship', industry: 'retail', status: 'published', edited: '1 week ago', author: 'Mark S.', usage: 1855, desc: 'Optimized for high-volume SKUs with tiered discount calculations.' },
-        { id: 'o4', title: 'Fixed Fee Milestone', industry: 'services', status: 'draft', edited: '3 hrs ago', author: 'System Admin', usage: 0, desc: 'Simplified layout without hourly breakdowns. Pending Brand approval.' },
-        { id: 'o5', title: 'EU VAT Compliant Services', industry: 'services', status: 'published', edited: '1 month ago', author: 'Jane D.', usage: 420, desc: 'Includes reverse charge logic and multi-currency display.' }
+        { id: 'o1', title: 'AIA G702/G703 — Meridian Commercial', industry: 'construction', status: 'published', edited: 'Today', author: 'Sandra R. (Admin)', entity: 'Meridian Commercial', usage: 1247, desc: 'Master AIA progress billing template for Meridian Commercial entity. 8-line SOV, 10% retainage auto-calc, CO append logic. Used for Harborview, Civic Center, and 6 other active projects.' },
+        { id: 'o2', title: 'MEP Sub-Application G703 — Meridian MEP', industry: 'construction', status: 'published', edited: '2 days ago', author: 'Diana K. (Admin)', entity: 'Meridian MEP', usage: 312, desc: 'Subsidiary template for Meridian MEP division. Inherits parent retainage rules; auto-stamps MEP Tax ID (47-2819304) and logo. Flows into Meridian Commercial master G702 via entity consolidation.' },
+        { id: 'o3', title: 'Residential Progress Bill — Meridian Residential', industry: 'construction', status: 'published', edited: '1 week ago', author: 'Sandra R. (Admin)', entity: 'Meridian Residential', usage: 489, desc: 'Simplified AIA-style billing for homebuilding division. 5% retainage (per residential contract standard), lot/phase breakdown, owner-direct payment terms.' },
+        { id: 'o4', title: 'MEP Sub-App G703 — Reduced Retainage (Draft)', industry: 'construction', status: 'draft', edited: '3 hrs ago', author: 'Diana K. (Designer)', entity: 'Meridian MEP', usage: 0, desc: 'Proposed variant with 5% retainage for projects >50% complete. Submitted for Compliance Approver review. Pending: Morgan L. approval before publish.' },
+        { id: 'o5', title: 'T&M Professional Services — Meridian Consulting', industry: 'services', status: 'published', edited: '3 weeks ago', author: 'Sandra R. (Admin)', entity: 'Meridian Commercial', usage: 74, desc: 'Time & materials billing for construction management engagements. Groups labor by role tier (PM, Superintendent, Engineer), expense itemization, Net 45 terms.' },
+        { id: 'o6', title: 'Material Supply Invoice — Wholesale', industry: 'retail', status: 'published', edited: '1 month ago', author: 'System Admin', entity: 'Meridian Commercial', usage: 163, desc: 'Used for direct material sales and bulk supply orders. SKU table, delivery terms, freight line-item, and trade discount tier logic.' }
     ],
     factoryTemplates: [
-        { id: 'f1', title: 'Intuit Standard Construction', industry: 'construction', icon: '🏗️', desc: 'Out-of-the-box compliant AIA application for payment.' },
-        { id: 'f2', title: 'Intuit Pro Services', industry: 'services', icon: '💼', desc: 'Clean, modern layout for consultants and agencies.' },
-        { id: 'f3', title: 'Intuit Product Sales', industry: 'retail', icon: '📦', desc: 'Standard product invoice with shipping and tracking columns.' },
-        { id: 'f4', title: 'Intuit Non-Profit Grant', industry: 'services', icon: '🏛️', desc: 'Tailored for fund tracking and grant specific reporting.' },
-        { id: 'f5', title: 'Intuit Medical Billing', industry: 'services', icon: '⚕️', desc: 'Includes secure patient ID mapping and insurance code columns.' }
+        { id: 'f1', title: 'Intuit AIA G702/G703 Standard', industry: 'construction', icon: '🏗️', desc: 'Certified AIA application for payment. Full G703 SOV array, retainage logic, architect certification block. Starting point for Meridian Commercial template.' },
+        { id: 'f2', title: 'Intuit Construction Sub-Billing', industry: 'construction', icon: '🔧', desc: 'Subcontractor billing template with parent entity consolidation support and entity-specific branding tokens.' },
+        { id: 'f3', title: 'Intuit Professional Services T&M', industry: 'services', icon: '💼', desc: 'Time & materials with role-based rate tables, expense receipts attachment zone, and trust/retainer tracking.' },
+        { id: 'f4', title: 'Intuit Product & Wholesale', industry: 'retail', icon: '📦', desc: 'High-SKU product invoice with tiered discounts, shipping terms, and freight cost allocation.' },
+        { id: 'f5', title: 'Intuit Medical / Healthcare', industry: 'services', icon: '⚕️', desc: 'HIPAA-considerate template with secure patient ID mapping, CPT code columns, and insurance remittance.' }
     ]
 };
 
