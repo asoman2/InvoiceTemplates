@@ -6,10 +6,10 @@
     <title>IES Active Builder Studio (Creation & Consumption)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #1e293b; overflow: hidden; }
+        body { font-family: 'AvenirNextforIntuit', 'Avenir Next', 'Avenir', sans-serif; background-color: #0f172a; color: #1e293b; overflow: hidden; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
         /* Custom Scrollbar */
@@ -104,6 +104,297 @@
         .section-header { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
         .section-header::after { content: ""; flex: 1; height: 1px; background: #e2e8f0; }
     </style>
+
+    <!-- Intuit Design System: AvenirNext for Intuit Font -->
+    <style>
+        /* =============================================
+           INTUIT DESIGN SYSTEM — GLOBAL THEME OVERRIDE
+           AvenirNext for Intuit + Intuit Color Palette
+           ============================================= */
+
+        /* Font-face: AvenirNext for Intuit (hosted via Intuit CDN-compatible stack) */
+        @font-face {
+            font-family: 'AvenirNextforIntuit';
+            font-weight: 100 200;
+            font-style: normal;
+            src: local('AvenirNext-UltraLight'), local('Avenir Next Ultra Light'),
+                 url('https://fonts.intuit.com/avenirnext/AvenirNextforIntuit-UltLt.woff2') format('woff2');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'AvenirNextforIntuit';
+            font-weight: 300;
+            font-style: normal;
+            src: local('AvenirNext-Regular'), local('Avenir Next Regular'),
+                 url('https://fonts.intuit.com/avenirnext/AvenirNextforIntuit-Regular.woff2') format('woff2');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'AvenirNextforIntuit';
+            font-weight: 400 500;
+            font-style: normal;
+            src: local('AvenirNext-Medium'), local('Avenir Next Medium'),
+                 url('https://fonts.intuit.com/avenirnext/AvenirNextforIntuit-Medium.woff2') format('woff2');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'AvenirNextforIntuit';
+            font-weight: 600;
+            font-style: normal;
+            src: local('AvenirNext-DemiBold'), local('Avenir Next Demi Bold'),
+                 url('https://fonts.intuit.com/avenirnext/AvenirNextforIntuit-Demi.woff2') format('woff2');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'AvenirNextforIntuit';
+            font-weight: 700 900;
+            font-style: normal;
+            src: local('AvenirNext-Bold'), local('Avenir Next Bold'),
+                 url('https://fonts.intuit.com/avenirnext/AvenirNextforIntuit-Bold.woff2') format('woff2');
+            font-display: swap;
+        }
+
+        /* ── Intuit Color Palette (Design System Tokens) ── */
+        :root {
+            /* Primary */
+            --ids-blue:          #236CFF;   /* Intuit Blue (primary CTA) */
+            --ids-blue-dark:     #0A4E96;   /* Intuit Blue Dark */
+            --ids-blue-darker:   #002FA7;   /* Deep Intuit Blue */
+            --ids-blue-light:    #EBF1FF;   /* Intuit Blue Tint */
+            --ids-blue-mid:      #C2D4FF;   /* Intuit Blue Mid */
+
+            /* Neutrals */
+            --ids-midnight:      #0A3547;   /* Intuit Midnight (nav/sidebar bg) */
+            --ids-midnight-dark: #052536;   /* Deeper Midnight */
+            --ids-slate-900:     #1B2C3D;
+            --ids-slate-700:     #2D4459;
+            --ids-slate-600:     #3D5A73;
+            --ids-slate-400:     #6B8CA8;
+            --ids-slate-300:     #9BB5C8;
+            --ids-slate-200:     #C5D6E2;
+            --ids-slate-100:     #E8F0F5;
+            --ids-slate-50:      #F4F7FA;
+            --ids-white:         #FFFFFF;
+
+            /* Text */
+            --ids-text-primary:  #1B2C3D;
+            --ids-text-secondary: #3D5A73;
+            --ids-text-muted:    #6B8CA8;
+            --ids-text-inverse:  #FFFFFF;
+
+            /* Semantic */
+            --ids-success:       #108000;
+            --ids-success-light: #E8F5E6;
+            --ids-success-mid:   #4CAF50;
+            --ids-warning:       #D4730A;
+            --ids-warning-light: #FFF3E0;
+            --ids-error:         #B30000;
+            --ids-error-light:   #FDECEA;
+            --ids-info:          #236CFF;
+            --ids-info-light:    #EBF1FF;
+
+            /* Backgrounds */
+            --ids-bg-app:        #F4F7FA;
+            --ids-bg-surface:    #FFFFFF;
+            --ids-bg-subtle:     #E8F0F5;
+
+            /* Borders */
+            --ids-border:        #C5D6E2;
+            --ids-border-strong: #9BB5C8;
+
+            /* Shadows */
+            --ids-shadow-sm: 0 1px 3px rgba(10,53,71,0.08), 0 1px 2px rgba(10,53,71,0.05);
+            --ids-shadow:    0 4px 12px rgba(10,53,71,0.10), 0 2px 4px rgba(10,53,71,0.06);
+            --ids-shadow-lg: 0 10px 30px rgba(10,53,71,0.14), 0 4px 8px rgba(10,53,71,0.08);
+        }
+
+        /* ── Global Font Override ── */
+        *,
+        *::before,
+        *::after {
+            font-family: 'AvenirNextforIntuit', 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        }
+
+        /* ── Body & App Shell ── */
+        html, body {
+            background-color: var(--ids-bg-app) !important;
+            color: var(--ids-text-primary) !important;
+        }
+
+        /* ── Navigation / Sidebar (dark midnight bg) ── */
+        nav.bg-slate-900, aside.bg-slate-900, header.bg-slate-900,
+        .bg-slate-900 { background-color: var(--ids-midnight) !important; }
+        .bg-slate-950, .bg-slate-800 { background-color: var(--ids-midnight-dark) !important; }
+
+        /* Nav text */
+        .bg-slate-900 .text-slate-400,
+        aside .text-slate-400 { color: var(--ids-slate-300) !important; }
+        .bg-slate-900 .text-slate-300 { color: var(--ids-slate-200) !important; }
+
+        /* ── Active sidebar item ── */
+        .border-blue-500 { border-color: var(--ids-blue) !important; }
+
+        /* ── Primary action buttons ── */
+        .bg-blue-600, .bg-blue-700,
+        button.bg-blue-600, a.bg-blue-600 {
+            background-color: var(--ids-blue) !important;
+            border-color: var(--ids-blue) !important;
+        }
+        .bg-blue-600:hover, .bg-blue-700:hover,
+        button.bg-blue-600:hover, a.bg-blue-600:hover,
+        .hover\:bg-blue-700:hover {
+            background-color: var(--ids-blue-dark) !important;
+        }
+
+        /* ── Links & accents ── */
+        .text-blue-600, .text-blue-500, .text-blue-700 { color: var(--ids-blue) !important; }
+        .hover\:text-blue-600:hover { color: var(--ids-blue) !important; }
+        .text-blue-800 { color: var(--ids-blue-dark) !important; }
+
+        /* ── Blue backgrounds (tints) ── */
+        .bg-blue-50 { background-color: var(--ids-blue-light) !important; }
+        .bg-blue-100 { background-color: var(--ids-blue-mid) !important; }
+        .border-blue-200, .border-blue-100 { border-color: var(--ids-blue-mid) !important; }
+        .border-blue-500 { border-color: var(--ids-blue) !important; }
+
+        /* ── Tab active indicator ── */
+        .tab-btn.active { border-bottom-color: var(--ids-blue) !important; color: var(--ids-blue) !important; }
+        .active-feature { background-color: var(--ids-blue-light) !important; border-left-color: var(--ids-blue) !important; color: var(--ids-blue-dark) !important; }
+
+        /* ── Cards & surfaces ── */
+        .bg-white { background-color: var(--ids-bg-surface) !important; }
+        .bg-slate-50 { background-color: var(--ids-bg-app) !important; }
+        .bg-slate-100 { background-color: var(--ids-slate-100) !important; }
+
+        /* ── Borders ── */
+        .border-slate-200 { border-color: var(--ids-border) !important; }
+        .border-slate-100 { border-color: var(--ids-slate-100) !important; }
+        .border-slate-300 { border-color: var(--ids-border-strong) !important; }
+
+        /* ── Text colors ── */
+        .text-slate-900 { color: var(--ids-text-primary) !important; }
+        .text-slate-800 { color: var(--ids-slate-900) !important; }
+        .text-slate-700 { color: var(--ids-text-secondary) !important; }
+        .text-slate-600 { color: var(--ids-text-secondary) !important; }
+        .text-slate-500 { color: var(--ids-text-muted) !important; }
+        .text-slate-400 { color: var(--ids-slate-400) !important; }
+
+        /* ── Section headings ── */
+        .border-b-2.border-emerald-500 { border-color: var(--ids-blue) !important; }
+        .border-b-2.border-blue-500 { border-color: var(--ids-blue) !important; }
+
+        /* ── Success (keep emerald but remap to Intuit green) ── */
+        .text-emerald-600, .text-emerald-400 { color: var(--ids-success) !important; }
+        .text-emerald-400.\:{ color: var(--ids-success-mid) !important; }
+        .bg-emerald-100 { background-color: var(--ids-success-light) !important; }
+        .text-emerald-800 { color: var(--ids-success) !important; }
+        .border-emerald-200 { border-color: #A5D6A7 !important; }
+
+        /* Sidebar IES logo accent → Intuit Blue */
+        .text-emerald-400 { color: var(--ids-blue) !important; }
+
+        /* ── Warning ── */
+        .bg-amber-100 { background-color: var(--ids-warning-light) !important; }
+        .text-amber-800 { color: var(--ids-warning) !important; }
+        .border-amber-200 { border-color: #FFCC80 !important; }
+        .text-amber-500 { color: var(--ids-warning) !important; }
+
+        /* ── Indigo info banner → Intuit blue-tint ── */
+        .bg-indigo-50 { background-color: var(--ids-blue-light) !important; }
+        .border-indigo-100 { border-color: var(--ids-blue-mid) !important; }
+        .text-indigo-500 { color: var(--ids-blue) !important; }
+        .text-indigo-900 { color: var(--ids-blue-dark) !important; }
+        .text-indigo-700 { color: var(--ids-blue-darker) !important; }
+
+        /* ── Selected/focused states ── */
+        .mode-design .canvas-block.selected {
+            border-color: var(--ids-blue) !important;
+            background-color: var(--ids-blue-light) !important;
+            box-shadow: 0 4px 12px rgba(35,108,255,0.15) !important;
+        }
+        .mode-design .canvas-block:hover { border-color: var(--ids-blue) !important; background-color: rgba(235,241,255,0.5) !important; }
+
+        /* ── Data token ── */
+        .mode-design .data-token {
+            background: var(--ids-blue-light) !important;
+            color: var(--ids-blue-dark) !important;
+            border-color: var(--ids-blue-mid) !important;
+        }
+
+        /* ── Nav pill active ── */
+        .nav-pill.active {
+            background-color: var(--ids-blue-light) !important;
+            border-left-color: var(--ids-blue) !important;
+            color: var(--ids-blue-dark) !important;
+        }
+
+        /* ── Queue item active ── */
+        .queue-item.active { border-left-color: var(--ids-blue) !important; }
+
+        /* ── Phase button active ── */
+        .phase-btn.active {
+            background-color: var(--ids-blue) !important;
+            border-color: var(--ids-blue) !important;
+            box-shadow: 0 4px 6px -1px rgba(35,108,255,0.3) !important;
+        }
+        .persona-btn.active {
+            border-bottom-color: var(--ids-blue) !important;
+            color: var(--ids-blue) !important;
+            background-color: var(--ids-blue-light) !important;
+        }
+
+        /* ── Concept wireframe ── */
+        .concept-border { border-color: var(--ids-border-strong) !important; }
+
+        /* ── Chart.js font fallback via CSS ── */
+        canvas { font-family: 'AvenirNextforIntuit', 'Avenir Next', sans-serif !important; }
+
+        /* ── Scrollbar themed ── */
+        ::-webkit-scrollbar-thumb { background: var(--ids-slate-300) !important; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ids-slate-400) !important; }
+
+        /* ── Box shadows ── */
+        .shadow-sm { box-shadow: var(--ids-shadow-sm) !important; }
+        .shadow-md { box-shadow: var(--ids-shadow) !important; }
+        .shadow-lg, .shadow-2xl { box-shadow: var(--ids-shadow-lg) !important; }
+
+        /* ── Rounded consistency ── */
+        .rounded-xl { border-radius: 12px !important; }
+        .rounded-lg { border-radius: 8px !important; }
+        .rounded-2xl { border-radius: 16px !important; }
+
+        /* ── User avatar (SA badge) ── */
+        .bg-blue-600.flex.shrink-0 { background-color: var(--ids-blue) !important; }
+
+        /* ── Focus ring ── */
+        *:focus-visible {
+            outline: 2px solid var(--ids-blue) !important;
+            outline-offset: 2px !important;
+        }
+
+        /* ── Input focus ── */
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--ids-blue) !important;
+            box-shadow: 0 0 0 3px rgba(35,108,255,0.15) !important;
+        }
+
+        /* ── Staff mode clerk input ── */
+        .mode-staff .canvas-block[data-locked="false"]:focus-within {
+            border-color: var(--ids-blue-mid) !important;
+            background: var(--ids-blue-light) !important;
+            box-shadow: 0 0 0 3px rgba(35,108,255,0.1) !important;
+        }
+
+        /* ── Selection highlight ── */
+        ::selection {
+            background-color: var(--ids-blue-mid) !important;
+            color: var(--ids-midnight) !important;
+        }
+
+        /* ── Intuit logo text in nav ── */
+        .text-white-300 { color: var(--ids-white) !important; }
+    </style>
+
 </head>
 <body class="h-screen flex flex-col antialiased">
 
