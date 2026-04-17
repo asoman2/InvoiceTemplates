@@ -77,6 +77,10 @@
             <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-500">
                 UX Strategy &amp; Architectural Blueprint for empowering enterprise financial teams with control, compliance, and automation.
             </p>
+            <div class="mt-6 inline-flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-full px-5 py-2 text-sm text-blue-800">
+                <span class="font-bold">📋 Reference Scenario:</span>
+                <span>Meridian Construction Group · Harborview Office Complex ($4.96M) · App #04, Oct 2025</span>
+            </div>
         </div>
     </header>
 
@@ -126,13 +130,14 @@
 
             <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
                 <h3 class="text-xl font-semibold mb-6">The "Estimate-to-Closure" Continuity Model</h3>
+                <p class="text-sm text-slate-500 mb-6">Illustrated with the Harborview Office Complex — Meridian Construction Group</p>
                 
                 <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-center">
                     <!-- Step 1 -->
                     <div class="flex-1 w-full md:w-auto p-4 bg-slate-50 rounded-lg border border-slate-200 relative">
                         <div class="text-2xl mb-2">📝</div>
                         <h4 class="font-semibold text-sm">1. Project Estimate</h4>
-                        <p class="text-xs text-slate-500 mt-1">Select Industry Template. Brand and terms are established here.</p>
+                        <p class="text-xs text-slate-500 mt-1">Marcus T. selects <em>AIA G702/G703 — Meridian Commercial</em> template. Harborview branding and Net 30 / 10% retainage terms locked in.</p>
                     </div>
                     
                     <div class="text-slate-400 text-2xl rotate-90 md:rotate-0">➔</div>
@@ -141,7 +146,7 @@
                     <div class="flex-1 w-full md:w-auto p-4 bg-blue-50 rounded-lg border border-blue-200 relative">
                         <div class="text-2xl mb-2">🏗️</div>
                         <h4 class="font-semibold text-sm">2. Project Execution</h4>
-                        <p class="text-xs text-blue-700 mt-1">Timesheets &amp; expenses logged. Mapped to template categories.</p>
+                        <p class="text-xs text-blue-700 mt-1">Meridian MEP logs $156,000 MEP labor + $42,000 HVAC materials stored. CO-1 ($143,000 lobby waterproofing) approved and auto-appended to live SOV.</p>
                     </div>
 
                     <div class="text-slate-400 text-2xl rotate-90 md:rotate-0">➔</div>
@@ -150,7 +155,7 @@
                     <div class="flex-1 w-full md:w-auto p-4 bg-emerald-50 rounded-lg border border-emerald-200 relative">
                         <div class="text-2xl mb-2">💰</div>
                         <h4 class="font-semibold text-sm">3. Progressive Billing</h4>
-                        <p class="text-xs text-emerald-700 mt-1">Template automatically formats milestone invoices based on rules.</p>
+                        <p class="text-xs text-emerald-700 mt-1">Template auto-formats App #04 G702 ($606,400 due). Meridian MEP's entity branding injected via token. Routed to Westbrook &amp; Associates for certification.</p>
                     </div>
                 </div>
 
@@ -196,146 +201,7 @@
             </div>
         </section>
 
-        <!-- SECTION: Interactive Concept Prototype (RBAC & UI) -->
-        <section id="prototype" class="scroll-mt-20">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-slate-900 border-b-2 border-slate-800 pb-2 inline-block">Interactive Concept Wireframe</h2>
-                <p class="mt-4 text-slate-600 max-w-3xl">This structural wireframe demonstrates the layout logic and Role-Based Access Control (RBAC). Change the role below to see how the UI adapts to protect template integrity.</p>
-            </div>
-
-            <!-- Dashboard Mockup -->
-            <div class="border border-slate-300 rounded-xl shadow-lg bg-slate-100 overflow-hidden flex flex-col h-[600px]">
-                
-                <!-- Mock Top Bar -->
-                <div class="bg-slate-800 text-white p-3 flex justify-between items-center text-sm">
-                    <div class="flex items-center gap-4">
-                        <span class="font-bold">IES Template Studio</span>
-                        <span class="px-2 py-1 bg-slate-700 rounded text-xs" id="mock-status">Status: Draft</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <label for="role-simulator" class="text-slate-300">Simulate Role:</label>
-                        <select id="role-simulator" class="bg-slate-700 border-none text-white text-sm rounded px-2 py-1 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                            <option value="admin">Admin / Designer</option>
-                            <option value="user">Billing Clerk</option>
-                        </select>
-                        <button id="btn-publish" class="bg-emerald-600 hover:bg-emerald-700 px-3 py-1 rounded transition">Publish</button>
-                    </div>
-                </div>
-
-                <!-- Mock Workspace -->
-                <div class="flex flex-1 overflow-hidden">
-                    
-                    <!-- Left Toolbar (Elements) -->
-                    <div id="panel-tools" class="w-48 bg-white border-r border-slate-200 p-4 overflow-y-auto custom-scroll transition-opacity duration-300">
-                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Elements</h4>
-                        <div class="space-y-2">
-                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>🔤</span> Text Block</div>
-                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>🖼️</span> Image/Logo</div>
-                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>📊</span> Data Table</div>
-                            <div class="p-2 border border-slate-200 rounded text-sm cursor-grab hover:bg-slate-50 flex items-center gap-2"><span>🧩</span> Custom Field</div>
-                        </div>
-                        
-                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-6 mb-3">Snippets (Locked)</h4>
-                        <div class="space-y-2 opacity-70">
-                            <div class="p-2 border border-slate-200 bg-slate-50 rounded text-sm cursor-not-allowed flex items-center gap-2" title="Company locked"><span>🔒</span> Legal Terms</div>
-                            <div class="p-2 border border-slate-200 bg-slate-50 rounded text-sm cursor-not-allowed flex items-center gap-2" title="Company locked"><span>🔒</span> Tax ID Block</div>
-                        </div>
-                    </div>
-
-                    <!-- Center Canvas (The Invoice) -->
-                    <div class="flex-1 bg-slate-200 p-8 overflow-y-auto flex justify-center">
-                        <div class="bg-white w-full max-w-2xl shadow-md h-full min-h-[500px] p-8 flex flex-col cursor-crosshair">
-                            <!-- Invoice Mock Content -->
-                            <div class="flex justify-between border-b-2 border-slate-200 pb-4 mb-4 element-selectable transition-colors" data-type="header">
-                                <div class="concept-border p-2 min-w-[150px] text-slate-400 text-center flex flex-col items-center justify-center bg-slate-50">
-                                    <span class="text-2xl mb-1">🏢</span>
-                                    <span class="text-xs">[Logo Block]</span>
-                                </div>
-                                <div class="text-right concept-border p-2">
-                                    <h2 class="text-2xl font-bold text-slate-800">INVOICE</h2>
-                                    <p class="text-sm text-slate-500">{Invoice.Number}</p>
-                                    <p class="text-sm text-slate-500">Date: {System.Today}</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex justify-between mb-8">
-                                <div class="concept-border p-2 w-1/2 element-selectable transition-colors" data-type="billing">
-                                    <p class="text-xs font-bold text-slate-500 uppercase mb-1">Bill To:</p>
-                                    <p class="text-sm">{Customer.Name}</p>
-                                    <p class="text-sm">{Customer.Address}</p>
-                                </div>
-                                <div class="concept-border p-2 w-1/3 bg-yellow-50 element-selectable transition-colors" data-type="project">
-                                    <p class="text-xs font-bold text-yellow-700 uppercase mb-1">Project Link</p>
-                                    <p class="text-sm">{Project.Name}</p>
-                                    <p class="text-sm">Phase: {Project.Phase}</p>
-                                </div>
-                            </div>
-
-                            <div class="flex-1 concept-border p-2 mb-4 element-selectable transition-colors flex items-center justify-center bg-blue-50/50" data-type="table">
-                                <span class="text-slate-400 text-sm font-medium">Click to configure dynamic line-item table</span>
-                            </div>
-
-                            <div class="mt-auto border-t border-slate-200 pt-4 flex justify-between">
-                                <div class="concept-border p-2 w-2/3 bg-slate-100 opacity-60 flex items-center gap-2" title="Locked by Admin">
-                                    <span>🔒</span>
-                                    <p class="text-xs text-slate-600">Standard Legal Terms and Conditions apply. Net 30.</p>
-                                </div>
-                                <div class="text-right concept-border p-2 w-1/4 element-selectable" data-type="total">
-                                    <p class="text-lg font-bold">Total: {Invoice.Total}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Toolbar (Properties) -->
-                    <div id="panel-props" class="w-64 bg-white border-l border-slate-200 p-4 overflow-y-auto custom-scroll transition-opacity duration-300">
-                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b pb-2">Properties</h4>
-                        
-                        <div id="prop-empty" class="text-sm text-slate-400 text-center mt-10">
-                            Select an element on the canvas to edit its properties.
-                        </div>
-
-                        <div id="prop-content" class="hidden space-y-4">
-                            <div>
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Element Type</label>
-                                <input type="text" id="prop-type" disabled class="w-full bg-slate-100 border border-slate-300 rounded px-2 py-1 text-sm text-slate-500">
-                            </div>
-                            
-                            <div class="admin-only-setting">
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Data Binding</label>
-                                <select class="w-full bg-white border border-slate-300 rounded px-2 py-1 text-sm">
-                                    <option>Select Variable...</option>
-                                    <option>Customer.Name</option>
-                                    <option>Project.Total</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Visibility Rules</label>
-                                <div class="flex items-center gap-2 text-sm mt-1">
-                                    <input type="checkbox" id="cond-logic" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
-                                    <label for="cond-logic" class="cursor-pointer">Hide if value is empty</label>
-                                </div>
-                            </div>
-
-                            <div class="admin-only-setting mt-4 pt-4 border-t border-slate-200">
-                                <label class="block text-xs font-medium text-red-600 mb-1">Locking</label>
-                                <div class="flex items-center gap-2 text-sm mt-1">
-                                    <input type="checkbox" id="lock-elem" class="rounded border-slate-300 text-red-600 focus:ring-red-500 cursor-pointer">
-                                    <label for="lock-elem" class="cursor-pointer">Lock from Billing Clerks</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Mock Bottom Bar -->
-                <div class="bg-slate-200 border-t border-slate-300 p-2 text-xs text-slate-500 flex justify-between">
-                    <span>Template ID: TPL-8842</span>
-                    <span id="role-indicator">Current Role: Admin / Designer</span>
-                </div>
-            </div>
-        </section>
+        <!-- Wireframe removed: full interactive prototype now lives at BuilderStudio.html -->
 		    <div class="max-w-7xl mx-auto space-y-12">
         
         <header id="Sov" class="text-center space-y-4 pt-8">
@@ -345,59 +211,86 @@
 
         <section>
             <h2 class="text-2xl font-bold text-slate-800 border-b-2 border-blue-500 pb-2 mb-6 inline-block">1. Stakeholder Persona Matrix</h2>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 mb-4 text-xs text-slate-600 flex flex-wrap gap-4">
+                <span><strong>Parent Org:</strong> Meridian Construction Group</span>
+                <span>•</span>
+                <span><strong>GC Entity:</strong> Meridian Commercial</span>
+                <span>•</span>
+                <span><strong>Sub Entity:</strong> Meridian MEP (Mechanical)</span>
+                <span>•</span>
+                <span><strong>Project:</strong> Harborview Office Complex</span>
+                <span>•</span>
+                <span><strong>Owner:</strong> Harborview Partners LLC</span>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
-                    <h3 class="text-xl font-bold text-blue-700 mb-2">👷‍♂️ Project Manager (GC)</h3>
-                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> Consolidate and verify subcontractor pay applications against contracts to accurately bill the project owner.</p>
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-xl font-bold text-blue-700">👷‍♂️ Project Manager (GC)</h3>
+                        <span class="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-bold uppercase">Meridian Commercial</span>
+                    </div>
+                    <p class="mb-1 text-xs text-slate-500 font-medium">Persona: Marcus T., PM — Harborview Office Complex</p>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> Consolidate Meridian MEP's sub-application (SOV line 04) into the master G702 for Harborview Partners LLC and ensure CO-1 waterproofing change order is correctly reflected before the October 31 billing deadline.</p>
                     <div class="mb-3 text-sm">
                         <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
                         <ul class="list-disc pl-5 text-slate-600 space-y-1">
-                            <li>Approved Schedule of Values (SOV).</li>
-                            <li>Field Progress Reports and Stored Materials logs.</li>
-                            <li>Executed Change Orders (AIA G701).</li>
+                            <li>Approved SOV (CNTR-2025-HV01) and executed CO-1 (AIA G701, 09/14/2025).</li>
+                            <li>Meridian MEP's field progress logs for MEP Rough-In, and stored materials on-site ($42,000 HVAC ducting).</li>
+                            <li>Lien waiver status for all sub-tiers before releasing payment.</li>
                         </ul>
                     </div>
-                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Reviews subcontractor submissions, flags unapproved changes, and routes the consolidated draft to Finance.</p>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Reviews Meridian MEP's G703 sub-application, reconciles against site inspection, then routes consolidated draft to Sandra R. (Billing Controller) for financial review.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
-                    <h3 class="text-xl font-bold text-blue-700 mb-2">🔨 Subcontractor / Superintendent</h3>
-                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> A fast, error-free way to fill out the G703 Continuation Sheet to submit progress bills on time and avoid payment delays.[1]</p>
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-xl font-bold text-blue-700">🔨 Subcontractor / Superintendent</h3>
+                        <span class="text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded font-bold uppercase">Meridian MEP</span>
+                    </div>
+                    <p class="mb-1 text-xs text-slate-500 font-medium">Persona: Diana K., Controller — Meridian MEP division</p>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> Submit the MEP Rough-In progress bill (SOV line 04, $156,000 work this period + $42,000 materials stored) accurately under Meridian MEP's own branding and Tax ID, without re-keying data already in IES.</p>
                     <div class="mb-3 text-sm">
                         <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
                         <ul class="list-disc pl-5 text-slate-600 space-y-1">
-                            <li>Subcontractor Agreement and assigned SOV line items.</li>
-                            <li>Values for "Work Completed This Period" and "Materials Stored".[1]</li>
+                            <li>Sub-agreement referencing CNTR-2025-HV01 and assigned SOV line 04 scope.</li>
+                            <li>Approved quantities for "Work Completed This Period" and stored HVAC materials tagged to the Harborview jobsite.</li>
                         </ul>
                     </div>
-                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Submits line-item progress to the GC and responds to any requests for clarification.</p>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Submits the G703 sub-application via IES (Meridian MEP entity). The system auto-stamps Meridian MEP's logo and Tax ID via <code class="text-xs bg-slate-100 px-1 rounded">{subsidiary.logo@Url}</code> token before routing to Marcus T. for review.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
-                    <h3 class="text-xl font-bold text-blue-700 mb-2">💻 Billing Clerk / Controller</h3>
-                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> Generate mathematically flawless AIA applications with automatically calculated retainage percentages.</p>
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-xl font-bold text-blue-700">💻 Billing Controller</h3>
+                        <span class="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded font-bold uppercase">Meridian Commercial</span>
+                    </div>
+                    <p class="mb-1 text-xs text-slate-500 font-medium">Persona: Sandra R., Controller — Meridian Commercial</p>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> Generate a mathematically flawless App #04 G702/G703 for $606,400 current payment due, with 10% retainage ($384,600 cumulative) auto-calculated, and attach the conditional lien waiver package before submitting to Harborview Partners LLC.</p>
                     <div class="mb-3 text-sm">
                         <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
                         <ul class="list-disc pl-5 text-slate-600 space-y-1">
-                            <li>Contract Payment Terms and precise Retainage Rules (typically 5-10%).</li>
-                            <li>Conditional and Unconditional Lien Waivers.</li>
+                            <li>Contract payment terms (Net 30, 10% retainage per CNTR-2025-HV01 §7.2).</li>
+                            <li>Conditional lien waivers from Meridian MEP and steel fabricator (SOV line 03).</li>
                         </ul>
                     </div>
-                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Performs final financial review, verifies compliance documents, and submits the finalized G702/G703 to the Architect/Owner.</p>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Uses the IES Billing Clerk role — structure and retainage logic locked by Admin. Enters "Work This Period" values per field reports, then routes the finalized G702/G703 to Westbrook &amp; Associates (Architect) for certification.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition group">
-                    <h3 class="text-xl font-bold text-blue-700 mb-2">🏢 Architect / Project Owner</h3>
-                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> A transparent, detailed breakdown of claimed work to confidently certify the payment application.</p>
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-xl font-bold text-blue-700">🏢 Architect / Project Owner</h3>
+                        <span class="text-[10px] bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded font-bold uppercase">External</span>
+                    </div>
+                    <p class="mb-1 text-xs text-slate-500 font-medium">Personas: James W. (Westbrook & Assoc., Architect) · Harborview Partners LLC (Owner)</p>
+                    <p class="mb-3 text-sm text-slate-700"><strong>Need:</strong> A transparent, line-by-line breakdown of App #04 claims to confidently certify $606,400. Specifically, must verify that CO-1 (Enhanced Lobby Waterproofing) is correctly drawn at 50% and that MEP Rough-In stored materials are physically on-site.</p>
                     <div class="mb-3 text-sm">
                         <strong class="block text-slate-900 mb-1">Information Required &amp; Dependencies:</strong>
                         <ul class="list-disc pl-5 text-slate-600 space-y-1">
-                            <li>Master Contract and AIA G702 summary document.</li>
-                            <li>On-site inspections to verify physical progress.</li>
+                            <li>Master Contract (CNTR-2025-HV01) and AIA G702 summary signed by Meridian Commercial's authorized officer.</li>
+                            <li>On-site inspection report for curtain wall (SOV line 05) and MEP stored materials verification.</li>
                         </ul>
                     </div>
-                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Reviews the application and signs the Architect's Certificate for Payment if accurate, or returns it with notes for revision.</p>
+                    <p class="text-sm text-slate-700"><strong>Collaboration &amp; Approvals:</strong> Reviews App #04 via the IES Visual Diff Engine against App #03, signs Architect's Certificate for Payment (AIA G702 §7), or returns with itemized notes for revision — triggering a new review cycle.</p>
                 </div>
 
             </div>
@@ -405,47 +298,123 @@
 
         <section>
             <h2 class="text-2xl font-bold text-slate-800 border-b-2 border-emerald-500 pb-2 mb-6 inline-block">2. Schedule of Values (SOV) to Invoice Data Flow</h2>
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4 text-sm text-blue-900">
+                <strong>📋 Project Context:</strong> Harborview Office Complex — Owner: Harborview Partners LLC &nbsp;|&nbsp; GC: Meridian Commercial (div. of Meridian Construction Group) &nbsp;|&nbsp; Contract: <span class="font-mono">CNTR-2025-HV01</span> &nbsp;|&nbsp; Original Contract Value: $4,820,000 &nbsp;|&nbsp; Current Contract (incl. CO-1): $4,963,000 &nbsp;|&nbsp; <strong>App #04 — Month 4 (October 2025)</strong>
+            </div>
             <div class="bg-white border border-slate-200 rounded-xl overflow-x-auto shadow-sm">
-                <table class="w-full text-left text-sm text-slate-600 min-w-[800px]">
+                <table class="w-full text-left text-sm text-slate-600 min-w-[900px]">
                     <thead class="bg-slate-50 text-slate-800 border-b border-slate-200">
                         <tr>
-                            <th class="p-4 font-semibold">Project Phase (SOV Item)</th>
-                            <th class="p-4 font-semibold">Scheduled Value</th>
-                            <th class="p-4 font-semibold">Previous Billing</th>
-                            <th class="p-4 font-semibold text-emerald-600">Work This Period</th>
-                            <th class="p-4 font-semibold">Materials Stored</th>
-                            <th class="p-4 font-semibold text-amber-600">Retainage (10%)</th>
+                            <th class="p-4 font-semibold w-8">#</th>
+                            <th class="p-4 font-semibold">SOV Line Item / Work Description</th>
+                            <th class="p-4 font-semibold text-right">Scheduled Value</th>
+                            <th class="p-4 font-semibold text-right">Prev. Billed (D+E)</th>
+                            <th class="p-4 font-semibold text-right text-emerald-700">Work This Period</th>
+                            <th class="p-4 font-semibold text-right">Mat. Stored (F)</th>
+                            <th class="p-4 font-semibold text-right">% Complete</th>
+                            <th class="p-4 font-semibold text-right text-amber-700">Retainage (10%)</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         <tr class="hover:bg-slate-50 transition">
-                            <td class="p-4 font-medium text-slate-900">1. Site Preparation</td>
-                            <td class="p-4 font-mono">$50,000</td>
-                            <td class="p-4 font-mono">$50,000</td>
-                            <td class="p-4 font-mono text-emerald-600 font-bold">$0</td>
-                            <td class="p-4 font-mono">$0</td>
-                            <td class="p-4 font-mono text-amber-600">$5,000</td>
+                            <td class="p-4 text-slate-400 font-mono text-xs">01</td>
+                            <td class="p-4 font-medium text-slate-900">Site Preparation &amp; Demolition</td>
+                            <td class="p-4 font-mono text-right">$218,000</td>
+                            <td class="p-4 font-mono text-right">$218,000</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$0</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 text-right"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">100%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$21,800</td>
                         </tr>
                         <tr class="hover:bg-slate-50 transition">
-                            <td class="p-4 font-medium text-slate-900">2. Foundation</td>
-                            <td class="p-4 font-mono">$120,000</td>
-                            <td class="p-4 font-mono">$60,000</td>
-                            <td class="p-4 font-mono text-emerald-600 font-bold">$40,000</td>
-                            <td class="p-4 font-mono">$0</td>
-                            <td class="p-4 font-mono text-amber-600">$10,000</td>
+                            <td class="p-4 text-slate-400 font-mono text-xs">02</td>
+                            <td class="p-4 font-medium text-slate-900">Foundation &amp; Below-Grade Concrete</td>
+                            <td class="p-4 font-mono text-right">$645,000</td>
+                            <td class="p-4 font-mono text-right">$580,500</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$64,500</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 text-right"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">100%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$64,500</td>
                         </tr>
-                        <tr class="bg-blue-50/30 hover:bg-blue-50 transition">
-                            <td class="p-4 font-medium text-blue-900">CO-1: Extra Drainage</td>
-                            <td class="p-4 font-mono">$15,000</td>
-                            <td class="p-4 font-mono">$0</td>
-                            <td class="p-4 font-mono text-emerald-600 font-bold">$15,000</td>
-                            <td class="p-4 font-mono">$0</td>
-                            <td class="p-4 font-mono text-amber-600">$1,500</td>
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 text-slate-400 font-mono text-xs">03</td>
+                            <td class="p-4 font-medium text-slate-900">Structural Steel &amp; Decking</td>
+                            <td class="p-4 font-mono text-right">$920,000</td>
+                            <td class="p-4 font-mono text-right">$460,000</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$230,000</td>
+                            <td class="p-4 font-mono text-right">$85,000</td>
+                            <td class="p-4 text-right"><span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">85%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$92,000</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 text-slate-400 font-mono text-xs">04</td>
+                            <td class="p-4 font-medium text-slate-900">MEP Rough-In (by Meridian MEP Sub)</td>
+                            <td class="p-4 font-mono text-right">$780,000</td>
+                            <td class="p-4 font-mono text-right">$195,000</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$156,000</td>
+                            <td class="p-4 font-mono text-right">$42,000</td>
+                            <td class="p-4 text-right"><span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">45%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$78,000</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 text-slate-400 font-mono text-xs">05</td>
+                            <td class="p-4 font-medium text-slate-900">Glass Curtain Wall &amp; Façade</td>
+                            <td class="p-4 font-mono text-right">$1,140,000</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$114,000</td>
+                            <td class="p-4 font-mono text-right">$228,000</td>
+                            <td class="p-4 text-right"><span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded">10%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$114,000</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 text-slate-400 font-mono text-xs">06</td>
+                            <td class="p-4 font-medium text-slate-900">Interior Buildout &amp; Finishes</td>
+                            <td class="p-4 font-mono text-right">$860,000</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$0</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 text-right"><span class="bg-slate-100 text-slate-600 text-xs font-bold px-2 py-0.5 rounded">0%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-4 text-slate-400 font-mono text-xs">07</td>
+                            <td class="p-4 font-medium text-slate-900">Commissioning &amp; Systems Testing</td>
+                            <td class="p-4 font-mono text-right">$257,000</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$0</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 text-right"><span class="bg-slate-100 text-slate-600 text-xs font-bold px-2 py-0.5 rounded">0%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$0</td>
+                        </tr>
+                        <tr class="bg-blue-50/40 hover:bg-blue-50 transition">
+                            <td class="p-4 text-blue-500 font-mono text-xs">CO-1</td>
+                            <td class="p-4 font-medium text-blue-900">CO-1: Enhanced Lobby Waterproofing <span class="ml-2 text-[9px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded font-bold uppercase">Change Order</span></td>
+                            <td class="p-4 font-mono text-right">$143,000</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 font-mono text-right text-emerald-600 font-bold">$71,500</td>
+                            <td class="p-4 font-mono text-right">$0</td>
+                            <td class="p-4 text-right"><span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded">50%</span></td>
+                            <td class="p-4 font-mono text-right text-amber-600">$14,300</td>
                         </tr>
                     </tbody>
+                    <tfoot class="bg-slate-800 text-white">
+                        <tr>
+                            <td colspan="2" class="p-4 font-bold text-sm">TOTALS — App #04</td>
+                            <td class="p-4 font-mono text-right font-bold">$4,963,000</td>
+                            <td class="p-4 font-mono text-right">$1,453,500</td>
+                            <td class="p-4 font-mono text-right text-emerald-300 font-bold">$636,000</td>
+                            <td class="p-4 font-mono text-right text-blue-300">$355,000</td>
+                            <td class="p-4 text-right text-slate-300 text-xs">—</td>
+                            <td class="p-4 font-mono text-right text-amber-300">$384,600</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td colspan="5" class="px-4 pb-3 text-xs text-slate-400">Current Payment Due (Work This Period + Mat. Stored − Retainage): <strong class="text-white">$606,400</strong></td>
+                            <td colspan="3" class="px-4 pb-3 text-xs text-slate-400 text-right">Total Earned to Date: <strong class="text-white">$2,444,500 (49.2%)</strong></td>
+                        </tr>
+                    </tfoot>
                 </table>
-                <div class="bg-slate-800 text-white p-4 text-xs leading-relaxed">
-                    <p><strong>Data Continuity Rule:</strong> The G703 Continuation Sheet is inextricably linked to the Work Breakdown Structure (WBS) and approved estimates. Approved change orders (like CO-1) automatically append to the active SOV to ensure the mathematical logic of the billing cycle remains unbroken.</p>
+                <div class="bg-slate-900 text-slate-300 p-4 text-xs leading-relaxed rounded-b-xl">
+                    <strong class="text-white">Data Continuity Rule:</strong> The G703 Continuation Sheet is inextricably linked to the Work Breakdown Structure (WBS) and approved estimates within IES. Approved change orders (like CO-1: Enhanced Lobby Waterproofing, executed via AIA G701 on 09/14/2025) automatically append to the active SOV, preserving mathematical integrity across billing cycles. Line item 04 (MEP Rough-In) is billed by <em>Meridian MEP</em>, a subsidiary entity — its sub-application flows up to Meridian Commercial's master G702 via multi-entity consolidation, with entity-specific branding injected at output time via <code class="text-emerald-400">{subsidiary.logo@Url}</code> and <code class="text-emerald-400">{entity.taxId}</code> tokens.
                 </div>
             </div>
         </section>
@@ -594,64 +563,7 @@
                 `;
             }
 
-            // --- 2. Concept Prototype (RBAC Logic) ---
-            const roleSelect = document.getElementById('role-simulator');
-            const toolsPanel = document.getElementById('panel-tools');
-            const btnPublish = document.getElementById('btn-publish');
-            const roleIndicator = document.getElementById('role-indicator');
-            const adminOnlySettings = document.querySelectorAll('.admin-only-setting');
-            
-            // Canvas elements interaction
-            const selectableElements = document.querySelectorAll('.element-selectable');
-            const propEmpty = document.getElementById('prop-empty');
-            const propContent = document.getElementById('prop-content');
-            const propTypeInput = document.getElementById('prop-type');
-
-            function updateRole(role) {
-                // Reset selection on role change to prevent confusion
-                selectableElements.forEach(el => {
-                    el.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
-                });
-                propEmpty.classList.remove('hidden');
-                propContent.classList.add('hidden');
-
-                if (role === 'admin') {
-                    toolsPanel.classList.remove('opacity-40', 'pointer-events-none');
-                    btnPublish.classList.remove('hidden');
-                    roleIndicator.innerText = "Current Role: Admin / Designer";
-                    adminOnlySettings.forEach(el => el.classList.remove('hidden'));
-                } else {
-                    // Billing Clerk view
-                    toolsPanel.classList.add('opacity-40', 'pointer-events-none');
-                    btnPublish.classList.add('hidden');
-                    roleIndicator.innerText = "Current Role: Billing Clerk (Locked mode)";
-                    adminOnlySettings.forEach(el => el.classList.add('hidden'));
-                }
-            }
-
-            roleSelect.addEventListener('change', (e) => updateRole(e.target.value));
-
-            selectableElements.forEach(el => {
-                el.addEventListener('click', function(e) {
-                    // Stop propagation so clicking inner elements doesn't trigger parent clicks if nested
-                    e.stopPropagation(); 
-                    
-                    // Clear previous
-                    selectableElements.forEach(s => s.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50'));
-                    
-                    // Highlight selected
-                    this.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
-                    
-                    // Show props
-                    propEmpty.classList.add('hidden');
-                    propContent.classList.remove('hidden');
-                    
-                    // Populate props
-                    propTypeInput.value = this.getAttribute('data-type').toUpperCase() + " BLOCK";
-                });
-            });
-
-            // --- 3. Chart.js Implementation ---
+            // --- 2. Chart.js Implementation ---
             const ctx = document.getElementById('impactChart').getContext('2d');
             new Chart(ctx, {
                 type: 'radar',
@@ -708,7 +620,6 @@
 
             // Initialize App
             renderFeatures();
-            updateRole('admin');
 
         });
     </script>
