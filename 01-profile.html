@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1 · Portfolio Dashboard — Profiler Journey</title>
+<title>2 · 01 Profile — Copperline</title>
 <style>
 /* ===== Shared grey wireframe styles — profiler journey (6 pages) ===== */
 :root{
@@ -174,77 +174,74 @@ input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;bo
 </head>
 <body>
 <div class="sheet">
-  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 1 / 6 · Portfolio dashboard</span></div>
+  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 2 / 6 · 01 Profile</span></div>
 
-  <div class="crumb"><b>Book overview</b></div>
-  <h1>Portfolio Profiler — QuickBooks Desktop client book</h1>
-  <div class="sub">128 QBDT clients across 5 verticals · overall migration progress and where each segment sits in the funnel</div>
+  <div class="custbar"><span><b>Copperline Contracting Co.</b> · residential remodel + light GC · Austin TX · single entity</span>
+    <span class="meta"><span>current fit: <b>QBOA</b></span><span>stage: <b>Profile</b></span></span></div>
+
+  <div class="crumb"><a href="index.html">Book overview</a> ▸ <a href="index.html#construction">Construction</a> ▸ <b>Copperline Contracting Co.</b></div>
+
+  <div class="steps">
+    <a class="step on" href="01-profile.html"><div class="n">01</div><div class="l">Profile</div></a>
+    <a class="step" href="02-configure.html"><div class="n">02</div><div class="l">Configure</div></a>
+    <a class="step" href="03-recommend.html"><div class="n">03</div><div class="l">Recommend</div></a>
+    <a class="step" href="04-engage.html"><div class="n">04</div><div class="l">Engage</div></a>
+    <a class="step" href="05-migrate.html"><div class="n">05</div><div class="l">Migrate</div></a>
+  </div>
+
+  <h1>01 · Profile</h1>
+  <div class="sub">What the profiler knows before anyone makes a call. Telemetry is pulled from the desktop file; the accountant hasn't scored anything yet.</div>
   <div class="agent">
-    <div class="a-hd"><span class="glyph">◇</span> Agent · book triage <span class="rr">relevance realized</span></div>
+    <div class="a-hd"><span class="glyph">◇</span> Agent · profile read <span class="rr">relevance realized</span></div>
     <div class="a-bd">
-      <div class="insight"><b>Copperline</b> is your cleanest convert — start there. Separately, <b>Truss &amp; Co.</b> has gone silent 17 days with no reason logged: that’s the real leak, not a slow deal.</div>
-      <div class="field"><span class="dots"><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i></span><small>128 clients scanned → 2 need you now</small></div>
-      <div class="a-act"><a class="chip primary" href="01-profile.html">Open Copperline</a><span class="chip">Force a reason on Truss &amp; Co.</span><details><summary>why?</summary><ul><li>Copperline: no gate, composite 52, single blocker cleared → lowest-effort convert.</li><li>Truss: past the stall threshold with no call-off reason = unrecoverable signal loss.</li><li>21 IES-tier clients deprioritized this week — higher effort, not time-critical.</li></ul></details></div>
-      <div class="meta">Agent foregrounded 2 of 128. If it picked the wrong two, that error is invisible unless you check — see debate.</div>
+      <div class="insight">Three signals converge on QBOA: single entity, 85% job-costed, light class use. The only thing that flips this read is a <b>hidden second entity</b> — nothing else in the file will.</div>
+      <div class="field"><span class="dots"><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i></span><small>18 telemetry signals → 3 decisive</small></div>
+      <div class="a-act"><span class="chip primary">Ask: any second set of books?</span><a class="chip" href="02-configure.html">Accept read → Configure</a><details><summary>why?</summary><ul><li>Decisive: entity count, job-cost ratio, class depth.</li><li>Set aside as context (not decisive): file size, years-on-product, employee count.</li><li>One unknown dominates the rest: undisclosed entities would trip a Stage-1 gate.</li></ul></details></div>
+      <div class="meta">Relevance call: the agent decided file size doesn’t matter here. Usually true — not always.</div>
     </div>
   </div>
 
 
-  <div class="panel"><div class="hd">Overall progress</div><div class="bd">
-    <div class="kpis">
-      <div class="kpi"><div class="big">128</div><div class="lbl">QBDT clients</div></div>
-      <div class="kpi"><div class="big">43</div><div class="lbl">in engagement</div></div>
-      <div class="kpi"><div class="big">18</div><div class="lbl">migrated</div></div>
-      <div class="kpi"><div class="big">11</div><div class="lbl">called off</div></div>
-      <div class="kpi"><div class="big">9</div><div class="lbl">stalled &gt; 14d</div></div>
-    </div>
-    <div class="funnel" style="margin-top:12px;">
-      <div class="frow"><span>Profiled</span><div class="fbar"><i style="width:100%"></i></div><b>128</b></div>
-      <div class="frow"><span>Configured</span><div class="fbar"><i style="width:75%"></i></div><b>96</b></div>
-      <div class="frow"><span>Recommended</span><div class="fbar"><i style="width:55%"></i></div><b>71</b></div>
-      <div class="frow"><span>Engaged</span><div class="fbar"><i style="width:34%"></i></div><b>43</b></div>
-      <div class="frow"><span>Migrated</span><div class="fbar"><i style="width:14%"></i></div><b>18</b></div>
-    </div>
-    <div style="margin-top:12px;font-size:11px;">Recommended tier mix (of 71):
-      <div class="split" style="margin-top:4px;">
-        <i style="width:17%;background:#efefef">QBO 12</i>
-        <i style="width:53%;background:#cfcfcf">QBOA 38</i>
-        <i style="width:30%;background:#a9a9a9">IES 21</i>
-      </div>
-    </div>
-    <div class="note">Numbers are illustrative stubs. Debate: is "migrated" the north-star, or is "recommended-correctly" (low call-off from wrong-tier) the real quality metric?</div>
+  <div class="two">
+    <div class="panel"><div class="hd">Firm snapshot</div><div class="bd">
+      <div class="telrow"><div class="k">Business type</div><div class="v">Residential remodel / light GC</div></div>
+      <div class="telrow"><div class="k">Legal entities</div><div class="v">1</div></div>
+      <div class="telrow"><div class="k">Employees</div><div class="v">14</div></div>
+      <div class="telrow"><div class="k">Current product</div><div class="v">QBDT Premier Contractor '22</div></div>
+      <div class="telrow"><div class="k">Years on QBDT</div><div class="v">8</div></div>
+      <div class="telrow"><div class="k">Desktop EOL pressure</div><div class="v">high</div></div>
+      <div class="note">Approaching desktop discontinuation is why this client is in the book. The profiler's job: is the forced move a QBO, QBOA or IES move?</div>
+    </div></div>
+
+    <div class="panel"><div class="hd">From QBDT usage data <span class="tag lock">read-only · telemetry</span></div><div class="bd">
+      <div class="telrow"><div class="k">Named users vs. cap<small>seat pressure — moderate</small></div><div class="v">4 / 5</div><div class="bar"><i style="width:55%"></i></div></div>
+      <div class="telrow"><div class="k">Monthly transactions<small>moderate volume</small></div><div class="v">≈ 1,800</div><div class="bar"><i style="width:55%"></i></div></div>
+      <div class="telrow"><div class="k">Company file size</div><div class="v">480 MB</div><div class="bar"><i style="width:48%"></i></div></div>
+      <div class="telrow"><div class="k">Class use<small>3 divisions: remodel / new / service</small></div><div class="v">12 classes · 1 lvl</div><div class="bar"><i style="width:40%"></i></div></div>
+      <div class="telrow"><div class="k">Integrations detected<small>QB Time · a payments/AR app</small></div><div class="v">2</div><div class="bar"><i style="width:35%"></i></div></div>
+      <div class="telrow"><div class="k">Custom reports</div><div class="v">8</div><div class="bar"><i style="width:42%"></i></div></div>
+      <div class="telrow"><div class="k">Job-costed transactions</div><div class="v">85%</div><div class="bar"><i style="width:85%"></i></div></div>
+      <div class="telrow"><div class="k">Advanced Inventory · Multi-entity</div><div class="v">none · none</div></div>
+    </div></div>
+  </div>
+
+  <div class="panel"><div class="hd">Early read — why this looks like a QBOA archetype</div><div class="bd">
+    <ul class="tight">
+      <li><b>Single entity, no consolidation</b> → no Stage-1 gate is likely to fire.</li>
+      <li><b>Real job costing (85%)</b> that maps to QBO Projects — QBOA-shaped, not ERP-shaped.</li>
+      <li><b>Light class use</b> (one level, 3 divisions) → doesn't need true multi-dimensions.</li>
+      <li><b>Small integration footprint (2)</b> with QBO-native equivalents → low migration risk.</li>
+      <li><b>Moderate seat + volume</b> — above QBO Plus comfort, below IES justification.</li>
+    </ul>
+    <div class="note">Data freshness: pulled 2 days ago. Confidence should decay as the file ages, or if it turns out to be a hosted multi-copy. This is a read, not a recommendation — that comes after Configure.</div>
   </div></div>
 
-  <div class="panel"><div class="hd">By vertical <span class="tag">click to drill in</span></div><div class="bd">
-    <div class="vgrid">
-      <a class="vcard on" href="#construction"><h3>Construction</h3><div class="cnt">34</div><div class="pbar"><i style="width:41%"></i></div><div class="mini">14 reco · 6 migrated · QBOA-heavy · 2 stalled</div></a>
-      <a class="vcard" href="#construction"><h3>Mfg &amp; Wholesale</h3><div class="cnt">22</div><div class="pbar"><i style="width:32%"></i></div><div class="mini">9 reco · 3 migrated · IES-leaning · 3 stalled</div></a>
-      <a class="vcard" href="#construction"><h3>Retail / E-com</h3><div class="cnt">28</div><div class="pbar"><i style="width:29%"></i></div><div class="mini">13 reco · 4 migrated · POS-orphan urgency</div></a>
-      <a class="vcard" href="#construction"><h3>Professional Svcs</h3><div class="cnt">30</div><div class="pbar"><i style="width:37%"></i></div><div class="mini">11 reco · 4 migrated · QBOA/IES split</div></a>
-      <a class="vcard" href="#construction"><h3>Nonprofit</h3><div class="cnt">14</div><div class="pbar"><i style="width:21%"></i></div><div class="mini">5 reco · 1 migrated · IES fund-accounting fit</div></a>
-    </div>
-    <div class="note">Bars = % of that vertical past "recommended." Construction is selected and drilled into below as the worked example (only vertical wired in this set).</div>
+  <div class="panel debate"><div class="hd">Debate · Profile</div><div class="bd">
+    <div class="qn"><b>freshness</b>Should the accountant see a data-freshness meter before trusting telemetry?</div>
+    <div class="qn"><b>hidden entities</b>A single QBDT file can mask a second set of books in a spreadsheet. Where does the tool ask?</div>
   </div></div>
 
-  <div class="panel" id="construction"><div class="hd">Construction · client list <span class="tag">34 clients — showing sample</span></div><div class="bd">
-    <table>
-      <thead><tr><th>Client</th><th>Sub-type</th><th>Stage</th><th>Reco tier</th><th>Motion</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr class="click" onclick="location.href='01-profile.html'">
-          <td><a href="01-profile.html"><b>Copperline Contracting Co.</b></a></td><td>Residential remodel / light GC</td>
-          <td><span class="pill">Recommend</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">on track</span></td></tr>
-        <tr class="click" onclick="location.href='02-configure.html'"><td>Rivet &amp; Beam Construction</td><td>Commercial GC</td><td><span class="pill">Configure</span></td><td><span class="pill">judgment</span></td><td>test drive</td><td><span class="status">reviewing</span></td></tr>
-        <tr class="click" onclick="location.href='04-engage.html'"><td>Ferro Mechanical LLC</td><td>HVAC / specialty</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">day 6/30</span></td></tr>
-        <tr class="click" onclick="location.href='03-recommend.html'"><td>Meridian Building Group</td><td>Multi-entity builder</td><td><span class="pill">Recommend</span></td><td><span class="pill dark">IES</span></td><td>test drive</td><td><span class="status">gate fired</span></td></tr>
-        <tr><td>Oakline Concrete</td><td>Small sub</td><td><span class="pill">Recommend</span></td><td><span class="pill">QBO</span></td><td>direct buy</td><td><span class="status">over-buyer</span></td></tr>
-        <tr class="click" onclick="location.href='05-migrate.html'"><td>Hollis Roofing</td><td>Roofing</td><td><span class="pill">Migrate</span></td><td><span class="pill dark">QBOA</span></td><td>—</td><td><span class="status">go-live wk</span></td></tr>
-        <tr><td>Truss &amp; Co.</td><td>Framing sub</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">stalled 17d</span></td></tr>
-      </tbody>
-    </table>
-    <div class="note">Copperline is the fully wired journey. The other rows jump to the same shared step pages so you can feel the navigation; a real build gives each its own record. The row mix deliberately shows QBO, QBOA, IES and a judgment case.</div>
-  </div></div>
-
-  <div class="pagenav"><span></span><a class="wf" href="01-profile.html">Open Copperline → 01 Profile →</a></div>
+  <div class="pagenav"><a class="wf alt" href="index.html">← Book overview</a><a class="wf" href="02-configure.html">Continue to 02 Configure →</a></div>
 </div>
 </body>
 </html>

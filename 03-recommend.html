@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1 · Portfolio Dashboard — Profiler Journey</title>
+<title>4 · 03 Recommend — Copperline</title>
 <style>
 /* ===== Shared grey wireframe styles — profiler journey (6 pages) ===== */
 :root{
@@ -174,77 +174,90 @@ input[type=range]::-moz-range-thumb{width:16px;height:20px;background:#8f8f8f;bo
 </head>
 <body>
 <div class="sheet">
-  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 1 / 6 · Portfolio dashboard</span></div>
+  <div class="wf-banner"><span>◱ Wireframe · greyscale · for debate — not a validated or ideal flow</span><span>Page 4 / 6 · 03 Recommend</span></div>
 
-  <div class="crumb"><b>Book overview</b></div>
-  <h1>Portfolio Profiler — QuickBooks Desktop client book</h1>
-  <div class="sub">128 QBDT clients across 5 verticals · overall migration progress and where each segment sits in the funnel</div>
+  <div class="custbar"><span><b>Copperline Contracting Co.</b> · residential remodel + light GC · Austin TX · single entity</span>
+    <span class="meta"><span>current fit: <b>QBOA</b></span><span>stage: <b>Recommend</b></span></span></div>
+
+  <div class="crumb"><a href="index.html">Book overview</a> ▸ <a href="index.html#construction">Construction</a> ▸ <b>Copperline Contracting Co.</b></div>
+
+  <div class="steps">
+    <a class="step done" href="01-profile.html"><div class="n">01</div><div class="l">Profile</div></a>
+    <a class="step done" href="02-configure.html"><div class="n">02</div><div class="l">Configure</div></a>
+    <a class="step on" href="03-recommend.html"><div class="n">03</div><div class="l">Recommend</div></a>
+    <a class="step" href="04-engage.html"><div class="n">04</div><div class="l">Engage</div></a>
+    <a class="step" href="05-migrate.html"><div class="n">05</div><div class="l">Migrate</div></a>
+  </div>
+
+  <h1>03 · Recommend</h1>
+  <div class="sub">Composite 52 → QuickBooks Online Advanced. This screen gives the accountant language to explain the call and a motion to start.</div>
   <div class="agent">
-    <div class="a-hd"><span class="glyph">◇</span> Agent · book triage <span class="rr">relevance realized</span></div>
+    <div class="a-hd"><span class="glyph">◇</span> Agent · recommend <span class="rr">relevance realized</span></div>
     <div class="a-bd">
-      <div class="insight"><b>Copperline</b> is your cleanest convert — start there. Separately, <b>Truss &amp; Co.</b> has gone silent 17 days with no reason logged: that’s the real leak, not a slow deal.</div>
-      <div class="field"><span class="dots"><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i></span><small>128 clients scanned → 2 need you now</small></div>
-      <div class="a-act"><a class="chip primary" href="01-profile.html">Open Copperline</a><span class="chip">Force a reason on Truss &amp; Co.</span><details><summary>why?</summary><ul><li>Copperline: no gate, composite 52, single blocker cleared → lowest-effort convert.</li><li>Truss: past the stall threshold with no call-off reason = unrecoverable signal loss.</li><li>21 IES-tier clients deprioritized this week — higher effort, not time-critical.</li></ul></details></div>
-      <div class="meta">Agent foregrounded 2 of 128. If it picked the wrong two, that error is invisible unless you check — see debate.</div>
+      <div class="insight">Of seven objection types, only one is live for Copperline: <b>“will job costing survive.”</b> The comparison and trial invite are already drafted — you just send.</div>
+      <div class="field"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i></span><small>7 objection types → 1 likely</small></div>
+      <div class="a-act"><span class="chip primary">Send trial invite (drafted)</span><span class="chip">Insert job-costing proof</span><details><summary>why?</summary><ul><li>Pricing objection: low — preferred pricing covers it.</li><li>Familiarity objection: medium — desktop EOL reframes it.</li><li>Job-costing objection: high — 85% dependency, so it’s the one to pre-empt.</li></ul></details></div>
+      <div class="meta">The agent pre-drafted outbound. Debate: does the accountant still own the client’s voice, or is it ghost-written?</div>
     </div>
   </div>
 
 
-  <div class="panel"><div class="hd">Overall progress</div><div class="bd">
-    <div class="kpis">
-      <div class="kpi"><div class="big">128</div><div class="lbl">QBDT clients</div></div>
-      <div class="kpi"><div class="big">43</div><div class="lbl">in engagement</div></div>
-      <div class="kpi"><div class="big">18</div><div class="lbl">migrated</div></div>
-      <div class="kpi"><div class="big">11</div><div class="lbl">called off</div></div>
-      <div class="kpi"><div class="big">9</div><div class="lbl">stalled &gt; 14d</div></div>
-    </div>
-    <div class="funnel" style="margin-top:12px;">
-      <div class="frow"><span>Profiled</span><div class="fbar"><i style="width:100%"></i></div><b>128</b></div>
-      <div class="frow"><span>Configured</span><div class="fbar"><i style="width:75%"></i></div><b>96</b></div>
-      <div class="frow"><span>Recommended</span><div class="fbar"><i style="width:55%"></i></div><b>71</b></div>
-      <div class="frow"><span>Engaged</span><div class="fbar"><i style="width:34%"></i></div><b>43</b></div>
-      <div class="frow"><span>Migrated</span><div class="fbar"><i style="width:14%"></i></div><b>18</b></div>
-    </div>
-    <div style="margin-top:12px;font-size:11px;">Recommended tier mix (of 71):
-      <div class="split" style="margin-top:4px;">
-        <i style="width:17%;background:#efefef">QBO 12</i>
-        <i style="width:53%;background:#cfcfcf">QBOA 38</i>
-        <i style="width:30%;background:#a9a9a9">IES 21</i>
+  <div class="panel"><div class="hd">Recommendation</div><div class="bd">
+    <div class="reco"><div class="tier">QuickBooks Online Advanced</div><div class="conf">confidence medium ~65% · single entity · job-cost-led · moderate scale</div></div>
+    <div class="two">
+      <div>
+        <div style="font-size:10px;text-transform:uppercase;color:var(--mid);">What changes for them (QBDT → QBOA)</div>
+        <table style="margin-top:6px;">
+          <thead><tr><th>QBDT today</th><th>QBOA equivalent</th></tr></thead>
+          <tbody>
+            <tr><td>Customer : Job + job costing</td><td>Customers + Projects</td></tr>
+            <tr><td>Class (3 divisions)</td><td>Classes / tags</td></tr>
+            <tr><td>8 custom reports</td><td>Rebuild in modern custom reports</td></tr>
+            <tr><td>QB Time</td><td>QuickBooks Time (native)</td></tr>
+            <tr><td>Payments/AR app</td><td>QBO-native equivalent</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div style="font-size:10px;text-transform:uppercase;color:var(--mid);">Why not the neighbours</div>
+        <ul class="tight">
+          <li><b>Not QBO Plus:</b> seat need + custom reporting + volume push past it.</li>
+          <li><b>Not IES:</b> single entity, no 3+ dimensions, no rev-rec — over-buying, higher cost, longer migrate.</li>
+        </ul>
+        <div style="font-size:10px;text-transform:uppercase;color:var(--mid);margin-top:8px;">Commercial angle</div>
+        <div style="font-size:11px;">ProAdvisor preferred pricing can front the offer (eligible clients up to ~60% off list) — accountant leads pricing, not Sales.</div>
       </div>
     </div>
-    <div class="note">Numbers are illustrative stubs. Debate: is "migrated" the north-star, or is "recommended-correctly" (low call-off from wrong-tier) the real quality metric?</div>
   </div></div>
 
-  <div class="panel"><div class="hd">By vertical <span class="tag">click to drill in</span></div><div class="bd">
-    <div class="vgrid">
-      <a class="vcard on" href="#construction"><h3>Construction</h3><div class="cnt">34</div><div class="pbar"><i style="width:41%"></i></div><div class="mini">14 reco · 6 migrated · QBOA-heavy · 2 stalled</div></a>
-      <a class="vcard" href="#construction"><h3>Mfg &amp; Wholesale</h3><div class="cnt">22</div><div class="pbar"><i style="width:32%"></i></div><div class="mini">9 reco · 3 migrated · IES-leaning · 3 stalled</div></a>
-      <a class="vcard" href="#construction"><h3>Retail / E-com</h3><div class="cnt">28</div><div class="pbar"><i style="width:29%"></i></div><div class="mini">13 reco · 4 migrated · POS-orphan urgency</div></a>
-      <a class="vcard" href="#construction"><h3>Professional Svcs</h3><div class="cnt">30</div><div class="pbar"><i style="width:37%"></i></div><div class="mini">11 reco · 4 migrated · QBOA/IES split</div></a>
-      <a class="vcard" href="#construction"><h3>Nonprofit</h3><div class="cnt">14</div><div class="pbar"><i style="width:21%"></i></div><div class="mini">5 reco · 1 migrated · IES fund-accounting fit</div></a>
+  <div class="panel"><div class="hd">Recommended motion &amp; objections</div><div class="bd">
+    <div class="motions" style="margin-bottom:10px;">
+      <div class="mo"><b>Test drive</b><small>paradigm shift — not needed here</small></div>
+      <div class="mo pick"><b>30-day trial</b><small>migratable — validate on own data</small></div>
+      <div class="mo"><b>Direct purchase</b><small>fit clear but they'll want to look first</small></div>
     </div>
-    <div class="note">Bars = % of that vertical past "recommended." Construction is selected and drilled into below as the worked example (only vertical wired in this set).</div>
-  </div></div>
-
-  <div class="panel" id="construction"><div class="hd">Construction · client list <span class="tag">34 clients — showing sample</span></div><div class="bd">
     <table>
-      <thead><tr><th>Client</th><th>Sub-type</th><th>Stage</th><th>Reco tier</th><th>Motion</th><th>Status</th></tr></thead>
+      <thead><tr><th>Likely objection</th><th>Response</th></tr></thead>
       <tbody>
-        <tr class="click" onclick="location.href='01-profile.html'">
-          <td><a href="01-profile.html"><b>Copperline Contracting Co.</b></a></td><td>Residential remodel / light GC</td>
-          <td><span class="pill">Recommend</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">on track</span></td></tr>
-        <tr class="click" onclick="location.href='02-configure.html'"><td>Rivet &amp; Beam Construction</td><td>Commercial GC</td><td><span class="pill">Configure</span></td><td><span class="pill">judgment</span></td><td>test drive</td><td><span class="status">reviewing</span></td></tr>
-        <tr class="click" onclick="location.href='04-engage.html'"><td>Ferro Mechanical LLC</td><td>HVAC / specialty</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">day 6/30</span></td></tr>
-        <tr class="click" onclick="location.href='03-recommend.html'"><td>Meridian Building Group</td><td>Multi-entity builder</td><td><span class="pill">Recommend</span></td><td><span class="pill dark">IES</span></td><td>test drive</td><td><span class="status">gate fired</span></td></tr>
-        <tr><td>Oakline Concrete</td><td>Small sub</td><td><span class="pill">Recommend</span></td><td><span class="pill">QBO</span></td><td>direct buy</td><td><span class="status">over-buyer</span></td></tr>
-        <tr class="click" onclick="location.href='05-migrate.html'"><td>Hollis Roofing</td><td>Roofing</td><td><span class="pill">Migrate</span></td><td><span class="pill dark">QBOA</span></td><td>—</td><td><span class="status">go-live wk</span></td></tr>
-        <tr><td>Truss &amp; Co.</td><td>Framing sub</td><td><span class="pill">Engage</span></td><td><span class="pill dark">QBOA</span></td><td>30-day trial</td><td><span class="status">stalled 17d</span></td></tr>
+        <tr><td>"Will my job costing survive?"</td><td>That's exactly what the trial validates in-window with their own file.</td></tr>
+        <tr><td>"Desktop feels faster / familiar"</td><td>Acknowledge; frame against desktop EOL + anywhere-access + no version upkeep.</td></tr>
+        <tr><td>"Cost vs. my current license"</td><td>Lead with preferred pricing; compare total, not sticker.</td></tr>
       </tbody>
     </table>
-    <div class="note">Copperline is the fully wired journey. The other rows jump to the same shared step pages so you can feel the navigation; a real build gives each its own record. The row mix deliberately shows QBO, QBOA, IES and a judgment case.</div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <a class="wf" href="04-engage.html">Accept → start 30-day trial</a>
+      <select><option value="">— accept —</option><option>Override → QBO</option><option>Override → IES</option></select>
+      <a class="wf alt" href="#">Send comparison PDF</a>
+    </div>
+    <div class="note">Debate: should "Recommend" ever let the accountant proceed without picking a motion? Forcing the choice keeps the funnel honest.</div>
   </div></div>
 
-  <div class="pagenav"><span></span><a class="wf" href="01-profile.html">Open Copperline → 01 Profile →</a></div>
+  <div class="panel debate"><div class="hd">Debate · Recommend</div><div class="bd">
+    <div class="qn"><b>false confidence</b>Medium ~65% — do accountants want the number, or does it just invite second-guessing?</div>
+    <div class="qn"><b>override logging</b>An override should be logged against the reco for the learning loop. Who reviews overrides?</div>
+  </div></div>
+
+  <div class="pagenav"><a class="wf alt" href="02-configure.html">← 02 Configure</a><a class="wf" href="04-engage.html">Continue to 04 Engage →</a></div>
 </div>
 </body>
 </html>
